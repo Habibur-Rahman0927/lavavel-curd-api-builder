@@ -1,109 +1,145 @@
+
+
 namespace App\Http\Controllers\Admin;
 
-use App\Contracts\Services\{{ ucfirst($name) }}ServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
-use App\Models\Category;
-use App\Services\Attributes\CategoryAttributes;
+use App\Services\I{{ ucfirst($name) }}Service;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\Create{{ ucfirst($name) }}Request;
+use App\Http\Requests\Update{{ ucfirst($name) }}Request;
+use Illuminate\Http\JsonResponse;
+use Exception;
 
 class {{ ucfirst($name) }}Controller extends Controller
 {
-    private {{ ucfirst($name) }}ServiceInterface $service;
 
-    public function __construct({{ ucfirst($name) }}ServiceInterface $service)
+    public function __construct(private I{{ ucfirst($name) }}Service ${{ lcfirst($name) }}Service)
     {
-        $this->service = $service;
+
     }
 
-    public function show()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     */
+     public function index(): View
     {
-        return view('admin.{{ strtolower($name) }}.index')->with([
-            'buttons' => [
-                [
-                    'label' => 'Add New',
-                    'url' => route('{{ strtolower($name) }}-add'),
-                    'icon' => 'ti-plus'
-                ],
-            ],
-            'headers' => [
-                'Name',
-                'Status',
-                'Action'
-            ],
-        ]);
+        return view('admin.{{ lcfirst($name) }}.index')->with([]);
     }
 
-    public function add()
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return View
+     */
+    public function create(): View
     {
-        return view('admin.{{ strtolower($name) }}.add')->with([]);
+        return view('admin.{{ lcfirst($name) }}.create')->with([]);
     }
 
-    public function create(CategoryRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param {{ ucfirst($name) }}Request $request
+     * @return RedirectResponse
+     */
+    public function store(Create{{ ucfirst($name) }}Request $request): RedirectResponse
     {
-        $request['status'] = $request->input('status') === 'on' ? Category::STATUS_ACTIVE : Category::STATUS_INACTIVE;
+        try {
+            $response = $this->{{ lcfirst($name) }}Service->create(data: $request->all());
 
-        ${{ strtolower($name) }}Attributes = (new CategoryAttributes());
-        $data = ${{ strtolower($name) }}Attributes->updateDataRequest((new Category())->getFillable(), $request)->toArray();
-
-        $response = $this->service->create($data);
-
-        if ($response) {
-            return redirect()->route('{{ strtolower($name) }}-view')->with('success', 'Category added successfully.');
+            if ($response) {
+                return redirect()->back()->with('success', '{{ ucfirst($name) }} added successfully.');
+            }
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
         }
 
-        return redirect()->back()->with('error', 'Failed to upload file. Please try again.');
+        return redirect()->back()->with('error', 'Something went wrong. Please try again.');
     }
 
-    public function edit($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param string $id
+     * @return View
+     */
+    public function show(string $id) // : View
     {
-        $response = $this->service->getById($id);
-
-        return view('admin.{{ strtolower($name) }}.edit')->with([
-            'data' => $response,
-        ]);
+        // You can add logic to fetch and return data for the specific resource here.
     }
 
-    public function update(UpdateCategoryRequest $request)
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param string $id
+     * @return View
+     */
+    public function edit(string $id): View
     {
-        $request['status'] = $request->input('status') === 'on' ? Category::STATUS_ACTIVE : Category::STATUS_INACTIVE;
+        try {
+            $response = $this->{{ lcfirst($name) }}Service->findById($id);
 
-        ${{ strtolower($name) }}Attributes = (new CategoryAttributes());
-        $data = ${{ strtolower($name) }}Attributes->updateDataRequest((new Category())->getFillable(), $request)->toArray();
-
-        $response = $this->service->update($request['id'], $data);
-
-        if ($response) {
-            return redirect()->route('{{ strtolower($name) }}-view')->with('success', 'Occupation update successfully.');
+            return view('admin.{{ lcfirst($name) }}.edit')->with([
+                'data' => $response,
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error retrieving the resource.');
         }
-
-        return redirect()->back()->with('error', 'Failed to upload file. Please try again.');
     }
 
-    public function list(Request $request)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Update{{ ucfirst($name) }}Request $request
+     * @param string $id
+     * @return RedirectResponse
+     */
+    public function update(Update{{ ucfirst($name) }}Request $request, string $id): RedirectResponse
     {
-        return $this->service->dataTableList($request);
+        try {
+            $this->{{ lcfirst($name) }}Service->update(data: $request->all());
+
+            return redirect()->back()->with('success', '{{ ucfirst($name) }} updated successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong while updating.');
+        }
     }
 
-    public function delete(Request $request)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param string $id
+     * @return JsonResponse
+     */
+    public function destroy(string $id): JsonResponse
     {
-        $data = $this->service->delete($request->input('id'));
+        try {
+            $data = $this->{{ lcfirst($name) }}Service->deleteById($id);
 
-        if ($data) {
+            if ($data) {
+                return response()->json([
+                    'message' => '{{ ucfirst($name) }} deleted successfully',
+                    'status_code' => ResponseAlias::HTTP_OK,
+                    'data' => []
+                ], ResponseAlias::HTTP_OK);
+            }
+
             return response()->json([
-                'message' => 'Notice delete successfully',
-                'status_code' => ResponseAlias::HTTP_OK,
+                'message' => '{{ ucfirst($name) }} is not deleted successfully',
+                'status_code' => ResponseAlias::HTTP_BAD_REQUEST,
                 'data' => []
-            ], ResponseAlias::HTTP_OK);
+            ], ResponseAlias::HTTP_BAD_REQUEST);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while trying to delete.',
+                'status_code' => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR,
+                'data' => []
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json([
-            'message' => 'Notice delete successfully',
-            'status_code' => ResponseAlias::HTTP_BAD_REQUEST,
-            'data' => []
-        ], ResponseAlias::HTTP_BAD_REQUEST);
     }
-
 }
