@@ -1,0 +1,13 @@
+
+namespace App\Services;
+
+use App\Repositories\{{ $name }}\I{{ $name  }}Repository;
+
+
+class {{ $name  }}Service extends BaseService implements I{{ $name  }}Service
+{
+    public function __construct(private I{{ $name  }}Repository ${{  strtolower($name) }}Repository)
+    {
+        parent::__construct(${{  strtolower($name) }}Repository);
+    }
+}
