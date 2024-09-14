@@ -1,8 +1,8 @@
 
-namespace App\Services;
+namespace App\Services\{{$name}};
 
 use App\Repositories\{{ $name }}\I{{ $name  }}Repository;
-
+use App\Services\BaseService;
 
 class {{ $name  }}Service extends BaseService implements I{{ $name  }}Service
 {

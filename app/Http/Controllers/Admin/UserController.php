@@ -1,22 +1,23 @@
+<?php 
 
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\{{ ucfirst($name) }}\I{{ ucfirst($name) }}Service;
+use App\Services\User\IUserService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\Create{{ ucfirst($name) }}Request;
-use App\Http\Requests\Update{{ ucfirst($name) }}Request;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\JsonResponse;
 use Exception;
 
-class {{ ucfirst($name) }}Controller extends Controller
+class UserController extends Controller
 {
 
-    public function __construct(private I{{ ucfirst($name) }}Service ${{ lcfirst($name) }}Service)
+    public function __construct(private IUserService $userService)
     {
 
     }
@@ -28,8 +29,8 @@ class {{ ucfirst($name) }}Controller extends Controller
      */
      public function index(): View
     {
-        $data = $this->{{ lcfirst($name) }}Service->findAllWithPagination([], ['*'], 10);
-        return view('admin.{{ lcfirst($name) }}.index')->with([
+        $data = $this->userService->findAllWithPagination([], ['*'], 10);
+        return view('admin.user.index')->with([
             'data' => $data
         ]);
     }
@@ -41,22 +42,22 @@ class {{ ucfirst($name) }}Controller extends Controller
      */
     public function create(): View
     {
-        return view('admin.{{ lcfirst($name) }}.create')->with([]);
+        return view('admin.user.create')->with([]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param {{ ucfirst($name) }}Request $request
+     * @param UserRequest $request
      * @return RedirectResponse
      */
-    public function store(Create{{ ucfirst($name) }}Request $request): RedirectResponse
+    public function store(CreateUserRequest $request): RedirectResponse
     {
         try {
-            $response = $this->{{ lcfirst($name) }}Service->create(data: $request->all());
+            $response = $this->userService->create(data: $request->all());
 
             if ($response) {
-                return redirect()->back()->with('success', '{{ ucfirst($name) }} added successfully.');
+                return redirect()->back()->with('success', 'User added successfully.');
             }
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong. Please try again.');
@@ -85,9 +86,9 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function edit(string $id): View
     {
         try {
-            $response = $this->{{ lcfirst($name) }}Service->findById($id);
+            $response = $this->userService->findById($id);
 
-            return view('admin.{{ lcfirst($name) }}.edit')->with([
+            return view('admin.user.edit')->with([
                 'data' => $response,
             ]);
         } catch (Exception $e) {
@@ -98,16 +99,16 @@ class {{ ucfirst($name) }}Controller extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Update{{ ucfirst($name) }}Request $request
+     * @param UpdateUserRequest $request
      * @param string $id
      * @return RedirectResponse
      */
-    public function update(Update{{ ucfirst($name) }}Request $request, string $id): RedirectResponse
+    public function update(UpdateUserRequest $request, string $id): RedirectResponse
     {
         try {
-            $this->{{ lcfirst($name) }}Service->update(data: $request->all());
+            $this->userService->update(data: $request->all());
 
-            return redirect()->back()->with('success', '{{ ucfirst($name) }} updated successfully.');
+            return redirect()->back()->with('success', 'User updated successfully.');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong while updating.');
         }
@@ -122,18 +123,18 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $data = $this->{{ lcfirst($name) }}Service->deleteById($id);
+            $data = $this->userService->deleteById($id);
 
             if ($data) {
                 return response()->json([
-                    'message' => '{{ ucfirst($name) }} deleted successfully',
+                    'message' => 'User deleted successfully',
                     'status_code' => ResponseAlias::HTTP_OK,
                     'data' => []
                 ], ResponseAlias::HTTP_OK);
             }
 
             return response()->json([
-                'message' => '{{ ucfirst($name) }} is not deleted successfully',
+                'message' => 'User is not deleted successfully',
                 'status_code' => ResponseAlias::HTTP_BAD_REQUEST,
                 'data' => []
             ], ResponseAlias::HTTP_BAD_REQUEST);
