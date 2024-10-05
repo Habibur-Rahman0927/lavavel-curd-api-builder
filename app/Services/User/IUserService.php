@@ -6,5 +6,5 @@ use App\Services\IBaseService;
 
 interface IUserService extends IBaseService
 {
-
+    public function getUserData();
 }

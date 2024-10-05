@@ -29,9 +29,23 @@ class UserController extends Controller
      */
      public function index(): View
     {
-        $data = $this->userService->findAllWithPagination([], ['*'], 10);
-        return view('admin.user.index')->with([
-            'data' => $data
+        return view('admin.user.index')->with([]);
+    }
+
+    /**
+     * Get user data for DataTables.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDatatables(Request $request): JsonResponse
+    {
+        if ($request->ajax()) {
+            return $this->userService->getUserData();
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid request.',
         ]);
     }
 
@@ -54,7 +68,7 @@ class UserController extends Controller
     public function store(CreateUserRequest $request): RedirectResponse
     {
         try {
-            $response = $this->userService->create(data: $request->all());
+            $response = $this->userService->create($request->all());
 
             if ($response) {
                 return redirect()->back()->with('success', 'User added successfully.');
@@ -106,7 +120,15 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, string $id): RedirectResponse
     {
         try {
-            $this->userService->update(data: $request->all());
+            $data = $request->except(['_token', '_method']);
+
+            if (!empty($data['password'])) {
+                $data['password'] = bcrypt($data['password']);
+            } else {
+                unset($data['password']);
+            }
+
+            $this->userService->update(['id' => $id], $data);
 
             return redirect()->back()->with('success', 'User updated successfully.');
         } catch (Exception $e) {

@@ -227,4 +227,108 @@ abstract class BaseCommand extends Command
             return false;
         }
     }
+
+    /**
+     * Generate view templates for the specified name.
+     *
+     * @param string $name
+     * @return bool
+     */
+    protected function generateViewTemplateFile(string $name): bool
+    {
+        try {
+            $directory = resource_path("views/admin/{$name}");
+            if ($this->createDirectoryIfNotExists($directory)) {
+                $this->copyViewFiles($name, $directory);
+                $this->copyJsFiles($name);
+                $this->info("Templates generated successfully.");
+                return true;
+            }
+            $this->error("Failed to create directory: {$directory}");
+            return false;
+
+        } catch (\Exception $e) {
+            $this->error("Error generating templates: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Copy view files from the template directory to the target directory and generate them.
+     *
+     * @param string $name
+     * @param string $directory
+     * @return void
+     * @throws \Exception
+     */
+    private function copyViewFiles(string $name, string $directory): void
+    {
+        try {
+            $sourceDirectory = resource_path("views/templates/view");
+
+            if (!File::exists($sourceDirectory)) {
+                throw new \Exception("Source directory not found: {$sourceDirectory}");
+            }
+
+            $files = File::files($sourceDirectory);
+
+            foreach ($files as $file) {
+                $content = File::get($file);
+                $modifiedContent = $this->modifyContent($content, $name);
+                $destination = "{$directory}/" . pathinfo($file, PATHINFO_BASENAME);
+
+                File::put($destination, $modifiedContent);
+                $this->info("File '{$destination}' generated successfully.");
+            }
+        } catch (\Exception $e) {
+            $this->error("Error copying view files: " . $e->getMessage());
+            throw $e;  // Re-throw to handle in the calling method
+        }
+    }
+
+    /**
+     * Copy and modify JavaScript files.
+     *
+     * @param string $name
+     * @return void
+     * @throws \Exception
+     */
+    private function copyJsFiles(string $name): void
+    {
+        try {
+            $jsSourceDirectory = resource_path("views/templates/view/js");
+
+            if (!File::exists($jsSourceDirectory)) {
+                throw new \Exception("JavaScript source directory not found: {$jsSourceDirectory}");
+            }
+
+            $jsDirectory = resource_path("assets/js");
+            $files = File::files($jsSourceDirectory);
+
+            foreach ($files as $file) {
+                $content = File::get($file);
+                $modifiedContent = $this->modifyContent($content, $name);
+                $jsDestination = "{$jsDirectory}/{$name}.js";
+
+                File::put($jsDestination, $modifiedContent);
+                $this->info("JavaScript file '{$jsDestination}' generated successfully.");
+            }
+        } catch (\Exception $e) {
+            $this->error("Error copying JavaScript files: " . $e->getMessage());
+            throw $e;  // Re-throw to handle in the calling method
+        }
+    }
+
+    /**
+     * Replace placeholders in the content with the specified name.
+     *
+     * @param string $content
+     * @param string $name
+     * @return string
+     */
+    private function modifyContent(string $content, string $name): string
+    {
+        return str_replace('{{ name }}', $name, $content);
+    }
+
 }

@@ -28,9 +28,23 @@ class {{ ucfirst($name) }}Controller extends Controller
      */
      public function index(): View
     {
-        $data = $this->{{ lcfirst($name) }}Service->findAllWithPagination([], ['*'], 10);
-        return view('admin.{{ lcfirst($name) }}.index')->with([
-            'data' => $data
+        return view('admin.{{ lcfirst($name) }}.index')->with([]);
+    }
+
+    /**
+     * Get {{ lcfirst($name) }} data for DataTables.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDatatables(Request $request): JsonResponse
+    {
+        if ($request->ajax()) {
+            return $this->{{ lcfirst($name) }}Service->get{{ ucfirst($name) }}Data();
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid request.',
         ]);
     }
 
@@ -53,7 +67,7 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function store(Create{{ ucfirst($name) }}Request $request): RedirectResponse
     {
         try {
-            $response = $this->{{ lcfirst($name) }}Service->create(data: $request->all());
+            $response = $this->{{ lcfirst($name) }}Service->create($request->all());
 
             if ($response) {
                 return redirect()->back()->with('success', '{{ ucfirst($name) }} added successfully.');
@@ -105,7 +119,7 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function update(Update{{ ucfirst($name) }}Request $request, string $id): RedirectResponse
     {
         try {
-            $this->{{ lcfirst($name) }}Service->update(data: $request->all());
+            $this->{{ lcfirst($name) }}Service->update([], $request->all());
 
             return redirect()->back()->with('success', '{{ ucfirst($name) }} updated successfully.');
         } catch (Exception $e) {
