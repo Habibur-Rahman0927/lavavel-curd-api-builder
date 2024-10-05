@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\I{{ ucfirst($name) }}Service;
+use App\Services\{{ ucfirst($name) }}\I{{ ucfirst($name) }}Service;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Illuminate\View\View;
@@ -32,6 +32,23 @@ class {{ ucfirst($name) }}Controller extends Controller
     }
 
     /**
+     * Get {{ lcfirst($name) }} data for DataTables.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDatatables(Request $request): JsonResponse
+    {
+        if ($request->ajax()) {
+            return $this->{{ lcfirst($name) }}Service->get{{ ucfirst($name) }}Data();
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid request.',
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return View
@@ -50,7 +67,7 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function store(Create{{ ucfirst($name) }}Request $request): RedirectResponse
     {
         try {
-            $response = $this->{{ lcfirst($name) }}Service->create(data: $request->all());
+            $response = $this->{{ lcfirst($name) }}Service->create($request->all());
 
             if ($response) {
                 return redirect()->back()->with('success', '{{ ucfirst($name) }} added successfully.');
@@ -102,7 +119,7 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function update(Update{{ ucfirst($name) }}Request $request, string $id): RedirectResponse
     {
         try {
-            $this->{{ lcfirst($name) }}Service->update(data: $request->all());
+            $this->{{ lcfirst($name) }}Service->update([], $request->all());
 
             return redirect()->back()->with('success', '{{ ucfirst($name) }} updated successfully.');
         } catch (Exception $e) {

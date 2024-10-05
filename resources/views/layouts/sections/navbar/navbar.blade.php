@@ -1,291 +1,154 @@
-<nav
-    class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
-    <div class="navbar-container d-flex content">
-        <div class="bookmark-wrapper d-flex align-items-center">
-            <ul class="nav navbar-nav d-xl-none">
-                <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon"
-                            data-feather="menu"></i></a></li>
-            </ul>
-            <ul class="nav navbar-nav bookmark-icons">
-                <li class="nav-item d-none d-lg-block"><a class="nav-link" href="app-email.html"
-                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Email"><i class="ficon"
-                            data-feather="mail"></i></a></li>
-                <li class="nav-item d-none d-lg-block"><a class="nav-link" href="app-chat.html" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" title="Chat"><i class="ficon"
-                            data-feather="message-square"></i></a></li>
-                <li class="nav-item d-none d-lg-block"><a class="nav-link" href="app-calendar.html"
-                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Calendar"><i class="ficon"
-                            data-feather="calendar"></i></a></li>
-                <li class="nav-item d-none d-lg-block"><a class="nav-link" href="app-todo.html" data-bs-toggle="tooltip"
-                        data-bs-placement="bottom" title="Todo"><i class="ficon" data-feather="check-square"></i></a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav">
-                <li class="nav-item d-none d-lg-block"><a class="nav-link bookmark-star"><i class="ficon text-warning"
-                            data-feather="star"></i></a>
-                    <div class="bookmark-input search-input">
-                        <div class="bookmark-input-icon"><i data-feather="search"></i></div>
-                        <input class="form-control input" type="text" placeholder="Bookmark" tabindex="0"
-                            data-search="search">
-                        <ul class="search-list search-list-bookmark"></ul>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <ul class="nav navbar-nav align-items-center ms-auto">
-            <li class="nav-item dropdown dropdown-language"><a class="nav-link dropdown-toggle" id="dropdown-flag"
-                    href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                        class="flag-icon flag-icon-us"></i><span class="selected-language">English</span></a>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-flag"><a class="dropdown-item"
-                        href="#" data-language="en"><i class="flag-icon flag-icon-us"></i> English</a><a
-                        class="dropdown-item" href="#" data-language="fr"><i class="flag-icon flag-icon-fr"></i>
-                        French</a><a class="dropdown-item" href="#" data-language="de"><i
-                            class="flag-icon flag-icon-de"></i> German</a><a class="dropdown-item" href="#"
-                        data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a></div>
-            </li>
-            <li class="nav-item d-none d-lg-block"><a class="nav-link nav-link-style"><i class="ficon"
-                        data-feather="moon"></i></a></li>
-            <li class="nav-item nav-search"><a class="nav-link nav-link-search"><i class="ficon"
-                        data-feather="search"></i></a>
-                <div class="search-input">
-                    <div class="search-input-icon"><i data-feather="search"></i></div>
-                    <input class="form-control input" type="text" placeholder="Explore Vuexy..." tabindex="-1"
-                        data-search="search">
-                    <div class="search-input-close"><i data-feather="x"></i></div>
-                    <ul class="search-list search-list-main"></ul>
-                </div>
-            </li>
-            <li class="nav-item dropdown dropdown-cart me-25"><a class="nav-link" href="#"
-                    data-bs-toggle="dropdown"><i class="ficon" data-feather="shopping-cart"></i><span
-                        class="badge rounded-pill bg-primary badge-up cart-item-count">6</span></a>
-                <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
-                    <li class="dropdown-menu-header">
-                        <div class="dropdown-header d-flex">
-                            <h4 class="notification-title mb-0 me-auto">My Cart</h4>
-                            <div class="badge rounded-pill badge-light-primary">4 Items</div>
+<header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between"> <a href="index.html"
+            class="logo d-flex align-items-center"> <img src="assets/img/logo.png" alt=""> <span
+                class="d-none d-lg-block">Admin</span> </a> <i class="bi bi-list toggle-sidebar-btn"></i></div>
+    <div class="search-bar">
+        <form class="search-form d-flex align-items-center" method="POST" action="#"> <input type="text"
+                name="query" placeholder="Search" title="Enter search keyword"> <button type="submit"
+                title="Search"><i class="bi bi-search"></i></button></form>
+    </div>
+    <nav class="header-nav ms-auto">
+        <ul class="d-flex align-items-center">
+            <li class="nav-item d-block d-lg-none"> <a class="nav-link nav-icon search-bar-toggle " href="#"> <i
+                        class="bi bi-search"></i> </a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown"> <i class="bi bi-bell"></i> <span
+                        class="badge bg-primary badge-number">4</span> </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                    <li class="dropdown-header"> You have 4 new notifications <a href="#"><span
+                                class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="notification-item">
+                        <i class="bi bi-exclamation-circle text-warning"></i>
+                        <div>
+                            <h4>Lorem Ipsum</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>30 min. ago</p>
                         </div>
                     </li>
-                    <li class="scrollable-container media-list">
-                        <div class="list-item align-items-center"><img class="d-block rounded me-1"
-                                src="../../../app-assets/images/pages/eCommerce/1.png" alt="donuts" width="62">
-                            <div class="list-item-body flex-grow-1"><i class="ficon cart-item-remove"
-                                    data-feather="x"></i>
-                                <div class="media-heading">
-                                    <h6 class="cart-item-title"><a class="text-body"
-                                            href="app-ecommerce-details.html"> Apple watch 5</a></h6><small
-                                        class="cart-item-by">By Apple</small>
-                                </div>
-                                <div class="cart-item-qty">
-                                    <div class="input-group">
-                                        <input class="touchspin-cart" type="number" value="1">
-                                    </div>
-                                </div>
-                                <h5 class="cart-item-price">$374.90</h5>
-                            </div>
-                        </div>
-                        <div class="list-item align-items-center"><img class="d-block rounded me-1"
-                                src="../../../app-assets/images/pages/eCommerce/7.png" alt="donuts" width="62">
-                            <div class="list-item-body flex-grow-1"><i class="ficon cart-item-remove"
-                                    data-feather="x"></i>
-                                <div class="media-heading">
-                                    <h6 class="cart-item-title"><a class="text-body"
-                                            href="app-ecommerce-details.html"> Google Home Mini</a></h6><small
-                                        class="cart-item-by">By Google</small>
-                                </div>
-                                <div class="cart-item-qty">
-                                    <div class="input-group">
-                                        <input class="touchspin-cart" type="number" value="3">
-                                    </div>
-                                </div>
-                                <h5 class="cart-item-price">$129.40</h5>
-                            </div>
-                        </div>
-                        <div class="list-item align-items-center"><img class="d-block rounded me-1"
-                                src="../../../app-assets/images/pages/eCommerce/2.png" alt="donuts" width="62">
-                            <div class="list-item-body flex-grow-1"><i class="ficon cart-item-remove"
-                                    data-feather="x"></i>
-                                <div class="media-heading">
-                                    <h6 class="cart-item-title"><a class="text-body"
-                                            href="app-ecommerce-details.html"> iPhone 11 Pro</a></h6><small
-                                        class="cart-item-by">By Apple</small>
-                                </div>
-                                <div class="cart-item-qty">
-                                    <div class="input-group">
-                                        <input class="touchspin-cart" type="number" value="2">
-                                    </div>
-                                </div>
-                                <h5 class="cart-item-price">$699.00</h5>
-                            </div>
-                        </div>
-                        <div class="list-item align-items-center"><img class="d-block rounded me-1"
-                                src="../../../app-assets/images/pages/eCommerce/3.png" alt="donuts" width="62">
-                            <div class="list-item-body flex-grow-1"><i class="ficon cart-item-remove"
-                                    data-feather="x"></i>
-                                <div class="media-heading">
-                                    <h6 class="cart-item-title"><a class="text-body"
-                                            href="app-ecommerce-details.html"> iMac Pro</a></h6><small
-                                        class="cart-item-by">By Apple</small>
-                                </div>
-                                <div class="cart-item-qty">
-                                    <div class="input-group">
-                                        <input class="touchspin-cart" type="number" value="1">
-                                    </div>
-                                </div>
-                                <h5 class="cart-item-price">$4,999.00</h5>
-                            </div>
-                        </div>
-                        <div class="list-item align-items-center"><img class="d-block rounded me-1"
-                                src="../../../app-assets/images/pages/eCommerce/5.png" alt="donuts" width="62">
-                            <div class="list-item-body flex-grow-1"><i class="ficon cart-item-remove"
-                                    data-feather="x"></i>
-                                <div class="media-heading">
-                                    <h6 class="cart-item-title"><a class="text-body"
-                                            href="app-ecommerce-details.html"> MacBook Pro</a></h6><small
-                                        class="cart-item-by">By Apple</small>
-                                </div>
-                                <div class="cart-item-qty">
-                                    <div class="input-group">
-                                        <input class="touchspin-cart" type="number" value="1">
-                                    </div>
-                                </div>
-                                <h5 class="cart-item-price">$2,999.00</h5>
-                            </div>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="notification-item">
+                        <i class="bi bi-x-circle text-danger"></i>
+                        <div>
+                            <h4>Atque rerum nesciunt</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>1 hr. ago</p>
                         </div>
                     </li>
-                    <li class="dropdown-menu-footer">
-                        <div class="d-flex justify-content-between mb-1">
-                            <h6 class="fw-bolder mb-0">Total:</h6>
-                            <h6 class="text-primary fw-bolder mb-0">$10,999.00</h6>
-                        </div><a class="btn btn-primary w-100" href="app-ecommerce-checkout.html">Checkout</a>
+                    <li>
+                        <hr class="dropdown-divider">
                     </li>
+                    <li class="notification-item">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <div>
+                            <h4>Sit rerum fuga</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>2 hrs. ago</p>
+                        </div>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="notification-item">
+                        <i class="bi bi-info-circle text-primary"></i>
+                        <div>
+                            <h4>Dicta reprehenderit</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>4 hrs. ago</p>
+                        </div>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="dropdown-footer"> <a href="#">Show all notifications</a></li>
                 </ul>
             </li>
-            <li class="nav-item dropdown dropdown-notification me-25"><a class="nav-link" href="#"
-                    data-bs-toggle="dropdown"><i class="ficon" data-feather="bell"></i><span
-                        class="badge rounded-pill bg-danger badge-up">5</span></a>
-                <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
-                    <li class="dropdown-menu-header">
-                        <div class="dropdown-header d-flex">
-                            <h4 class="notification-title mb-0 me-auto">Notifications</h4>
-                            <div class="badge rounded-pill badge-light-primary">6 New</div>
-                        </div>
+            <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown"> <i
+                        class="bi bi-chat-left-text"></i> <span class="badge bg-success badge-number">3</span> </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+                    <li class="dropdown-header"> You have 3 new messages <a href="#"><span
+                                class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a></li>
+                    <li>
+                        <hr class="dropdown-divider">
                     </li>
-                    <li class="scrollable-container media-list"><a class="d-flex" href="#">
-                            <div class="list-item d-flex align-items-start">
-                                <div class="me-1">
-                                    <div class="avatar"><img
-                                            src="../../../app-assets/images/portrait/small/avatar-s-15.jpg"
-                                            alt="avatar" width="32" height="32"></div>
-                                </div>
-                                <div class="list-item-body flex-grow-1">
-                                    <p class="media-heading"><span class="fw-bolder">Congratulation Sam
-                                            🎉</span>winner!</p><small class="notification-text"> Won the monthly best
-                                        seller badge.</small>
-                                </div>
-                            </div>
-                        </a><a class="d-flex" href="#">
-                            <div class="list-item d-flex align-items-start">
-                                <div class="me-1">
-                                    <div class="avatar"><img
-                                            src="../../../app-assets/images/portrait/small/avatar-s-3.jpg"
-                                            alt="avatar" width="32" height="32"></div>
-                                </div>
-                                <div class="list-item-body flex-grow-1">
-                                    <p class="media-heading"><span class="fw-bolder">New message</span>&nbsp;received
-                                    </p><small class="notification-text"> You have 10 unread messages</small>
-                                </div>
-                            </div>
-                        </a><a class="d-flex" href="#">
-                            <div class="list-item d-flex align-items-start">
-                                <div class="me-1">
-                                    <div class="avatar bg-light-danger">
-                                        <div class="avatar-content">MD</div>
-                                    </div>
-                                </div>
-                                <div class="list-item-body flex-grow-1">
-                                    <p class="media-heading"><span class="fw-bolder">Revised Order
-                                            👋</span>&nbsp;checkout</p><small class="notification-text"> MD Inc. order
-                                        updated</small>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="list-item d-flex align-items-center">
-                            <h6 class="fw-bolder me-auto mb-0">System Notifications</h6>
-                            <div class="form-check form-check-primary form-switch">
-                                <input class="form-check-input" id="systemNotification" type="checkbox"
-                                    checked="">
-                                <label class="form-check-label" for="systemNotification"></label>
-                            </div>
-                        </div><a class="d-flex" href="#">
-                            <div class="list-item d-flex align-items-start">
-                                <div class="me-1">
-                                    <div class="avatar bg-light-danger">
-                                        <div class="avatar-content"><i class="avatar-icon" data-feather="x"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="list-item-body flex-grow-1">
-                                    <p class="media-heading"><span class="fw-bolder">Server
-                                            down</span>&nbsp;registered</p><small class="notification-text"> USA Server
-                                        is down due to high CPU usage</small>
-                                </div>
-                            </div>
-                        </a><a class="d-flex" href="#">
-                            <div class="list-item d-flex align-items-start">
-                                <div class="me-1">
-                                    <div class="avatar bg-light-success">
-                                        <div class="avatar-content"><i class="avatar-icon" data-feather="check"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="list-item-body flex-grow-1">
-                                    <p class="media-heading"><span class="fw-bolder">Sales
-                                            report</span>&nbsp;generated</p><small class="notification-text"> Last
-                                        month sales report generated</small>
-                                </div>
-                            </div>
-                        </a><a class="d-flex" href="#">
-                            <div class="list-item d-flex align-items-start">
-                                <div class="me-1">
-                                    <div class="avatar bg-light-warning">
-                                        <div class="avatar-content"><i class="avatar-icon"
-                                                data-feather="alert-triangle"></i></div>
-                                    </div>
-                                </div>
-                                <div class="list-item-body flex-grow-1">
-                                    <p class="media-heading"><span class="fw-bolder">High memory</span>&nbsp;usage</p>
-                                    <small class="notification-text"> BLR Server using high memory</small>
-                                </div>
+                    <li class="message-item">
+                        <a href="#">
+                            <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                            <div>
+                                <h4>Jassa</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>4 hrs. ago</p>
                             </div>
                         </a>
                     </li>
-                    <li class="dropdown-menu-footer"><a class="btn btn-primary w-100" href="#">Read all
-                            notifications</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="message-item">
+                        <a href="#">
+                            <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
+                            <div>
+                                <h4>Jassa</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>6 hrs. ago</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="message-item">
+                        <a href="#">
+                            <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
+                            <div>
+                                <h4>Jassa</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>8 hrs. ago</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="dropdown-footer"> <a href="#">Show all messages</a></li>
                 </ul>
             </li>
-            <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link"
-                    id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">John Doe</span><span
-                            class="user-status">Admin</span></div><span class="avatar"><img class="round"
-                            src="../../../app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar"
-                            height="40" width="40"><span class="avatar-status-online"></span></span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a class="dropdown-item"
-                        href="page-profile.html"><i class="me-50" data-feather="user"></i> Profile</a><a
-                        class="dropdown-item" href="app-email.html"><i class="me-50" data-feather="mail"></i>
-                        Inbox</a><a class="dropdown-item" href="app-todo.html"><i class="me-50"
-                            data-feather="check-square"></i> Task</a><a class="dropdown-item" href="app-chat.html"><i
-                            class="me-50" data-feather="message-square"></i> Chats</a>
-                    <div class="dropdown-divider"></div><a class="dropdown-item"
-                        href="page-account-settings-account.html"><i class="me-50" data-feather="settings"></i>
-                        Settings</a><a class="dropdown-item" href="page-pricing.html"><i class="me-50"
-                            data-feather="credit-card"></i> Pricing</a><a class="dropdown-item"
-                        href="page-faq.html"><i class="me-50" data-feather="help-circle"></i> FAQ</a><a
-                        class="dropdown-item" href="auth-login-cover.html"><i class="me-50"
-                            data-feather="power"></i> Logout</a>
-                </div>
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle"> <span
+                        class="d-none d-md-block dropdown-toggle ps-2">Jassa</span> </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <li class="dropdown-header">
+                        <h6>Jassa</h6>
+                        <span>Web Designer</span>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li> <a class="dropdown-item d-flex align-items-center" href="users-profile.html"> <i
+                                class="bi bi-person"></i> <span>My Profile</span> </a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li> <a class="dropdown-item d-flex align-items-center" href="users-profile.html"> <i
+                                class="bi bi-gear"></i> <span>Account Settings</span> </a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li> <a class="dropdown-item d-flex align-items-center" href="pages-faq.html"> <i
+                                class="bi bi-question-circle"></i> <span>Need Help?</span> </a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li> <a class="dropdown-item d-flex align-items-center" href="#"> <i
+                                class="bi bi-box-arrow-right"></i> <span>Sign Out</span> </a></li>
+                </ul>
             </li>
         </ul>
-    </div>
-</nav>
+    </nav>
+</header>

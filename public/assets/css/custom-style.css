@@ -1,0 +1,88 @@
+/* Add shadow to input box */
+.form-control {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for inputs */
+    border: 1px solid #ccc; /* Default border color */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Green border on focus */
+.form-control:focus {
+    border-color: #4CAF50; /* Green border on focus */
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3); /* Green shadow on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}
+
+/* Card shadow */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+main {
+    max-width: 1200px; /* Define the actual width of the main content */
+    margin: 0 auto; /* Center the main content */
+    min-height: 100vh; /* Ensure it takes at least the full height of the viewport */
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    flex: 1; /* Allows the section to grow and fill available space */
+}
+
+/* Toggle switch styling */
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input {
+    position: relative;
+    width: 34px;
+    height: 20px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: #4CAF50;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.form-check-input:before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.form-check-input:checked:before {
+    transform: translateX(14px);
+}
+
+.form-check-label {
+    margin-left: 10px;
+}
+
+.invalid-feedback {
+    display: block; /* Ensure feedback is displayed correctly */
+}

@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
             'is_active' => User::USER_IS_ACTIVE,
             'role' => 'test'
         ]);
+        $this->call(UserSeeder::class);
     }
 }

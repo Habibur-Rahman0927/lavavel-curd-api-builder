@@ -1,50 +1,25 @@
-<!-- BEGIN: Vendor JS-->
-
-{{-- @vite(['resources/assets/vendor/libs/jquery/jquery.js', 'resources/assets/vendor/libs/popper/popper.js', 'resources/assets/vendor/js/bootstrap.js', 'resources/assets/vendor/libs/node-waves/node-waves.js', 'resources/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js', 'resources/assets/vendor/libs/hammer/hammer.js', 'resources/assets/vendor/libs/typeahead-js/typeahead.js', 'resources/assets/vendor/js/menu.js']) --}}
-
-@yield('vendor-script')
-<!-- END: Page Vendor JS-->
-
-<!-- BEGIN: Theme JS-->
-{{-- @vite(['resources/assets/js/main.js']) --}}
-
-<!-- END: Theme JS-->
-
-@stack('scripts')
-
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+        <script src="{{ asset('assets/datatables/js/jquery-3.7.0.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/jszip.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/vfs_fonts.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/pdfmake.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/buttons.print.min.js') }}"></script>
+        <script src="{{ asset('assets/datatables/js/sweetalert2@11.js') }}"></script>
+        
+<script src="{{ asset('assets/js/apexcharts.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/js/chart.min.js') }}"></script>
+<script src="{{ asset('assets/js/echarts.min.js') }}"></script>
+<script src="{{ asset('assets/js/quill.min.js') }}"></script>
+<script src="{{ asset('assets/js/simple-datatables.js') }}"></script>
+<script src="{{ asset('assets/js/tinymce.min.js') }}"></script>
+<script src="{{ asset('assets/js/validate.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
 <!-- BEGIN: Page JS-->
 @yield('page-script')
 <!-- END: Page JS-->
-
-
-
-
-
-
-<!-- BEGIN: Vendor JS-->
-<script src="{{ asset('app-assets/vendors/js/vendors.min.js') }}"></script>
-<!-- BEGIN Vendor JS-->
-
-<!-- BEGIN: Page Vendor JS-->
-<script src="{{ asset('app-assets/vendors/js/charts/apexcharts.min.js') }}"></script>
-<script src="{{ asset('app-assets/vendors/js/extensions/toastr.min.js') }}"></script>
-<!-- END: Page Vendor JS-->
-
-<!-- BEGIN: Theme JS-->
-<script src="{{ asset('app-assets/js/core/app-menu.js') }}"></script>
-<script src="{{ asset('app-assets/js/core/app.js') }}"></script>
-<!-- END: Theme JS-->
-
-<!-- BEGIN: Page JS-->
-<script src="{{ asset('app-assets/js/scripts/pages/dashboard-ecommerce.js') }}"></script>
-<!-- END: Page JS-->
-<script>
-    $(window).on('load', function() {
-        if (feather) {
-            feather.replace({
-                width: 14,
-                height: 14
-            });
-        }
-    })
-</script>
+@stack('scripts')
