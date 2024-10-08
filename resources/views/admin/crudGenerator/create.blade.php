@@ -113,13 +113,35 @@ pre {
                                 <tr class="field-row">
                                     <td>
                                         <select name="fields[0][type]" class="form-select" required>
-                                            @foreach (['string' => 'string()', 'integer' => 'integer()', 'boolean' => 'boolean()', 'text' => 'text()', 
-                                                       'date' => 'date()', 'datetime' => 'dateTime()', 'float' => 'float()', 
-                                                       'unsignedInteger' => 'UNSIGNED INT', 'bigInteger' => 'BIGINT', 
-                                                       'tinyInteger' => 'TINYINT', 'json' => 'JSON', 'uuid' => 'UUID', 
-                                                       'foreignId' => 'Foreign Key', 'double' => 'double()', 'decimal' => 'decimal()', 
-                                                       'char' => 'CHAR', 'binary' => 'BINARY', 'enum' => 'ENUM', 
-                                                       'blob' => 'BLOB', 'mediumText' => 'mediumText()', 'longText' => 'longText()'] as $value => $label)
+                                            @foreach ([ 'bigInteger' => 'bigInteger()',
+                                                        'binary' => 'binary()',
+                                                        'boolean' => 'boolean()',
+                                                        'char' => 'char()',
+                                                        'dateTime' => 'dateTime()',
+                                                        'date' => 'date()',
+                                                        'decimal' => 'decimal()',
+                                                        'double' => 'double()',
+                                                        'float' => 'float()',
+                                                        'integer' => 'integer()',
+                                                        'ipAddress' => 'ipAddress()',
+                                                        'json' => 'json()',
+                                                        'longText' => 'longText()',
+                                                        'macAddress' => 'macAddress()',
+                                                        'mediumInteger' => 'mediumInteger()',
+                                                        'mediumText' => 'mediumText()',
+                                                        'smallInteger' => 'smallInteger()',
+                                                        'string' => 'string()',
+                                                        'text' => 'text()',
+                                                        'time' => 'time()',
+                                                        'tinyInteger' => 'tinyInteger()',
+                                                        'tinyText' => 'tinyText()',
+                                                        'unsignedBigInteger' => 'unsignedBigInteger()',
+                                                        'unsignedInteger' => 'unsignedInteger()',
+                                                        'unsignedMediumInteger' => 'unsignedMediumInteger()',
+                                                        'unsignedSmallInteger' => 'unsignedSmallInteger()',
+                                                        'unsignedTinyInteger' => 'unsignedTinyInteger()',
+                                                        'uuid' => 'uuid()',
+                                                        'year' => 'year()' ] as $value => $label)
                                                 <option value="{{ $value }}">{{ $label }}</option>
                                             @endforeach
                                         </select>
@@ -226,13 +248,35 @@ pre {
             <tr class="field-row">
                 <td>
                     <select name="fields[${fieldIndex}][type]" class="form-select" required>
-                        @foreach (['string' => 'string()', 'integer' => 'integer()', 'boolean' => 'boolean()', 'text' => 'text()', 
-                                   'date' => 'date()', 'datetime' => 'dateTime()', 'float' => 'float()', 
-                                   'unsignedInteger' => 'UNSIGNED INT', 'bigInteger' => 'BIGINT', 
-                                   'tinyInteger' => 'TINYINT', 'json' => 'JSON', 'uuid' => 'UUID', 
-                                   'foreignId' => 'Foreign Key', 'double' => 'double()', 'decimal' => 'decimal()', 
-                                   'char' => 'CHAR', 'binary' => 'BINARY', 'enum' => 'ENUM', 
-                                   'blob' => 'BLOB', 'mediumText' => 'mediumText()', 'longText' => 'longText()'] as $value => $label)
+                        @foreach ([ 'bigInteger' => 'bigInteger()',
+                                    'binary' => 'binary()',
+                                    'boolean' => 'boolean()',
+                                    'char' => 'char()',
+                                    'dateTime' => 'dateTime()',
+                                    'date' => 'date()',
+                                    'decimal' => 'decimal()',
+                                    'double' => 'double()',
+                                    'float' => 'float()',
+                                    'integer' => 'integer()',
+                                    'ipAddress' => 'ipAddress()',
+                                    'json' => 'json()',
+                                    'longText' => 'longText()',
+                                    'macAddress' => 'macAddress()',
+                                    'mediumInteger' => 'mediumInteger()',
+                                    'mediumText' => 'mediumText()',
+                                    'smallInteger' => 'smallInteger()',
+                                    'string' => 'string()',
+                                    'text' => 'text()',
+                                    'time' => 'time()',
+                                    'tinyInteger' => 'tinyInteger()',
+                                    'tinyText' => 'tinyText()',
+                                    'unsignedBigInteger' => 'unsignedBigInteger()',
+                                    'unsignedInteger' => 'unsignedInteger()',
+                                    'unsignedMediumInteger' => 'unsignedMediumInteger()',
+                                    'unsignedSmallInteger' => 'unsignedSmallInteger()',
+                                    'unsignedTinyInteger' => 'unsignedTinyInteger()',
+                                    'uuid' => 'uuid()',
+                                    'year' => 'year()' ] as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
                     </select>
@@ -262,16 +306,53 @@ pre {
         const fieldRowElement = selectElement.closest('.field-row');
 
         if (fieldRowElement) {
+            const nullableCheckbox = fieldRowElement.querySelector('input[name*="[nullable]"]');
             const uniqueCheckbox = fieldRowElement.querySelector('input[name*="[unique]"]');
             const indexCheckbox = fieldRowElement.querySelector('input[name*="[index]"]');
             const unsignedCheckbox = fieldRowElement.querySelector('input[name*="[unsigned]"]');
             const lengthInput = fieldRowElement.querySelector('input[name*="[length]"]');
             const defaultInput = fieldRowElement.querySelector('input[name*="[default]"]');
+            const commentInput = fieldRowElement.querySelector('input[name*="[comment]"]');
 
-            const allowedUnsignedTypes = ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'float', 'double', 'decimal'];
-            const noLengthRequiredTypes = ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'boolean', 'text', 'date', 'datetime', 'json', 'uuid', 'foreignId', 'blob', 'mediumText', 'longText'];
-            const textTypes = ['text', 'mediumText', 'longText'];
+            const allowedUnsignedTypes = ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'smallInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'];
+            const noLengthRequiredTypes = ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'smallInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'binary', 'boolean', 'text', 'date', 'dateTime', 'time', 'json', 'uuid', 'foreignId', 'mediumText', 'longText', 'year'];
+            const noDefualtRequiredTypes = ['text', 'mediumText', 'longText', 'tinyText', 'binary', 'json'];
+            const defualtNumberTypeInput = ['integer', 'bigInteger', 'mediumInteger', 'mediumInteger', 'smallInteger', 'tinyInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger'];
+            const noUniqueRequiredTypes = ['boolean', 'binary', 'text', 'mediumText', 'longText', 'tinyText', 'json'];
+            const noIndexRequiredTypes = ['boolean', 'binary', 'text', 'mediumText', 'longText', 'tinyText', 'json'];
             const floatTypes = ['float', 'double', 'decimal'];
+
+            // Reset all inputs before applying new settings
+            if (nullableCheckbox) {
+                nullableCheckbox.checked = false;
+                nullableCheckbox.disabled = false;
+            }
+            if (unsignedCheckbox) {
+                unsignedCheckbox.checked = false;
+                unsignedCheckbox.disabled = false;
+            }
+            if (uniqueCheckbox) {
+                uniqueCheckbox.checked = false;
+                uniqueCheckbox.disabled = false;
+            }
+            if (indexCheckbox) {
+                indexCheckbox.checked = false;
+                indexCheckbox.disabled = false;
+            }
+            if (lengthInput) {
+                lengthInput.value = '';
+                lengthInput.disabled = false;
+            }
+            if (defaultInput) {
+                defaultInput.value = '';
+                defaultInput.type = 'text';
+                defaultInput.placeholder = 'Default value';
+            }
+            if (commentInput) {
+                commentInput.value = '';
+                commentInput.type = 'text';
+                commentInput.placeholder = 'Comment';
+            }
 
             if (unsignedCheckbox) {
                 unsignedCheckbox.disabled = !allowedUnsignedTypes.includes(selectElement.value);
@@ -281,11 +362,11 @@ pre {
             }
 
             if (uniqueCheckbox) {
-                uniqueCheckbox.disabled = (selectElement.value === 'boolean') || textTypes.includes(selectElement.value);;
+                uniqueCheckbox.disabled = noUniqueRequiredTypes.includes(selectElement.value);
             }
 
             if (indexCheckbox) {
-                indexCheckbox.disabled = (selectElement.value === 'boolean') || textTypes.includes(selectElement.value);;
+                indexCheckbox.disabled = noIndexRequiredTypes.includes(selectElement.value);
             }
 
             if (lengthInput) {
@@ -365,7 +446,7 @@ pre {
                     defaultInput.value = '';
                     defaultInput.min = 0;
                     defaultInput.max = 1;
-                } else if (selectElement.value === 'integer') {
+                } else if (defualtNumberTypeInput.includes(selectElement.value)) {
                     defaultInput.type = 'number';
                     defaultInput.placeholder = 'Default value';
                     defaultInput.value = '';
@@ -375,11 +456,22 @@ pre {
                     defaultInput.placeholder = 'Select a date';
                     defaultInput.value = '';
                     defaultInput.min = '';
-                } else if (selectElement.value === 'datetime') {
+                } else if (selectElement.value === 'dateTime') {
                     defaultInput.type = 'datetime-local';
-                    defaultInput.placeholder = 'Select a date';
+                    defaultInput.placeholder = 'Select a date time';
                     defaultInput.value = '';
                     defaultInput.min = '';
+                } else if (selectElement.value === 'time') {
+                    defaultInput.type = 'time';
+                    defaultInput.placeholder = 'Select a time';
+                    defaultInput.value = '';
+                    defaultInput.min = '';
+                } else if (selectElement.value === 'year') {
+                    defaultInput.type = 'number';
+                    defaultInput.placeholder = 'Please Enter 4 digit year';
+                    defaultInput.min = 1900;
+                    defaultInput.max = 2100;
+                    defaultInput.value = '';
                 } else if (floatTypes.includes(selectElement.value)) {
                     defaultInput.type = 'number';
                     defaultInput.placeholder = 'Default value';
@@ -393,7 +485,7 @@ pre {
                     defaultInput.max = '';
                 }
 
-                if (textTypes.includes(selectElement.value)) {
+                if (noDefualtRequiredTypes.includes(selectElement.value)) {
                     defaultInput.disabled = true;
                     defaultInput.value = '';
                 } else {
@@ -502,13 +594,13 @@ pre {
                 let fieldLine = `            $table->${field.type}('${field.name}'${field.length ? `, ${field.length}` : ''})`;
 
                 // Add unsigned for integer types if specified
-                if (['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'float', 'double', 'decimal'].includes(field.type) && field.unsigned) {
+                if (['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type) && field.unsigned) {
                     fieldLine += '->unsigned()';
                 }
 
                 if (field.nullable) fieldLine += '->nullable()';
                 if (field.default) {
-                    if (field.type === 'boolean' || ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'float', 'double', 'decimal'].includes(field.type)) {
+                    if (field.type === 'boolean' || ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'smallInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type)) {
                         fieldLine += `->default(${field.default})`;
                     } else {
                         fieldLine += `->default('${field.default}')`;
