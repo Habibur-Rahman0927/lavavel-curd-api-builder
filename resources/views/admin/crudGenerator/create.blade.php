@@ -42,16 +42,24 @@ pre {
     <section class="section dashboard">
         <div class="card">
             <div class="card-body">
-
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
 
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
                         {{ session('error') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -70,21 +78,21 @@ pre {
                                     <td><input type="text" class="form-control" id="model-name" name="model_name" placeholder="Enter model name" required></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="fillable-checkbox" class="form-label">Fillable</label></td>
+                                    <td><label for="create-route-checkbox" class="form-label">Auto-generate Routes</label></td>
                                     <td>
-                                            <input type="checkbox" id="fillable-checkbox" name="fillable" value="1">
-                                            <label class="form-check-label" for="fillable-checkbox">
-                                                Mark all fields as fillable
-                                            </label>
+                                        <input type="checkbox" id="create-route-checkbox" name="create_route" value="1">
+                                        <label class="form-check-label" for="create-route-checkbox">
+                                            Enable automatic route generation for this model. This will automatically create routes for the model and make it accessible via the navigation menu.
+                                        </label>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td><label for="softdelete-checkbox" class="form-label">Soft Deletes</label></td>
                                     <td>
-                                            <input type="checkbox" id="softdelete-checkbox" name="softdelete" value="1">
-                                            <label class="form-check-label" for="softdelete-checkbox">
-                                                Enable soft deletes for this model
-                                            </label>
+                                        <input type="checkbox" id="softdelete-checkbox" name="softdelete" value="1">
+                                        <label class="form-check-label" for="softdelete-checkbox">
+                                            Enable soft deletes for this model, allowing the model records to be "deleted" without removing them from the database.
+                                        </label>
                                     </td>
                                 </tr>
                             </tbody>
@@ -548,6 +556,7 @@ pre {
 
     document.getElementById('preview-button').addEventListener('click', function () {
         const modelName = document.getElementById('model-name').value;
+        const softDeleteEnabled = document.getElementById('softdelete-checkbox').checked;
         const fields = [];
         const relationships = [];
 
@@ -588,41 +597,47 @@ pre {
         });
 
         // Prepare migration content
-        let migrationContent = `<?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    public function up(): void\n    {\n        Schema::create('${modelName.toLowerCase()}s', function (Blueprint $table) {\n            $table->id();\n`;
+        let migrationContent = `<?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    public function up(): void\n    {\n        Schema::create('${modelName.toLowerCase()}${modelName ? 's' : ''}', function (Blueprint $table) {\n            $table->id();\n`;
 
             fields.forEach(field => {
-                let fieldLine = `            $table->${field.type}('${field.name}'${field.length ? `, ${field.length}` : ''})`;
+                let fieldLine = '';
+                if (field.name) {
+                    fieldLine += `            $table->${field.type}('${field.name}'${field.length ? `, ${field.length}` : ''})`;
 
-                // Add unsigned for integer types if specified
-                if (['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type) && field.unsigned) {
-                    fieldLine += '->unsigned()';
-                }
-
-                if (field.nullable) fieldLine += '->nullable()';
-                if (field.default) {
-                    if (field.type === 'boolean' || ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'smallInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type)) {
-                        fieldLine += `->default(${field.default})`;
-                    } else {
-                        fieldLine += `->default('${field.default}')`;
+                    // Add unsigned for integer types if specified
+                    if (['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type) && field.unsigned) {
+                        fieldLine += '->unsigned()';
                     }
-                } 
-                if (field.unique) fieldLine += '->unique()';
-                if (field.index) fieldLine += '->index()';
-                if (field.comment) fieldLine += `->comment('${field.comment}')`;
+
+                    if (field.nullable) fieldLine += '->nullable()';
+                    if (field.default) {
+                        if (field.type === 'boolean' || ['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'smallInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type)) {
+                            fieldLine += `->default(${field.default})`;
+                        } else {
+                            fieldLine += `->default('${field.default}')`;
+                        }
+                    } 
+                    if (field.unique) fieldLine += '->unique()';
+                    if (field.index) fieldLine += '->index()';
+                    if (field.comment) fieldLine += `->comment('${field.comment}')`;
+                }
+                
 
                 // Finalize the line
-                migrationContent += `${fieldLine};\n`;
+                migrationContent += `${fieldLine}${field.name ? ';' : ''}\n`;
             });
+            if (softDeleteEnabled) {
+                migrationContent += `            $table->softDeletes();\n`;
+            }
 
-
-        console.log(fields);
-
-
-        migrationContent += `            $table->timestamps();\n        });\n    }\n\n    public function down(): void\n    {\n        Schema::dropIfExists('${modelName.toLowerCase()}s');\n    }\n};\n`;
+        migrationContent += `            $table->timestamps();\n        });\n    }\n\n    public function down(): void\n    {\n        Schema::dropIfExists('${modelName.toLowerCase()}${modelName ? 's' : ''}');\n    }\n};\n`;
 
         // Prepare model content
         let modelContent = `<?php\n\nnamespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\n`;
         let importStatements = new Set();
+        if (softDeleteEnabled) {
+            importStatements.add('use Illuminate\\Database\\Eloquent\\SoftDeletes;');
+        }
         relationships.forEach(relationship => {
             if (relationship.relationshipType === 'belongsTo') {
                 importStatements.add('use Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;');
@@ -640,7 +655,7 @@ pre {
             modelContent += importStatement + '\n';
         });
 
-        modelContent += `\nclass ${modelName} extends Model\n{\n    use HasFactory;\n\n    protected $fillable = [\n`;
+        modelContent += `\nclass ${modelName} extends Model\n{\n    use HasFactory${softDeleteEnabled ? ', SoftDeletes' : ''};\n\n    protected $fillable = [\n`;
 
         const fillableFields = fields.map(field => `'${field.name}'`).join(',\n\t');
         modelContent += `        ${fillableFields}\n    ];\n\n`;
@@ -656,7 +671,6 @@ pre {
             } else if (relationship.relationshipType === 'hasOne') {
                 modelContent += `    public function ${relatedModelLowerCase}(): HasOne\n    {\n        return $this->hasOne(${relationship.relatedModel}::class, '${relationship.foreignKey}');\n    }\n\n`;
             } else if (relationship.relationshipType === 'belongsToMany') {
-                // You may want to add pivot table information here if needed
                 modelContent += `    public function ${relatedModelLowerCase}s(): BelongsToMany\n    {\n        return $this->belongsToMany(${relationship.relatedModel}::class);\n    }\n\n`;
             } 
             // Add more relationship types as needed
