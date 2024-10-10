@@ -27,6 +27,9 @@ pre {
     white-space: pre-wrap; /* Preserve whitespace */
     font-family: 'Courier New', Courier, monospace; /* Monospace font for code */
 }
+.table-responsive {
+    overflow-x: auto;
+}
 
 </style>
 <main id="main" class="main">
@@ -154,7 +157,7 @@ pre {
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" name="fields[0][name]" placeholder="Field name" required></td>
+                                    <td><input type="text" class="form-control field-name-input" name="fields[0][name]" placeholder="Field name" required></td>
                                     <td><input type="number" class="form-control" name="fields[0][length]" placeholder="Length"></td>
                                     <td><input type="checkbox" name="fields[0][nullable]" value="nullable"></td>
                                     <td><input type="checkbox" name="fields[0][unique]" value="unique"></td>
@@ -171,6 +174,9 @@ pre {
                     </div>
 
                     <button type="button" class="btn btn-secondary" id="add-field">Add Field</button>
+                    <button type="button" class="btn btn-info" id="guideline-modal-button">
+                        Field Selection for View
+                    </button>                    
 
                     <!-- Table Layout for Relationships -->
                     <div class="table-responsive mb-1">
@@ -217,8 +223,74 @@ pre {
                         <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </div>
+                    <div class="modal fade" id="preview-guidelineModal" tabindex="-1" aria-labelledby="guidelineModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="guidelineModalLabel">Field Selection Guidelines for View</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <h6><strong>📝 Instructions for Field Selection</strong></h6>
+                                        <p>
+                                            In this section, you can configure which fields should be included for <span class="text-primary">"Create"</span>, 
+                                            <span class="text-primary">"Edit"</span>, or <span class="text-primary">"List"</span> actions. Here’s what each action means:
+                                        </p>
+                                        <ul>
+                                            <li><strong>Create:</strong> 
+                                                <span class="text-muted">If selected, this field will appear in the form when creating a new record.</span>
+                                            </li>
+                                            <li><strong>Edit:</strong> 
+                                                <span class="text-muted">If selected, this field will be available when editing existing records.</span>
+                                            </li>
+                                            <li><strong>List:</strong> 
+                                                <span class="text-muted">If selected, this field will appear in the list view (table display) of the records.</span>
+                                            </li>
+                                        </ul>
+                    
+                                        <div class="alert alert-info mt-3">
+                                            <h6><strong>🔍 Example:</strong></h6>
+                                            <p>
+                                                For example, consider the <code>name</code> field. If you want the <code>name</code> field to appear during 
+                                                <strong>creation</strong>, <strong>editing</strong>, and <strong>listing</strong> of records, simply select all the relevant checkboxes for that field.
+                                            </p>
+                                        </div>
+                    
+                                        <div class="alert alert-warning mt-4">
+                                            <h6><strong>⚠️ Important:</strong></h6>
+                                            <p>
+                                                Ensure you choose only the necessary fields for each action to avoid cluttering the forms and lists with unnecessary data.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="field-selection-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Field Name</th>
+                                                    <th>Select All</th>
+                                                    <th>Create</th>
+                                                    <th>Edit</th>
+                                                    <th>List</th>
+                                                    <th>Input Type</th>
+                                                    <th>Validation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Rows will be added here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
-
+                
                 <div class="modal fade" id="preview-modal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -289,7 +361,7 @@ pre {
                         @endforeach
                     </select>
                 </td>
-                <td><input type="text" class="form-control" name="fields[${fieldIndex}][name]" placeholder="Field name" required></td>
+                <td><input type="text" class="form-control field-name-input" name="fields[${fieldIndex}][name]" placeholder="Field name" required></td>
                 <td><input type="number" class="form-control" name="fields[${fieldIndex}][length]" placeholder="Length"></td>
                 <td><input type="checkbox" name="fields[${fieldIndex}][nullable]" value="nullable"></td>
                 <td><input type="checkbox" name="fields[${fieldIndex}][unique]" value="unique"></td>
@@ -303,9 +375,19 @@ pre {
             </tr>
         `;
         container.insertAdjacentHTML('beforeend', row);
+
         const selectElement = container.lastElementChild.querySelector('select[name*="[type]"]');
         selectElement.addEventListener('change', function() {
             toggleDataTypes(selectElement);
+        });
+
+        container.lastElementChild.querySelectorAll('select[name*="[type]"]').forEach(selectElement => {
+            toggleDataTypes(selectElement);
+        });
+        
+        const newFieldNameInput = container.lastElementChild.querySelector('.field-name-input');
+        newFieldNameInput.addEventListener('input', function() {
+            this.value = this.value.toLowerCase().replace(/\s+/g, '_');
         });
         fieldIndex++;
     });
@@ -503,6 +585,12 @@ pre {
         }
     }
 
+    document.querySelectorAll('.field-name-input').forEach(function(input) {
+        input.addEventListener('input', function() {
+            this.value = this.value.toLowerCase().replace(/\s+/g, '_');
+        });
+    });
+
 
     document.querySelectorAll('select[name*="[type]"]').forEach(selectElement => {
         selectElement.addEventListener('change', function() {
@@ -586,7 +674,6 @@ pre {
             });
         });
 
-        // Get relationships data
         const relationshipRows = document.querySelectorAll('#relationship-container .relationship-row');
         relationshipRows.forEach(function (row) {
             const relationshipType = row.querySelector('select[name^="relationships"][name$="[type]"]').value;
@@ -596,7 +683,6 @@ pre {
             relationships.push({ relationshipType, relatedModel, foreignKey });
         });
 
-        // Prepare migration content
         let migrationContent = `<?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    public function up(): void\n    {\n        Schema::create('${modelName.toLowerCase()}${modelName ? 's' : ''}', function (Blueprint $table) {\n            $table->id();\n`;
 
             fields.forEach(field => {
@@ -604,7 +690,6 @@ pre {
                 if (field.name) {
                     fieldLine += `            $table->${field.type}('${field.name}'${field.length ? `, ${field.length}` : ''})`;
 
-                    // Add unsigned for integer types if specified
                     if (['integer', 'tinyInteger', 'mediumInteger', 'bigInteger', 'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 'unsignedSmallInteger', 'unsignedTinyInteger', 'float', 'double', 'decimal'].includes(field.type) && field.unsigned) {
                         fieldLine += '->unsigned()';
                     }
@@ -622,8 +707,6 @@ pre {
                     if (field.comment) fieldLine += `->comment('${field.comment}')`;
                 }
                 
-
-                // Finalize the line
                 migrationContent += `${fieldLine}${field.name ? ';' : ''}\n`;
             });
             if (softDeleteEnabled) {
@@ -632,7 +715,6 @@ pre {
 
         migrationContent += `            $table->timestamps();\n        });\n    }\n\n    public function down(): void\n    {\n        Schema::dropIfExists('${modelName.toLowerCase()}${modelName ? 's' : ''}');\n    }\n};\n`;
 
-        // Prepare model content
         let modelContent = `<?php\n\nnamespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\n`;
         let importStatements = new Set();
         if (softDeleteEnabled) {
@@ -650,7 +732,6 @@ pre {
             }
         });
 
-        // Join the import statements into a single string
         importStatements.forEach(importStatement => {
             modelContent += importStatement + '\n';
         });
@@ -660,7 +741,6 @@ pre {
         const fillableFields = fields.map(field => `'${field.name}'`).join(',\n\t');
         modelContent += `        ${fillableFields}\n    ];\n\n`;
 
-        // Add relationship methods to model content
         relationships.forEach(relationship => {
             const relatedModelLowerCase = relationship.relatedModel.toLowerCase();
             
@@ -673,19 +753,128 @@ pre {
             } else if (relationship.relationshipType === 'belongsToMany') {
                 modelContent += `    public function ${relatedModelLowerCase}s(): BelongsToMany\n    {\n        return $this->belongsToMany(${relationship.relatedModel}::class);\n    }\n\n`;
             } 
-            // Add more relationship types as needed
         });
 
         modelContent += `};\n`;
 
-        // Combine migration and model content
         const previewContent = `Migration:\n\n${migrationContent}\nModel:\n\n${modelContent}`;
 
-        // Show preview in modal
         document.getElementById('preview-content').textContent = previewContent;
         $('#preview-modal').modal('show'); // Keeping this jQuery call as the modal might still be using Bootstrap's jQuery methods
     });
 
+    document.getElementById('guideline-modal-button').addEventListener('click', function () {
+        const fieldContainer = document.querySelectorAll('#field-container .field-row');
+        const tableBody = document.querySelector('#field-selection-table tbody');
+
+        tableBody.innerHTML = '';
+
+        fieldContainer.forEach(function (row) {
+            const fieldName = row.querySelector('input[name^="fields"][name$="[name]"]').value;
+
+            if (fieldName) {
+                const tr = document.createElement('tr');
+                const tdFieldName = document.createElement('td');
+                tdFieldName.textContent = fieldName;
+                tr.appendChild(tdFieldName);
+
+                // Create the "Select All" checkbox
+                const tdSelectAll = document.createElement('td');
+                const selectAllCheckbox = document.createElement('input');
+                selectAllCheckbox.type = 'checkbox';
+                selectAllCheckbox.addEventListener('change', function() {
+                    const checkboxes = tr.querySelectorAll('input[type="checkbox"].action-checkbox');
+                    checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+                    manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation); // Manage input type and validation selection state
+                });
+                tdSelectAll.appendChild(selectAllCheckbox);
+                tr.appendChild(tdSelectAll);
+
+                // Create checkboxes for Create, Edit, List
+                ['create', 'edit', 'list'].forEach(action => {
+                    const td = document.createElement('td');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = `fieldNames[${fieldName}][${action}]`;
+                    checkbox.classList.add('action-checkbox');
+                    td.appendChild(checkbox);
+                    tr.appendChild(td);
+
+                    // Add event listener to enable/disable input type and validation based on checkbox states
+                    checkbox.addEventListener('change', function() {
+                        const checkboxes = tr.querySelectorAll('input[type="checkbox"].action-checkbox');
+                        manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation);
+                    });
+                });
+
+                // Create the HTML Input Type select dropdown
+                const tdInputType = document.createElement('td');
+                const inputTypeSelect = document.createElement('select');
+                inputTypeSelect.classList.add('form-control');
+                inputTypeSelect.name = `fieldNames[${fieldName}][input_type]`;
+
+                // List of input types
+                const inputTypes = ['text', 'number', 'date', 'email', 'password', 'checkbox', 'radio', 'file'];
+                inputTypes.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                    inputTypeSelect.appendChild(option);
+                });
+
+                // Initially disable input type
+                inputTypeSelect.disabled = true;
+                tdInputType.appendChild(inputTypeSelect);
+                tr.appendChild(tdInputType);
+
+                // Create the Validation checkbox
+                const tdValidation = document.createElement('td');
+                const checkboxValidation = document.createElement('input');
+                checkboxValidation.type = 'checkbox';
+                checkboxValidation.name = `fieldNames[${fieldName}][validation]`;
+                checkboxValidation.classList.add('action-checkbox');
+                checkboxValidation.disabled = true;
+                tdValidation.appendChild(checkboxValidation);
+                tr.appendChild(tdValidation);
+
+                tableBody.appendChild(tr);
+            } else {
+                const emptyMessageRow = document.createElement('tr');
+                const emptyMessage = document.createElement('td');
+                emptyMessage.classList.add('alert', 'alert-secondary', 'text-center');
+                emptyMessage.textContent = 'No fields found. Please add fields in migration to configure.';
+                emptyMessage.setAttribute('colspan', '7');
+                emptyMessage.style.backgroundColor = '#e2e3e5';
+                emptyMessage.style.color = '#41464b'; 
+                emptyMessageRow.appendChild(emptyMessage);
+                tableBody.appendChild(emptyMessageRow);
+            }
+        });
+
+        // Show modal
+        $('#preview-guidelineModal').modal('show');
+    });
+
+    // Manage input type and validation state based on checkbox selection
+    function manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation) {
+        const isCreateOrEditChecked = checkboxes[0].checked || checkboxes[1].checked; // Create or Edit checked
+        const isListChecked = checkboxes[2].checked; // List checked
+
+        // Enable input type and validation only if Create or Edit is checked, otherwise disable
+        if (isCreateOrEditChecked) {
+            inputTypeSelect.disabled = false;
+            checkboxValidation.disabled = false;
+        } else {
+            inputTypeSelect.disabled = true;
+            checkboxValidation.disabled = true;
+        }
+
+        // If only List is checked, disable input type and validation
+        if (isListChecked && !isCreateOrEditChecked) {
+            inputTypeSelect.disabled = true;
+            checkboxValidation.disabled = true;
+        }
+    }
 
 
     

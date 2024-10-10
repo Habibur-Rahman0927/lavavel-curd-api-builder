@@ -26,7 +26,7 @@
                     <div class="card-body">
                         <h5 class="card-title"></h5>
                         {{-- Show Validation Errors --}}
-                        {{-- @if ($errors->any())
+                        @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
                                     @foreach ($errors->all() as $error)
@@ -34,7 +34,7 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        @endif --}}
+                        @endif
                         @if(session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}

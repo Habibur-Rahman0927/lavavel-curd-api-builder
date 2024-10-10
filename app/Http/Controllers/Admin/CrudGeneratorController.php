@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 use ReflectionClass;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Artisan;
 class CrudGeneratorController extends Controller
 {
     public function showModelForm()
@@ -35,13 +35,17 @@ class CrudGeneratorController extends Controller
         ]);
     }
 
-    public function generateModelWithMigration(CrudGeneratorRequest $request)
+    public function generateModelWithMigration(Request $request)
     {
+        
         $modelName = $request->input('model_name');
         $softDelete = $request->has('softdelete');
         $fields = $request->input('fields');
         $relationships = $request->input('relationships');
         $createRoute = $request->has('create_route');
+        $fieldNames = $request->input('fieldNames');
+
+        Artisan::call('app:controller-gen', ['name' => $modelName]);
 
         $modelCreationResult = $this->generateModel($modelName, $softDelete, $fields, $relationships);
         $migrationCreationResult = $this->generateMigration($modelName, $fields, $softDelete);
@@ -50,9 +54,14 @@ class CrudGeneratorController extends Controller
             if ($createRoute) {
                 $routeCreationResult = $this->generateRoutes($modelName);
                 if ($routeCreationResult['success']) {
-                    return redirect()->back()->with('success', 'Model, Migration, and Routes created successfully!');
+                    $createView = $this->generateCreateView($modelName, $fieldNames);
+                    if ($createView['success']) {
+                        return redirect()->back()->with('success', 'Model, Migration, Routes and View created successfully!');
+                    } else {
+                        return redirect()->back()->with('success', 'Model, Migration and Routes created, but failed to create view: '. $createView['error']);
+                    }
                 } else {
-                    return redirect()->back()->with('error', 'Model and Migration created, but failed to create routes: ' . $routeCreationResult['error']);
+                    return redirect()->back()->with('success', 'Model and Migration created, but failed to create routes: ' . $routeCreationResult['error']);
                 }
             } else {
                 return redirect()->back()->with('success', 'Model, Migration, without Routes created successfully!');
@@ -188,11 +197,6 @@ class CrudGeneratorController extends Controller
         }
     }
 
-
-
-
-
-
     protected function generateMigration($modelName, $fields, $softDelete)
     {
         $tableName = strtolower(Str::plural($modelName));
@@ -279,6 +283,137 @@ class CrudGeneratorController extends Controller
         }
     }
 
+    protected function generateCreateView($modelName, $fields)
+    {
+        $viewPath = resource_path("views/admin/{$modelName}");
+
+        $lowerCaseModelName = strtolower($modelName);
+
+        if (!is_dir($viewPath)) {
+            mkdir($viewPath, 0755, true); 
+        }
+
+        $createViewFilePath = $viewPath . "/create.blade.php";
+
+        if (file_exists($createViewFilePath)) {
+            return ['success' => false, 'error' => 'File Already Exist'];
+        }
+
+        try {
+            $viewContent = "
+@extends('layouts/layout')
+
+@section('title', 'Create {$modelName}')
+
+@section('page-style')
+    @vite([])
+@endsection
+
+@section('page-script')
+    @vite([])
+@endsection
+
+@section('content')
+    <main id=\"main\" class=\"main\">
+        <div class=\"pagetitle\">
+            <h1>Create {$modelName}</h1>
+            <nav>
+                <ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\"><a href=\"{{ route('admin-dashboard') }}\">Home</a></li>
+                    <li class=\"breadcrumb-item active\">{$modelName}</li>
+                </ol>
+            </nav>
+        </div>
+        <section class=\"section dashboard\">
+            <div class=\"card\">
+                <div class=\"card-body\">
+                    <h5 class=\"card-title\"></h5>
+                    @if (\$errors->any())
+                        <div class=\"alert alert-danger\">
+                            <ul>
+                                @foreach (\$errors->all() as \$error)
+                                    <li>{{ \$error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if(session(\"success\"))
+                        <div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">
+                            {{ session('success') }}
+                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">
+                            {{ session('error') }}
+                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
+                        </div>
+                    @endif
+
+                    <form method=\"POST\" action=\"{{ route('{$lowerCaseModelName}.store') }}\">
+                        @csrf\n";
+
+        foreach ($fields as $fieldName => $attributes) {
+            // Only create the input if the "create" attribute is "on"
+            if (isset($attributes['create']) && $attributes['create'] === 'on') {
+                $label = ucwords(str_replace('_', ' ', $fieldName));
+                $inputType = $attributes['input_type'] ?? 'text'; // Default to text
+                $errorClass = "@error('{$fieldName}') is-invalid @enderror";
+                $oldValue = "old('{$fieldName}')";
+
+                // Start input generation
+                $viewContent .= "\t\t\t\t\t\t<div class=\"row mb-3\">\n";
+                $viewContent .= "\t\t\t\t\t\t    <div class=\"col-md-12\">\n";
+                $viewContent .= "\t\t\t\t\t\t        <label for=\"{$fieldName}\" class=\"form-label\">{$label}</label>\n";
+
+                switch ($inputType) {
+                    case 'text':
+                    case 'email':
+                    case 'number':
+                        $viewContent .= "\t\t\t\t\t\t        <input type=\"{$inputType}\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
+                        break;
+    
+                    case 'textarea':
+                        $viewContent .= "\t\t\t\t\t\t        <textarea name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" required>{{ {$oldValue} }}</textarea>\n";
+                        break;
+
+                    default:
+                        $viewContent .= "\t\t\t\t\t\t        <input type=\"text\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
+                }
+
+                $viewContent .= "\t\t\t\t\t\t        @error('$fieldName')\n";
+                $viewContent .= "\t\t\t\t\t\t            <div class=\"invalid-feedback\">\n";
+                $viewContent .= "\t\t\t\t\t\t                {{ \$message }}\n";
+                $viewContent .= "\t\t\t\t\t\t            </div>\n";
+                $viewContent .= "\t\t\t\t\t\t        @enderror\n";
+                $viewContent .= "\t\t\t\t\t\t    </div>\n";
+                $viewContent .= "\t\t\t\t\t\t</div>\n";
+            }
+        }
+
+        $viewContent .= "
+                        <div class=\"row\">
+                            <div class=\"col-md-12 text-end\"> 
+                                <a href=\"{{ route('{$lowerCaseModelName}.index') }}\" class=\"btn btn-secondary me-2\">Back</a>
+                                <button type=\"submit\" class=\"btn btn-primary\">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+@endsection
+            ";
+
+            File::put($createViewFilePath, $viewContent);
+            return ['success' => true];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
 
 
 
