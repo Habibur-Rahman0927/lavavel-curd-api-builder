@@ -46,6 +46,9 @@ class CrudGeneratorController extends Controller
         $fieldNames = $request->input('fieldNames');
 
         Artisan::call('app:controller-gen', ['name' => $modelName]);
+        Artisan::call('app:service-gen', ['name' => $modelName]);
+        $this->generateOrBindServiceAndRepository($modelName);
+        Artisan::call('app:repository-gen', ['name' => $modelName]);
 
         $modelCreationResult = $this->generateModel($modelName, $softDelete, $fields, $relationships);
         $migrationCreationResult = $this->generateMigration($modelName, $fields, $softDelete);
@@ -54,12 +57,13 @@ class CrudGeneratorController extends Controller
             if ($createRoute) {
                 $routeCreationResult = $this->generateRoutes($modelName);
                 if ($routeCreationResult['success']) {
-                    $createView = $this->generateCreateView($modelName, $fieldNames);
-                    if ($createView['success']) {
-                        return redirect()->back()->with('success', 'Model, Migration, Routes and View created successfully!');
-                    } else {
-                        return redirect()->back()->with('success', 'Model, Migration and Routes created, but failed to create view: '. $createView['error']);
+                    $this->generateCreateView($modelName, $fieldNames);
+                    $this->generateEditView($modelName, $fieldNames);
+                    $indexView = $this->generateIndexView($modelName, $fieldNames);
+                    if ($indexView['success']) {
+                        $this->generateJavaScript($modelName, $fieldNames);
                     }
+                    return redirect()->back()->with('success', 'Model, Migration, Routes and View created successfully!');
                 } else {
                     return redirect()->back()->with('success', 'Model and Migration created, but failed to create routes: ' . $routeCreationResult['error']);
                 }
@@ -284,10 +288,9 @@ class CrudGeneratorController extends Controller
     }
 
     protected function generateCreateView($modelName, $fields)
-    {
-        $viewPath = resource_path("views/admin/{$modelName}");
-
+    {  
         $lowerCaseModelName = strtolower($modelName);
+        $viewPath = resource_path("views/admin/{$lowerCaseModelName}");
 
         if (!is_dir($viewPath)) {
             mkdir($viewPath, 0755, true); 
@@ -411,6 +414,475 @@ class CrudGeneratorController extends Controller
             File::put($createViewFilePath, $viewContent);
             return ['success' => true];
         } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+
+
+
+    protected function generateEditView($modelName, $fields)
+    {
+        $lowerCaseModelName = strtolower($modelName);
+        $viewPath = resource_path("views/admin/{$lowerCaseModelName}");
+
+        if (!is_dir($viewPath)) {
+            mkdir($viewPath, 0755, true); 
+        }
+
+        $editViewFilePath = $viewPath . "/edit.blade.php";
+
+        if (file_exists($editViewFilePath)) {
+            return ['success' => false, 'error' => 'File Already Exist'];
+        }
+
+        try {
+            $viewContent = "
+@extends('layouts/layout')
+
+@section('title', 'Edit {$modelName}')
+
+@section('page-style')
+    @vite([])
+@endsection
+
+@section('page-script')
+    @vite([])
+@endsection
+
+@section('content')
+    <main id=\"main\" class=\"main\">
+        <div class=\"pagetitle\">
+            <h1>Edit {$modelName}</h1>
+            <nav>
+                <ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\"><a href=\"{{ route('admin-dashboard') }}\">Home</a></li>
+                    <li class=\"breadcrumb-item active\">{$modelName}</li>
+                </ol>
+            </nav>
+        </div>
+        <section class=\"section dashboard\">
+            <div class=\"card\">
+                <div class=\"card-body\">
+                    <h5 class=\"card-title\"></h5>
+                    @if (\$errors->any())
+                        <div class=\"alert alert-danger\">
+                            <ul>
+                                @foreach (\$errors->all() as \$error)
+                                    <li>{{ \$error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if(session(\"success\"))
+                        <div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">
+                            {{ session('success') }}
+                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">
+                            {{ session('error') }}
+                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>
+                        </div>
+                    @endif
+
+                    <form method=\"POST\" action=\"{{ route('{$lowerCaseModelName}.update', \$data->id) }}\">
+                        @csrf
+                        @method('PUT')\n";
+
+        foreach ($fields as $fieldName => $attributes) {
+            // Only create the input if the "create" attribute is "on"
+            if (isset($attributes['create']) && $attributes['create'] === 'on') {
+                $label = ucwords(str_replace('_', ' ', $fieldName));
+                $inputType = $attributes['input_type'] ?? 'text'; // Default to text
+                $errorClass = "@error('{$fieldName}') is-invalid @enderror";
+                $oldValue = "old('{$fieldName}', \$data->{$fieldName})";
+
+                // Start input generation
+                $viewContent .= "\t\t\t\t\t\t<div class=\"row mb-3\">\n";
+                $viewContent .= "\t\t\t\t\t\t    <div class=\"col-md-12\">\n";
+                $viewContent .= "\t\t\t\t\t\t        <label for=\"{$fieldName}\" class=\"form-label\">{$label}</label>\n";
+
+                switch ($inputType) {
+                    case 'text':
+                    case 'email':
+                    case 'number':
+                        $viewContent .= "\t\t\t\t\t\t        <input type=\"{$inputType}\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
+                        break;
+    
+                    case 'textarea':
+                        $viewContent .= "\t\t\t\t\t\t        <textarea name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" required>{{ {$oldValue} }}</textarea>\n";
+                        break;
+
+                    default:
+                        $viewContent .= "\t\t\t\t\t\t        <input type=\"text\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
+                }
+
+                $viewContent .= "\t\t\t\t\t\t        @error('$fieldName')\n";
+                $viewContent .= "\t\t\t\t\t\t            <div class=\"invalid-feedback\">\n";
+                $viewContent .= "\t\t\t\t\t\t                {{ \$message }}\n";
+                $viewContent .= "\t\t\t\t\t\t            </div>\n";
+                $viewContent .= "\t\t\t\t\t\t        @enderror\n";
+                $viewContent .= "\t\t\t\t\t\t    </div>\n";
+                $viewContent .= "\t\t\t\t\t\t</div>\n";
+            }
+        }
+
+        $viewContent .= "
+                        <div class=\"row\">
+                            <div class=\"col-md-12 text-end\"> 
+                                <a href=\"{{ route('{$lowerCaseModelName}.index') }}\" class=\"btn btn-secondary me-2\">Back</a>
+                                <button type=\"submit\" class=\"btn btn-primary\">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+@endsection
+            ";
+
+            File::put($editViewFilePath, $viewContent);
+            return ['success' => true];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+
+    protected function generateIndexView($modelName, $fields)
+    {
+        $lowerCaseModelName = strtolower($modelName);
+        $viewPath = resource_path("views/admin/{$lowerCaseModelName}");
+
+        if (!is_dir($viewPath)) {
+            mkdir($viewPath, 0755, true); 
+        }
+
+        $indexViewFilePath = $viewPath . "/index.blade.php";
+
+        if (file_exists($indexViewFilePath)) {
+            return ['success' => false, 'error' => 'File Already Exist'];
+        }
+
+        try {
+            $viewContent = "
+@extends('layouts/layout')
+
+@section('title', 'List {$modelName}')
+
+@section('page-style')
+    @vite([])
+@endsection
+
+@section('page-script')
+    @vite([
+        'resources/assets/js/{$lowerCaseModelName}.js',
+    ])
+@endsection
+
+@section('content')
+    <div id=\"routeData\" data-url=\"{{ route('{$lowerCaseModelName}-list') }}\"></div>
+    <main id=\"main\" class=\"main\">
+        <div class=\"pagetitle\">
+            <h1>{$modelName} List</h1>
+            <nav>
+                <ol class=\"breadcrumb\">
+                    <li class=\"breadcrumb-item\"><a href=\"{{ route('admin-dashboard') }}\">Home</a></li>
+                    <li class=\"breadcrumb-item active\">{$modelName}</li>
+                </ol>
+            </nav>
+        </div>
+        <section class=\"section dashboard\">
+            <div class=\"row\">
+                <div class=\"card\">
+                    <div class=\"card-header\">
+                        <div class=\"btn-group-wrapper\">
+                            <div class=\"export-dropdown\">
+                                <button type=\"button\" class=\"btn btn-primary dropdown-toggle export-btn\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">
+                                    Export
+                                </button>
+                                <ul class=\"dropdown-menu\">
+                                    <li><button type=\"button\" class=\"btn btn-secondary mb-1\" id=\"csvExport\">CSV</button></li>
+                                    <li><button type=\"button\" class=\"btn btn-secondary mb-1\" id=\"excelExport\">Excel</button></li>
+                                    <li><button type=\"button\" class=\"btn btn-secondary mb-1\" id=\"pdfExport\">PDF</button></li>
+                                    <li><button type=\"button\" class=\"btn btn-secondary mb-1\" id=\"printExport\">Print</button></li>
+                                </ul>
+                            </div>
+                            <a href=\"{{ route('{$lowerCaseModelName}.create') }}\" class=\"btn btn-success add-btn\">Add User</a>
+                        </div>
+                    </div>
+
+                    <div class=\"card-body\">
+                        <div class=\"table-responsive\">
+                            <table class=\"table table-bordered yajra-datatable\">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>\n";
+                                    foreach($fields as $fieldName => $attributes) {
+                                        if (isset($attributes['list']) && $attributes['list'] === 'on') {
+                                            $label = ucwords(str_replace('_', ' ', $fieldName));
+                                            $viewContent .= "\t\t\t\t\t\t\t\t\t<th>{$label}</th>\n";
+                                        }
+                                    }
+                                    $viewContent.= "
+                                    <th>Action</th>
+                                </tr>
+                                <tr>
+                                    <th><input type=\"text\" placeholder=\"Search ID\" class=\"column-search form-control\" /></th>\n";
+                                    foreach($fields as $fieldName => $attributes) {
+                                        if (isset($attributes['list']) && $attributes['list'] === 'on') {
+                                            $label = ucwords(str_replace('_', ' ', $fieldName));
+                                            $viewContent .= "\t\t\t\t\t\t\t\t\t<th><input type=\"text\" placeholder=\"Search {$label}\" class=\"column-search form-control\" /></th>\n";
+                                        }
+                                    }
+                                    $viewContent.= "
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+@endsection
+            ";
+
+            File::put($indexViewFilePath, $viewContent);
+            return ['success' => true];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function generateJavaScript($modelName, $fields)
+    {
+        $lowerCaseModelName = strtolower($modelName);
+        $jsPath = resource_path("assets/js");
+
+        $jsFilePath = $jsPath . "/{$lowerCaseModelName}.js";
+
+        if (file_exists($jsFilePath)) {
+            return ['success' => false, 'error' => 'File Already Exist'];
+        }
+
+        try {
+            $viewContent = "
+$(function () {
+    let url = $('#routeData').data('url');
+            
+    var table = $('.yajra-datatable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: url,
+        columns: [
+            {data: 'id', name: 'id'},\n";
+                        foreach($fields as $fieldName => $attributes) {
+                            if (isset($attributes['list']) && $attributes['list'] === 'on') {
+                                $viewContent .= "\t\t\t{data: '{$fieldName}', name: '{$fieldName}'},\n";
+                            }
+                        }
+                        $viewContent .= "
+            {data: 'action', name: 'action', 
+            render: function(data, type, row) {
+                let editButton = '<a href=\"/admin/{$lowerCaseModelName}/' + row.id + '/edit\" class=\"edit btn btn-success btn-sm\">Edit</a>';
+                let deleteButton = '<button class=\"delete btn btn-danger btn-sm\" data-id=\"' + row.id + '\">Delete</button>';
+                return editButton + ' ' + deleteButton;
+            },
+            orderable: false, searchable: false},
+        ],
+        dom: '<\"row\"<\"col-md-6\"l><\"col-md-6\"f>>t<\"row\"<\"col-md-5\"i><\"col-md-7\"p>>',
+        buttons: [
+            { extend: 'csv', text: 'CSV', className: 'btn btn-secondary' },
+            { extend: 'excel', text: 'Excel', className: 'btn btn-secondary' },
+            { extend: 'pdf', text: 'PDF', className: 'btn btn-secondary' },
+            { extend: 'print', text: 'Print', className: 'btn btn-secondary' }
+        ],
+        initComplete: function () {
+            var exportButton = $('.export-btn');
+            var buttons = $('.dt-buttons').detach();
+            exportButton.after(buttons);
+        }
+    });
+            
+    $('.column-search').on('click', function(e) {
+        e.stopPropagation();
+    });
+            
+    $('.column-search').on('keyup change', function() {
+        let columnIndex = $(this).parent().index();
+        table.column(columnIndex).search(this.value).draw();
+    });
+            
+    $('.dropdown-menu').on('click', 'button', function() {
+        var action = $(this).attr('id');
+        switch (action) {
+            case 'csvExport':
+                table.button('.buttons-csv').trigger();
+                break;
+            case 'excelExport':
+                table.button('.buttons-excel').trigger();
+                break;
+            case 'pdfExport':
+                table.button('.buttons-pdf').trigger();
+                break;
+            case 'printExport':
+                table.button('.buttons-print').trigger();
+                break;
+        }
+    });
+            
+    $(document).on('click', '.delete', function () {
+        var id = $(this).data('id');
+        var row = $(this).closest('tr');
+            
+        Swal.fire({
+            title: 'Are you sure?',
+            text: \"You won't be able to revert this!\",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: \"POST\",
+                    url: \"/admin/{$lowerCaseModelName}/\" + id,
+                    data: {
+                        \"_method\": \"DELETE\",
+                        \"_token\": $('meta[name=\"csrf-token\"]').attr('content'),
+                    },
+                    success: function (response) {
+                        if (response.status_code === 200) {
+                            Swal.fire(
+                                'Deleted!',
+                                'The {$lowerCaseModelName} has been deleted.',
+                                'success'
+                            );
+                            table.row(row).remove().draw();
+                        } else {
+                             Swal.fire(
+                                'Error!',
+                                response.message || '{$modelName} was not deleted.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function (xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'There was an error deleting the {$lowerCaseModelName}.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+});
+            ";
+
+            File::put($jsFilePath, $viewContent);
+            return ['success' => true];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function generateOrBindServiceAndRepository($modelName): array
+    {
+        try {
+            $modelName = ucfirst($modelName);
+
+            $repositoryInterface = "use App\\Repositories\\$modelName\\I$modelName" . "Repository;";
+            $repositoryClass = "use App\\Repositories\\$modelName\\$modelName" . "Repository;";
+            $serviceInterface = "use App\\Services\\$modelName\\I$modelName" . "Service;";
+            $serviceClass = "use App\\Services\\$modelName\\$modelName" . "Service;";
+
+            $repositoryBinding = "I$modelName" . "Repository::class => $modelName" . "Repository::class,";
+            $serviceBinding = "I$modelName" . "Service::class => $modelName" . "Service::class,";
+
+            $filePath = app_path('Providers/ServiceRepositoryServiceProvider.php');
+            $currentFileContent = file_get_contents($filePath);
+
+            // Add imports if they don't exist
+            if (strpos($currentFileContent, $repositoryInterface) === false) {
+                $lines = explode("\n", $currentFileContent);
+                $importIndex = null;
+
+                foreach ($lines as $index => $line) {
+                    if (trim($line) === 'use Illuminate\Support\ServiceProvider;') {
+                        $importIndex = $index;
+                        break;
+                    }
+                }
+
+                if ($importIndex !== null) {
+                    // Insert imports one by one
+                    array_splice($lines, $importIndex, 0, $repositoryInterface);
+                    array_splice($lines, $importIndex + 1, 0, $repositoryClass);
+                    array_splice($lines, $importIndex + 2, 0, $serviceInterface);
+                    array_splice($lines, $importIndex + 3, 0, $serviceClass);
+                    $updatedContent = implode("\n", $lines);
+                    file_put_contents($filePath, $updatedContent);
+                    $currentFileContent = $updatedContent; // Update content after insertions
+                }
+            }
+
+            // Add repository bindings if they don't exist
+            if (strpos($currentFileContent, $repositoryBinding) === false) {
+                $lines = explode("\n", $currentFileContent);
+                $repositoryIndex = null;
+
+                // Find where to insert repository bindings
+                foreach ($lines as $index => $line) {
+                    if (trim($line) === '$repositories = [') {
+                        $repositoryIndex = $index + 1;
+                        break;
+                    }
+                }
+
+                if ($repositoryIndex !== null) {
+                    // Insert repository binding
+                    array_splice($lines, $repositoryIndex, 0, "            " . $repositoryBinding);
+                    $updatedContent = implode("\n", $lines);
+                    file_put_contents($filePath, $updatedContent);
+                    $currentFileContent = $updatedContent; // Update content after insertions
+                }
+            }
+
+            // Add service bindings if they don't exist
+            if (strpos($currentFileContent, $serviceBinding) === false) {
+                $lines = explode("\n", $currentFileContent);
+                $serviceIndex = null;
+
+                // Find where to insert service bindings
+                foreach ($lines as $index => $line) {
+                    if (trim($line) === '$services = [') {
+                        $serviceIndex = $index + 1;
+                        break;
+                    }
+                }
+
+                if ($serviceIndex !== null) {
+                    // Insert service binding
+                    array_splice($lines, $serviceIndex, 0, "            " . $serviceBinding);
+                    $updatedContent = implode("\n", $lines);
+                    file_put_contents($filePath, $updatedContent);
+                }
+            }
+
+            return ['success' => true];
+        } catch (\Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

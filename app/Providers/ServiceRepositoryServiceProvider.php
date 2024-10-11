@@ -16,11 +16,11 @@ class ServiceRepositoryServiceProvider extends ServiceProvider
     public function register(): void
     {
         $repositories = [
-            IUserRepository::class => UserRepository::class
+            IUserRepository::class => UserRepository::class,
         ];
 
         $services = [
-            IUserService::class => UserService::class
+            IUserService::class => UserService::class,
         ];
         $bindings = array_merge($repositories, $services);
         $this->bindServiceRepositories($bindings);

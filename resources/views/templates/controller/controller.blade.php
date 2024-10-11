@@ -119,7 +119,8 @@ class {{ ucfirst($name) }}Controller extends Controller
     public function update(Update{{ ucfirst($name) }}Request $request, string $id): RedirectResponse
     {
         try {
-            $this->{{ lcfirst($name) }}Service->update([], $request->all());
+            $data = $request->except(['_token', '_method']);
+            $this->{{ lcfirst($name) }}Service->update(['id' => $id], $data);
 
             return redirect()->back()->with('success', '{{ ucfirst($name) }} updated successfully.');
         } catch (Exception $e) {
