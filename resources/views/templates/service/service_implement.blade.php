@@ -22,7 +22,7 @@ class {{ $name  }}Service extends BaseService implements I{{ $name  }}Service
     public function get{{ ucfirst($name) }}Data(): JsonResponse
     {
         try {
-            $data = $this->{{  strtolower($name) }}Repository->findAll([], ['id', 'name']);
+            $data = $this->{{  strtolower($name) }}Repository->findAll([]);
             return DataTables::of($data)
                 ->addColumn('action', function($data){
                     return $data->id;

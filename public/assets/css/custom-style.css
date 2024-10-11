@@ -28,7 +28,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 main {
-    max-width: 1200px; /* Define the actual width of the main content */
+    max-width: 100%; /* Define the actual width of the main content */
     margin: 0 auto; /* Center the main content */
     min-height: 100vh; /* Ensure it takes at least the full height of the viewport */
     display: flex;
