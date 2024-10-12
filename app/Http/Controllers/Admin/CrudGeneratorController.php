@@ -11,6 +11,7 @@ use ReflectionClass;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
+
 class CrudGeneratorController extends Controller
 {
     public function showModelForm()
@@ -37,7 +38,6 @@ class CrudGeneratorController extends Controller
 
     public function generateModelWithMigration(Request $request)
     {
-        
         $modelName = $request->input('model_name');
         $softDelete = $request->has('softdelete');
         $fields = $request->input('fields');
@@ -62,6 +62,7 @@ class CrudGeneratorController extends Controller
                     $indexView = $this->generateIndexView($modelName, $fieldNames);
                     if ($indexView['success']) {
                         $this->generateJavaScript($modelName, $fieldNames);
+                        $this->addMenuItem($modelName);
                     }
                     return redirect()->back()->with('success', 'Model, Migration, Routes and View created successfully!');
                 } else {
@@ -171,7 +172,7 @@ class CrudGeneratorController extends Controller
             $routeContent = "\n\nRoute::resource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);";
             $routeContent .= "\nRoute::get('" . strtolower($modelName) . "-list', [" . $modelName . "Controller::class, 'getDatatables'])->name('" . strtolower($modelName) . "-list');";
 
-            $routeFilePath = base_path('routes/admin.php');
+            $routeFilePath = base_path('routes/web.php');
             $currentRouteFileContent = file_get_contents($routeFilePath);
 
             if (strpos($currentRouteFileContent, $controllerImport) === false) {
@@ -194,9 +195,8 @@ class CrudGeneratorController extends Controller
                 }
             }
             file_put_contents($routeFilePath, $routeContent, FILE_APPEND);
-
             return ['success' => true];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
@@ -814,7 +814,6 @@ $(function () {
             $filePath = app_path('Providers/ServiceRepositoryServiceProvider.php');
             $currentFileContent = file_get_contents($filePath);
 
-            // Add imports if they don't exist
             if (strpos($currentFileContent, $repositoryInterface) === false) {
                 $lines = explode("\n", $currentFileContent);
                 $importIndex = null;
@@ -827,23 +826,20 @@ $(function () {
                 }
 
                 if ($importIndex !== null) {
-                    // Insert imports one by one
                     array_splice($lines, $importIndex, 0, $repositoryInterface);
                     array_splice($lines, $importIndex + 1, 0, $repositoryClass);
                     array_splice($lines, $importIndex + 2, 0, $serviceInterface);
                     array_splice($lines, $importIndex + 3, 0, $serviceClass);
                     $updatedContent = implode("\n", $lines);
                     file_put_contents($filePath, $updatedContent);
-                    $currentFileContent = $updatedContent; // Update content after insertions
+                    $currentFileContent = $updatedContent;
                 }
             }
 
-            // Add repository bindings if they don't exist
             if (strpos($currentFileContent, $repositoryBinding) === false) {
                 $lines = explode("\n", $currentFileContent);
                 $repositoryIndex = null;
 
-                // Find where to insert repository bindings
                 foreach ($lines as $index => $line) {
                     if (trim($line) === '$repositories = [') {
                         $repositoryIndex = $index + 1;
@@ -852,20 +848,17 @@ $(function () {
                 }
 
                 if ($repositoryIndex !== null) {
-                    // Insert repository binding
                     array_splice($lines, $repositoryIndex, 0, "            " . $repositoryBinding);
                     $updatedContent = implode("\n", $lines);
                     file_put_contents($filePath, $updatedContent);
-                    $currentFileContent = $updatedContent; // Update content after insertions
+                    $currentFileContent = $updatedContent;
                 }
             }
 
-            // Add service bindings if they don't exist
             if (strpos($currentFileContent, $serviceBinding) === false) {
                 $lines = explode("\n", $currentFileContent);
                 $serviceIndex = null;
 
-                // Find where to insert service bindings
                 foreach ($lines as $index => $line) {
                     if (trim($line) === '$services = [') {
                         $serviceIndex = $index + 1;
@@ -874,13 +867,58 @@ $(function () {
                 }
 
                 if ($serviceIndex !== null) {
-                    // Insert service binding
                     array_splice($lines, $serviceIndex, 0, "            " . $serviceBinding);
                     $updatedContent = implode("\n", $lines);
                     file_put_contents($filePath, $updatedContent);
                 }
             }
 
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    protected function addMenuItem($modelName)
+    {
+        try {
+            $menuFilePath = base_path('resources/assets/menu/menu.json');
+            $lowerCaseModelName = strtolower($modelName);
+
+            if (File::exists($menuFilePath)) {
+                $menuData = json_decode(File::get($menuFilePath), true);
+            } else {
+                $menuData = ['menu' => []];
+            }
+
+            if ($menuData === null || !is_array($menuData)) {
+                $menuData = ['menu' => []];
+            }
+
+            $newMenuItem = [
+                "name" => $modelName,
+                "icon" => "bi bi-menu-button-wide",
+                "slug" => $lowerCaseModelName,
+                "submenu" => [
+                    [
+                        "url" => $lowerCaseModelName . '.index',
+                        "name" => "List",
+                        "slug" => $lowerCaseModelName . '.index',
+                        "icon" => "bi bi-circle"
+                    ],
+                    [
+                        "url" => $lowerCaseModelName . '.create',
+                        "name" => "Create",
+                        "slug" => $lowerCaseModelName . '.create',
+                        "icon" => "bi bi-circle"
+                    ]
+                ]
+            ];
+
+            $menuData['menu'][] = $newMenuItem;
+
+            File::put($menuFilePath, json_encode($menuData, JSON_PRETTY_PRINT));
+            Artisan::call('route:clear');
             return ['success' => true];
         } catch (\Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];

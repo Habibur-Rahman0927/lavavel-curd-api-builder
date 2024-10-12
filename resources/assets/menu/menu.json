@@ -1,0 +1,29 @@
+{
+    "menu": [
+        {
+            "url": "admin-dashboard",
+            "icon": "bi bi-grid",
+            "name": "Dashboard",
+            "slug": "admin-dashboard"
+        },
+        {
+            "name": "User",
+            "icon": "bi bi-menu-button-wide",
+            "slug": "user",
+            "submenu": [
+                {
+                    "url": "user.index",
+                    "name": "List",
+                    "slug": "user.index",
+                    "icon": "bi bi-circle"
+                },
+                {
+                    "url": "user.create",
+                    "name": "Create",
+                    "slug": "user.create",
+                    "icon": "bi bi-circle"
+                }
+            ]
+        }
+    ]
+}
