@@ -10,6 +10,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "rap2hpoutre/laravel-log-viewer": "^2.4",
+        "spatie/laravel-permission": "^6.9",
         "yajra/laravel-datatables-buttons": "^11.2",
         "yajra/laravel-datatables-oracle": "^11.1"
     },

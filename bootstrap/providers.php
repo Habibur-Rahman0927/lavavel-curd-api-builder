@@ -5,4 +5,5 @@ return [
     App\Providers\MenuServiceProvider::class,
     App\Providers\ServiceRepositoryServiceProvider::class,
     Yajra\DataTables\DataTablesServiceProvider::class,
+    Spatie\Permission\PermissionServiceProvider::class,
 ];

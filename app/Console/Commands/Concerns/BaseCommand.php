@@ -237,10 +237,11 @@ abstract class BaseCommand extends Command
     protected function generateViewTemplateFile(string $name): bool
     {
         try {
-            $directory = resource_path("views/admin/{$name}");
+            $lcfirst = lcfirst($name);
+            $directory = resource_path("views/admin/{$lcfirst}");
             if ($this->createDirectoryIfNotExists($directory)) {
-                $this->copyViewFiles($name, $directory);
-                $this->copyJsFiles($name);
+                $this->copyViewFiles($lcfirst, $directory);
+                $this->copyJsFiles($lcfirst);
                 $this->info("Templates generated successfully.");
                 return true;
             }

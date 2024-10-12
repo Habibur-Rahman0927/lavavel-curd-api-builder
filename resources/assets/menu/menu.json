@@ -24,6 +24,25 @@
                     "icon": "bi bi-circle"
                 }
             ]
+        },
+        {
+            "name": "Role",
+            "icon": "bi bi-menu-button-wide",
+            "slug": "role",
+            "submenu": [
+                {
+                    "url": "role.index",
+                    "name": "List",
+                    "slug": "role.index",
+                    "icon": "bi bi-circle"
+                },
+                {
+                    "url": "role.create",
+                    "name": "Create",
+                    "slug": "role.create",
+                    "icon": "bi bi-circle"
+                }
+            ]
         }
     ]
 }
