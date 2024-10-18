@@ -43,6 +43,25 @@
                     "icon": "bi bi-circle"
                 }
             ]
+        },
+        {
+            "name": "Permission",
+            "icon": "bi bi-menu-button-wide",
+            "slug": "permission",
+            "submenu": [
+                {
+                    "url": "permission.index",
+                    "name": "List",
+                    "slug": "permission.index",
+                    "icon": "bi bi-circle"
+                },
+                {
+                    "url": "permission.create",
+                    "name": "Create",
+                    "slug": "permission.create",
+                    "icon": "bi bi-circle"
+                }
+            ]
         }
     ]
 }

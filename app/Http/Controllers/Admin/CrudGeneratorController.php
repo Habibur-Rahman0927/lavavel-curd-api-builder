@@ -172,7 +172,7 @@ class CrudGeneratorController extends Controller
             $routeContent = "\n\nRoute::resource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);";
             $routeContent .= "\nRoute::get('" . strtolower($modelName) . "-list', [" . $modelName . "Controller::class, 'getDatatables'])->name('" . strtolower($modelName) . "-list');";
 
-            $routeFilePath = base_path('routes/web.php');
+            $routeFilePath = base_path('routes/admin.php');
             $currentRouteFileContent = file_get_contents($routeFilePath);
 
             if (strpos($currentRouteFileContent, $controllerImport) === false) {
@@ -613,7 +613,7 @@ class CrudGeneratorController extends Controller
                                     <li><button type=\"button\" class=\"btn btn-secondary mb-1\" id=\"printExport\">Print</button></li>
                                 </ul>
                             </div>
-                            <a href=\"{{ route('{$lowerCaseModelName}.create') }}\" class=\"btn btn-success add-btn\">Add User</a>
+                            <a href=\"{{ route('{$lowerCaseModelName}.create') }}\" class=\"btn btn-success add-btn\">Add {$modelName}</a>
                         </div>
                     </div>
 
