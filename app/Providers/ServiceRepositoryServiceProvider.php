@@ -14,6 +14,10 @@ use App\Repositories\Permission\IPermissionRepository;
 use App\Repositories\Permission\PermissionRepository;
 use App\Services\Permission\IPermissionService;
 use App\Services\Permission\PermissionService;
+use App\Repositories\RoleHasPermission\IRoleHasPermissionRepository;
+use App\Repositories\RoleHasPermission\RoleHasPermissionRepository;
+use App\Services\RoleHasPermission\IRoleHasPermissionService;
+use App\Services\RoleHasPermission\RoleHasPermissionService;
 use Illuminate\Support\ServiceProvider;
 
 class ServiceRepositoryServiceProvider extends ServiceProvider
@@ -24,12 +28,14 @@ class ServiceRepositoryServiceProvider extends ServiceProvider
     public function register(): void
     {
         $repositories = [
+            IRoleHasPermissionRepository::class => RoleHasPermissionRepository::class,
             IPermissionRepository::class => PermissionRepository::class,
             IRoleRepository::class => RoleRepository::class,
             IUserRepository::class => UserRepository::class,
         ];
 
         $services = [
+            IRoleHasPermissionService::class => RoleHasPermissionService::class,
             IPermissionService::class => PermissionService::class,
             IRoleService::class => RoleService::class,
             IUserService::class => UserService::class,

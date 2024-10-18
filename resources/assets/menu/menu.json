@@ -62,6 +62,25 @@
                     "icon": "bi bi-circle"
                 }
             ]
+        },
+        {
+            "name": "RoleHasPermission",
+            "icon": "bi bi-menu-button-wide",
+            "slug": "rolehaspermission",
+            "submenu": [
+                {
+                    "url": "rolehaspermission.index",
+                    "name": "List",
+                    "slug": "rolehaspermission.index",
+                    "icon": "bi bi-circle"
+                },
+                {
+                    "url": "rolehaspermission.create",
+                    "name": "Create",
+                    "slug": "rolehaspermission.create",
+                    "icon": "bi bi-circle"
+                }
+            ]
         }
     ]
 }

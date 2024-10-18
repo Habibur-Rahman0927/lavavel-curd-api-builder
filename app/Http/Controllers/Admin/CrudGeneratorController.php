@@ -613,7 +613,7 @@ class CrudGeneratorController extends Controller
                                     <li><button type=\"button\" class=\"btn btn-secondary mb-1\" id=\"printExport\">Print</button></li>
                                 </ul>
                             </div>
-                            <a href=\"{{ route('{$lowerCaseModelName}.create') }}\" class=\"btn btn-success add-btn\">Add {$modelName}</a>
+                            <a href=\"{{ route('{$lowerCaseModelName}.create') }}\" class=\"btn btn-success add-btn\">Add New</a>
                         </div>
                     </div>
 

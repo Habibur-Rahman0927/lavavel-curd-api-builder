@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleHasPermissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
@@ -20,3 +21,6 @@ Route::post('/crud-generator/generate-model', [CrudGeneratorController::class, '
 
 Route::resource('permission', PermissionController::class);
 Route::get('permission-list', [PermissionController::class, 'getDatatables'])->name('permission-list');
+
+Route::resource('rolehaspermission', RoleHasPermissionController::class);
+Route::get('rolehaspermission-list', [RoleHasPermissionController::class, 'getDatatables'])->name('rolehaspermission-list');
