@@ -899,17 +899,16 @@ $(function () {
                 "name" => $modelName,
                 "icon" => "bi bi-menu-button-wide",
                 "slug" => $lowerCaseModelName,
+                "permission" => [$lowerCaseModelName . '.index', $lowerCaseModelName . '.create'],
                 "submenu" => [
                     [
                         "url" => $lowerCaseModelName . '.index',
                         "name" => "List",
-                        "slug" => $lowerCaseModelName . '.index',
                         "icon" => "bi bi-circle"
                     ],
                     [
                         "url" => $lowerCaseModelName . '.create',
                         "name" => "Create",
-                        "slug" => $lowerCaseModelName . '.create',
                         "icon" => "bi bi-circle"
                     ]
                 ]

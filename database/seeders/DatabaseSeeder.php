@@ -14,14 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('password'),
-            'user_type' => User::USER_TYPE_SUPER_ADMIN,
-            'is_active' => User::USER_IS_ACTIVE,
-            'role' => 'test'
-        ]);
-        $this->call(UserSeeder::class);
+        // User::create([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@admin.com',
+        //     'password' => Hash::make('password'),
+        //     'user_type' => User::USER_TYPE_SUPER_ADMIN,
+        //     'is_active' => User::USER_IS_ACTIVE,
+        //     'role_id' => 'test'
+        // ]);
+        // $this->call(UserSeeder::class);
+        $this->call(RolePermissionSeeder::class);
     }
 }

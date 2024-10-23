@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     const USER_TYPE_DEFAULT = 0;
     const USER_TYPE_SUPER_ADMIN = 1;
@@ -31,7 +32,7 @@ class User extends Authenticatable
         'password',
         'user_type',
         'is_active',
-        'role'
+        'role_id'
     ];
 
     /**
