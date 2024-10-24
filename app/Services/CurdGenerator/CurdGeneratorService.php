@@ -380,11 +380,17 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
                     case 'text':
                     case 'email':
                     case 'number':
+                    case 'password':
+                    case 'date':
                         $viewContent .= "\t\t\t\t\t\t        <input type=\"{$inputType}\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
                         break;
     
                     case 'textarea':
                         $viewContent .= "\t\t\t\t\t\t        <textarea name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" required>{{ {$oldValue} }}</textarea>\n";
+                        break;
+                        
+                    case 'checkbox':
+                        $viewContent .= "\t\t\t\t\t\t        <input type=\"checkbox\" name=\"{$fieldName}\" class=\"form-check-input {$errorClass}\" id=\"{$fieldName}\" " . (old($fieldName) ? 'checked' : '') . ">\n";
                         break;
 
                     default:

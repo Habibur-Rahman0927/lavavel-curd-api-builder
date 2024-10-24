@@ -31,6 +31,24 @@ pre {
     overflow-x: auto;
 }
 
+.accordion-button {
+    font-weight: bold;
+}
+
+.accordion-body {
+    background-color: #f8f9fa; /* Light background for the accordion body */
+}
+
+.bg-light {
+    background-color: #f0f8ff; /* Light background for instructions */
+}
+.accordion-background{
+    background: #3991de !important;
+}
+
+.alert {
+    border-radius: 5px; /* Rounded corners for alerts */
+}
 </style>
 <main id="main" class="main">
     <div class="pagetitle">
@@ -174,9 +192,6 @@ pre {
                     </div>
 
                     <button type="button" class="btn btn-secondary" id="add-field">Add Field</button>
-                    <button type="button" class="btn btn-info" id="guideline-modal-button">
-                        Field Selection for View
-                    </button>                    
 
                     <!-- Table Layout for Relationships -->
                     <div class="table-responsive mb-1">
@@ -217,25 +232,19 @@ pre {
 
                     <button type="button" class="btn btn-secondary" id="add-relationship">Add Relationship</button>
 
-                    <!-- Submit Button -->
-                    <div class="form-group text-end">
-                        <button type="reset" class="btn btn-secondary">Reset</button> <!-- Reset Button -->
-                        <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
-                        <button type="submit" class="btn btn-primary">Generate</button>
-                    </div>
-                    <div class="modal fade" id="preview-guidelineModal" tabindex="-1" aria-labelledby="guidelineModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="guidelineModalLabel">Field Selection Guidelines for View</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div>
-                                        <h6><strong>📝 Instructions for Field Selection</strong></h6>
+                    <div class="accordion mt-4 mb-3" id="accordionExample">
+                        <div class="accordion-item border-0">
+                            <h1 class="accordion-header" id="headingOne">
+                                <button class="accordion-button bg-primary text-white accordion-background" type="button" id="guideline-modal-button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    View Configuration
+                                </button>
+                            </h1>
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <h6><strong>📝 Field Selection Guidelines</strong></h6>
                                         <p>
-                                            In this section, you can configure which fields should be included for <span class="text-primary">"Create"</span>, 
-                                            <span class="text-primary">"Edit"</span>, or <span class="text-primary">"List"</span> actions. Here’s what each action means:
+                                            Configure fields for:
                                         </p>
                                         <ul>
                                             <li><strong>Create:</strong> 
@@ -248,22 +257,20 @@ pre {
                                                 <span class="text-muted">If selected, this field will appear in the list view (table display) of the records.</span>
                                             </li>
                                         </ul>
-                    
-                                        <div class="alert alert-info mt-3">
-                                            <h6><strong>🔍 Example:</strong></h6>
-                                            <p>
-                                                For example, consider the <code>name</code> field. If you want the <code>name</code> field to appear during 
-                                                <strong>creation</strong>, <strong>editing</strong>, and <strong>listing</strong> of records, simply select all the relevant checkboxes for that field.
-                                            </p>
-                                        </div>
-                    
-                                        <div class="alert alert-warning mt-4">
-                                            <h6><strong>⚠️ Important:</strong></h6>
-                                            <p>
-                                                Ensure you choose only the necessary fields for each action to avoid cluttering the forms and lists with unnecessary data.
-                                            </p>
-                                        </div>
                                     </div>
+                    
+                                    <div class="alert alert-info mt-3">
+                                        <h6><strong>🔍 Example:</strong></h6>
+                                        <p>
+                                            For a field like <code>name</code>, select options to include it in creation, editing, and listing.
+                                        </p>
+                                    </div>
+                    
+                                    <div class="alert alert-warning mt-3">
+                                        <h6><strong>⚠️ Important:</strong></h6>
+                                        <p>Choose only necessary fields to avoid clutter.</p>
+                                    </div>
+                    
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="field-selection-table">
                                             <thead>
@@ -283,11 +290,16 @@ pre {
                                         </table>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
                             </div>
                         </div>
+                    </div>
+                    
+
+                    <!-- Submit Button -->
+                    <div class="form-group text-end">
+                        <button type="reset" class="btn text-white" style="background: #294a74">Reset</button> <!-- Reset Button -->
+                        <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
+                        <button type="submit" class="btn btn-primary">Generate</button>
                     </div>
                 </form>
                 
@@ -379,15 +391,18 @@ pre {
         const selectElement = container.lastElementChild.querySelector('select[name*="[type]"]');
         selectElement.addEventListener('change', function() {
             toggleDataTypes(selectElement);
+            viewFrom();
         });
 
         container.lastElementChild.querySelectorAll('select[name*="[type]"]').forEach(selectElement => {
             toggleDataTypes(selectElement);
+            viewFrom();
         });
         
         const newFieldNameInput = container.lastElementChild.querySelector('.field-name-input');
         newFieldNameInput.addEventListener('input', function() {
             this.value = this.value.toLowerCase().replace(/\s+/g, '_');
+            viewFrom();
         });
         fieldIndex++;
     });
@@ -595,8 +610,10 @@ pre {
     document.querySelectorAll('select[name*="[type]"]').forEach(selectElement => {
         selectElement.addEventListener('change', function() {
             toggleDataTypes(selectElement);
+            viewFrom();
         });
         toggleDataTypes(selectElement);
+        viewFrom();
     });
 
     // Add new relationship row
@@ -764,6 +781,10 @@ pre {
     });
 
     document.getElementById('guideline-modal-button').addEventListener('click', function () {
+        viewFrom();
+    });
+
+    function viewFrom() {
         const fieldContainer = document.querySelectorAll('#field-container .field-row');
         const tableBody = document.querySelector('#field-selection-table tbody');
 
@@ -814,7 +835,7 @@ pre {
                 inputTypeSelect.name = `fieldNames[${fieldName}][input_type]`;
 
                 // List of input types
-                const inputTypes = ['text', 'number', 'date', 'email', 'password', 'checkbox', 'radio', 'file'];
+                const inputTypes = ['text', 'number', 'date', 'email', 'password', 'checkbox', 'textarea'];
                 inputTypes.forEach(type => {
                     const option = document.createElement('option');
                     option.value = type;
@@ -837,23 +858,17 @@ pre {
                 tdValidation.appendChild(checkboxValidation);
                 tr.appendChild(tdValidation);
 
+                // const tdValidationIcon = document.createElement('td');
+                // const validationIcon = document.createElement('span');
+                // validationIcon.classList.add('validation-icon');
+                // validationIcon.innerHTML = '⚙️'; // Use an appropriate icon or emoji
+                // tdValidationIcon.appendChild(validationIcon);
+                // tr.appendChild(tdValidationIcon);
+
                 tableBody.appendChild(tr);
-            } else {
-                const emptyMessageRow = document.createElement('tr');
-                const emptyMessage = document.createElement('td');
-                emptyMessage.classList.add('alert', 'alert-secondary', 'text-center');
-                emptyMessage.textContent = 'No fields found. Please add fields in migration to configure.';
-                emptyMessage.setAttribute('colspan', '7');
-                emptyMessage.style.backgroundColor = '#e2e3e5';
-                emptyMessage.style.color = '#41464b'; 
-                emptyMessageRow.appendChild(emptyMessage);
-                tableBody.appendChild(emptyMessageRow);
             }
         });
-
-        // Show modal
-        $('#preview-guidelineModal').modal('show');
-    });
+    }
 
     // Manage input type and validation state based on checkbox selection
     function manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation) {
@@ -875,8 +890,5 @@ pre {
             checkboxValidation.disabled = true;
         }
     }
-
-
-    
 </script>
 @endpush
