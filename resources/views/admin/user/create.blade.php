@@ -54,7 +54,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label for="name" class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name" value="{{ old('name') }}">
+                                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name" value="{{ old('name') }}" required>
                                     @error('name')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -66,7 +66,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" value="{{ old('email') }}">
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" value="{{ old('email') }}" required>
                                     @error('email')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -78,7 +78,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" id="password">
+                                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" id="password" required>
                                     @error('password')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -105,13 +105,13 @@
         
                                 <div class="col-md-6">
                                     <label class="form-label">Select User Role</label>
-                                    <select class="form-select @error('user_role') is-invalid @enderror" name="role">
+                                    <select class="form-select @error('role_id') is-invalid @enderror" name="role_id" required>
                                         <option value="" selected>-- Select User Role --</option>
-                                        <option value="1" {{ old('user_role') == 1 ? 'selected' : '' }}>One</option>
-                                        <option value="2" {{ old('user_role') == 2 ? 'selected' : '' }}>Two</option>
-                                        <option value="3" {{ old('user_role') == 3 ? 'selected' : '' }}>Three</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endforeach
                                     </select>
-                                    @error('user_role')
+                                    @error('role_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

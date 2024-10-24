@@ -26,6 +26,16 @@ interface IBaseRepository
     public function findById(int|string $id, array $columns = ['*']): ?Model;
 
     /**
+     * Find a resource by its conditions.
+     *
+     * @param array $conditions
+     * @param array $columns
+     * @return Model|null
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function findFirstByConditions(array $conditions, array $columns = ['*']): ?Model;
+
+    /**
      * Get all resources with optional filters.
      *
      * @param array $conditions

@@ -40,6 +40,19 @@ abstract class BaseRepository implements IBaseRepository
     }
 
     /**
+     * Find a resource by its conditions.
+     *
+     * @param array $conditions
+     * @param array $columns
+     * @return Model|null
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function findFirstByConditions(array $conditions, array $columns = ['*']): ?Model
+    {
+        return $this->model->where($conditions)->select($columns)->first();
+    }
+
+    /**
      * Get all resources with optional filters.
      *
      * @param array $conditions

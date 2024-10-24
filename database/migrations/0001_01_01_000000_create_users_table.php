@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->tinyInteger('user_type')->default(User::USER_TYPE_DEFAULT);
             $table->tinyInteger('is_active')->default(User::USER_IS_ACTIVE);
-            $table->string('role');
+            $table->bigInteger('role_id');
             $table->rememberToken();
             $table->timestamps();
         });

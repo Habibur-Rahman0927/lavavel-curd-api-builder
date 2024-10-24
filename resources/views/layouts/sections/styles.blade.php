@@ -1,6 +1,7 @@
 <link href="{{ asset('assets/img/favicon.png') }}" rel="icon">
 <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 <link href="https://fonts.gstatic.com" rel="preconnect">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link href="{{ asset('assets/fronts/css.css') }}" rel="stylesheet">
 <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
 <link href="{{ asset('assets/css/bootstrap-icons.css') }}" rel="stylesheet">

@@ -107,13 +107,13 @@
     
                         <div class="col-md-6">
                             <label class="form-label">Select User Role</label>
-                            <select class="form-select @error('role') is-invalid @enderror" name="role">
+                            <select class="form-select @error('role_id') is-invalid @enderror" name="role_id">
                                 <option value="" selected>-- Select User Role --</option>
-                                <option value="1" {{ $data->role == 1 ? 'selected' : '' }}>One</option>
-                                <option value="2" {{ $data->role == 2 ? 'selected' : '' }}>Two</option>
-                                <option value="3" {{ $data->role == 3 ? 'selected' : '' }}>Three</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" {{ $data->role_id == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                                @endforeach
                             </select>
-                            @error('role')
+                            @error('role_id')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

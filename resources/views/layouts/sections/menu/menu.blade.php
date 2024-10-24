@@ -1,20 +1,38 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
-        <li class="nav-item"> <a class="nav-link " href="index.html"> <i class="bi bi-grid"></i> <span>Dashboard</span> </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#users-nav" data-bs-toggle="collapse" href="#"> <i
-                    class="bi bi-menu-button-wide"></i><span>User</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="users-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li> 
-                    <a href="{{ route('user.index') }}"> <i class="bi bi-circle"></i><span>List</span> </a>
-                </li>
-                <li> 
-                    <a href="{{ route('user.create') }}"> <i class="bi bi-circle"></i><span>Create</span> </a>
-                </li>
-            </ul>
-        </li>
-        {{-- <li class="nav-heading">Pages</li> --}}
+        @foreach ($menu['menu'] as $item)
+            <li class="nav-item">
+                @if (isset($item['submenu']))
+                    @if (Auth::user()->hasAnyPermission($item['permission']))
+                        <a class="nav-link collapsed" data-bs-target="#{{ $item['slug'] }}-nav" data-bs-toggle="collapse" href="#">
+                            <i class="{{ $item['icon'] }}"></i>
+                            <span>{{ $item['name'] }}</span>
+                            <i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="{{ $item['slug'] }}-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                            @foreach ($item['submenu'] as $subitem)
+                                @if (Auth::user()->can($subitem['url']))
+                                    <li>
+                                        <a href="{{ route($subitem['url']) }}">
+                                            <i class="{{ $subitem['icon'] }}"></i>
+                                            <span>{{ $subitem['name'] }}</span>
+                                        </a>
+                                    </li>
+                                @endif
+                             @endforeach
+                        </ul>
+                    @endif
+                @else
+                    @if (Auth::user()->hasAnyPermission($item['permission']))
+                        @if (Auth::user()->can($item['url']))
+                            <a class="nav-link" href="{{ route($item['url']) }}">
+                                <i class="{{ $item['icon'] }}"></i>
+                                <span>{{ $item['name'] }}</span>
+                            </a>
+                        @endif
+                    @endif
+                @endif
+            </li>
+        @endforeach
     </ul>
 </aside>

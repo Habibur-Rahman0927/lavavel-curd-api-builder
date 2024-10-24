@@ -11,8 +11,11 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -56,7 +59,10 @@ class UserController extends Controller
      */
     public function create(): View
     {
-        return view('admin.user.create')->with([]);
+        $roles = Role::all();
+        return view('admin.user.create')->with([
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -67,14 +73,23 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request): RedirectResponse
     {
+        DB::beginTransaction();
         try {
             $response = $this->userService->create($request->all());
 
-            if ($response) {
-                return redirect()->back()->with('success', 'User added successfully.');
+            if (Role::where('id', $request->role_id)->exists()) {
+                $role = Role::find($request->role_id);
+                $response->assignRole($role->name);
+            } else {
+                return redirect()->back()->with('error', 'Role does not exist.');
             }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'User added successfully.');
+
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Something went wrong. Please try again. ' . $e->getMessage());
         }
 
         return redirect()->back()->with('error', 'Something went wrong. Please try again.');
@@ -101,9 +116,10 @@ class UserController extends Controller
     {
         try {
             $response = $this->userService->findById($id);
-
+            $roles = Role::all();
             return view('admin.user.edit')->with([
                 'data' => $response,
+                'roles' => $roles
             ]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Error retrieving the resource.');
@@ -129,6 +145,15 @@ class UserController extends Controller
             }
 
             $this->userService->update(['id' => $id], $data);
+
+            $user = $this->userService->findById($id);
+            if (Role::where('id', $request->role_id)->exists()) {
+                $user->roles()->detach();
+                $role = Role::find($request->role_id);
+                $user->assignRole($role->name);
+            } else {
+                return redirect()->back()->with('error', 'Role does not exist.');
+            }
 
             return redirect()->back()->with('success', 'User updated successfully.');
         } catch (Exception $e) {

@@ -3,13 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     const USER_TYPE_DEFAULT = 0;
     const USER_TYPE_SUPER_ADMIN = 1;
@@ -29,7 +32,7 @@ class User extends Authenticatable
         'password',
         'user_type',
         'is_active',
-        'role'
+        'role_id'
     ];
 
     /**
@@ -53,5 +56,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public static function getPermissionGroups(): Collection
+    {
+        return DB::table('permissions')
+            ->select('group_name', 'name', 'id')
+            ->orderBy('group_name', 'ASC')
+            ->get()
+            ->groupBy('group_name');
     }
 }
