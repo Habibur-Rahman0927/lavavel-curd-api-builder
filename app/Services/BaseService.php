@@ -39,6 +39,18 @@ abstract class BaseService implements IBaseService
     }
 
     /**
+     * Find a resource by its conditions.
+     *
+     * @param array $conditions
+     * @param string[] $columns
+     * @return mixed
+     */
+    public function findFirstByConditions(array $conditions, array $columns = ['*']): mixed
+    {
+        return $this->modelRepository->findFirstByConditions($conditions, $columns);
+    }
+
+    /**
      * Get all resources with optional filters.
      *
      * @param array $conditions

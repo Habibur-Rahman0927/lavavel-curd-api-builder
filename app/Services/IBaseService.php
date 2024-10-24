@@ -26,6 +26,15 @@ interface IBaseService
     public function findById(int|string $id, array $columns = ['*']): mixed;
 
     /**
+     * Find a resource by its conditions.
+     *
+     * @param array $conditions
+     * @param string[] $columns
+     * @return mixed
+     */
+    public function findFirstByConditions(array $conditions, array $columns = ['*']): mixed;
+
+    /**
      * Get all resources with optional filters.
      *
      * @param array $conditions

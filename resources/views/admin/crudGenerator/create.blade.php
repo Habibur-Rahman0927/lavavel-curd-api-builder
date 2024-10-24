@@ -68,7 +68,7 @@ pre {
                     </div>
                 @endif
 
-                <form action="{{ route('crud.generator.model.generate') }}" method="POST">
+                <form action="{{ route('crud.generator.store') }}" method="POST">
                     @csrf
                     
                     <!-- Table Layout for Model Configuration -->

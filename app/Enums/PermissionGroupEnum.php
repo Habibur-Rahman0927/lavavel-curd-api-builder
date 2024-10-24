@@ -8,7 +8,11 @@ enum PermissionGroupEnum: string
 
     case User = 'user';
 
+    case CURD_GENERATOR = 'curd';
+
     case ROLE = 'role';
+
+    case PERMISSION_GROUP = 'permissiongroup';
 
     case PERMISSION = 'permission';
 

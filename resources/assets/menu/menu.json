@@ -5,13 +5,18 @@
             "icon": "bi bi-grid",
             "name": "Dashboard",
             "slug": "admin-dashboard",
-            "permission": ["admin-dashboard"]
+            "permission": [
+                "admin-dashboard"
+            ]
         },
         {
             "name": "User",
             "icon": "bi bi-menu-button-wide",
             "slug": "user",
-            "permission": ["user.index", "user.create"],
+            "permission": [
+                "user.index",
+                "user.create"
+            ],
             "submenu": [
                 {
                     "url": "user.index",
@@ -29,7 +34,10 @@
             "name": "Role",
             "icon": "bi bi-menu-button-wide",
             "slug": "role",
-            "permission": ["role.index", "role.create"],
+            "permission": [
+                "role.index",
+                "role.create"
+            ],
             "submenu": [
                 {
                     "url": "role.index",
@@ -44,10 +52,34 @@
             ]
         },
         {
+            "name": "PermissionGroup",
+            "icon": "bi bi-menu-button-wide",
+            "slug": "permissiongroup",
+            "permission": [
+                "permissiongroup.index",
+                "permissiongroup.create"
+            ],
+            "submenu": [
+                {
+                    "url": "permissiongroup.index",
+                    "name": "List",
+                    "icon": "bi bi-circle"
+                },
+                {
+                    "url": "permissiongroup.create",
+                    "name": "Create",
+                    "icon": "bi bi-circle"
+                }
+            ]
+        },
+        {
             "name": "Permission",
             "icon": "bi bi-menu-button-wide",
             "slug": "permission",
-            "permission": ["permission.index", "permission.create"],
+            "permission": [
+                "permission.index",
+                "permission.create"
+            ],
             "submenu": [
                 {
                     "url": "permission.index",
@@ -65,7 +97,10 @@
             "name": "RoleHasPermission",
             "icon": "bi bi-menu-button-wide",
             "slug": "rolehaspermission",
-            "permission": ["rolehaspermission.index", "rolehaspermission.create"],
+            "permission": [
+                "rolehaspermission.index",
+                "rolehaspermission.create"
+            ],
             "submenu": [
                 {
                     "url": "rolehaspermission.index",
