@@ -27,9 +27,6 @@ pre {
     white-space: pre-wrap; /* Preserve whitespace */
     font-family: 'Courier New', Courier, monospace; /* Monospace font for code */
 }
-.table-responsive {
-    overflow-x: auto;
-}
 
 .accordion-button {
     font-weight: bold;
@@ -49,6 +46,15 @@ pre {
 .alert {
     border-radius: 5px; /* Rounded corners for alerts */
 }
+
+.table-responsive {
+    overflow-y: auto;  /* Enable vertical scrolling */
+}
+
+.table {
+    min-width: 800px;  Set a minimum width for better visibility on larger screens
+}
+
 </style>
 <main id="main" class="main">
     <div class="pagetitle">
@@ -90,40 +96,53 @@ pre {
                     @csrf
                     
                     <!-- Table Layout for Model Configuration -->
-                    <div class="table-responsive mb-1">
-                        <h5>Model Configuration</h5>
-                        <table class="table table-bordered">
+                    <div class="table-responsive mb-4">
+                        <h5 class="fw-bold mb-2">Model Configuration</h5>
+                        <table class="table table-bordered table-hover text-center">
                             <tbody>
                                 <tr>
-                                    <td><label for="model-name" class="form-label">Model Name</label></td>
-                                    <td><input type="text" class="form-control" id="model-name" name="model_name" placeholder="Enter model name" required></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="create-route-checkbox" class="form-label">Auto-generate Routes</label></td>
+                                    <td class="align-middle">
+                                        <label for="model-name" class="form-label">Model Name</label>
+                                    </td>
                                     <td>
-                                        <input type="checkbox" id="create-route-checkbox" name="create_route" value="1">
-                                        <label class="form-check-label" for="create-route-checkbox">
-                                            Enable automatic route generation for this model. This will automatically create routes for the model and make it accessible via the navigation menu.
-                                        </label>
+                                        <input type="text" class="form-control" id="model-name" name="model_name" placeholder="Enter model name" required>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><label for="softdelete-checkbox" class="form-label">Soft Deletes</label></td>
+                                    <td class="align-middle">
+                                        <label for="create-route-checkbox" class="form-label">Auto-generate Routes</label>
+                                    </td>
                                     <td>
-                                        <input type="checkbox" id="softdelete-checkbox" name="softdelete" value="1">
-                                        <label class="form-check-label" for="softdelete-checkbox">
-                                            Enable soft deletes for this model, allowing the model records to be "deleted" without removing them from the database.
-                                        </label>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="create-route-checkbox" name="create_route" value="1">
+                                            <label class="form-check-label" for="create-route-checkbox">
+                                                Enable automatic route generation for this model. This will automatically create routes for the model and make it accessible via the navigation menu.
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle">
+                                        <label for="softdelete-checkbox" class="form-label">Soft Deletes</label>
+                                    </td>
+                                    <td>
+                                        <div class="form-check">
+                                            <input type="checkbox" id="softdelete-checkbox" name="softdelete" value="1">
+                                            <label class="form-check-label" for="softdelete-checkbox">
+                                                Enable soft deletes for this model, allowing the model records to be "deleted" without removing them from the database.
+                                            </label>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     
+                    
                     <!-- Table Layout for Fields -->
-                    <div class="table-responsive mb-1">
-                        <h5>Migration Configuration</h5>
-                        <table class="table table-bordered" id="fields-table">
+                    <div class="table-responsive mb-3 p-2 border rounded shadow-sm bg-light">
+                        <h5 class="fw-bold mb-2">Migration Configuration</h5>
+                        <table class="table table-bordered table-hover text-center align-middle" id="fields-table">
                             <thead>
                                 <tr>
                                     <th>Type of Method</th>
@@ -184,19 +203,24 @@ pre {
                                     <td><input type="text" class="form-control" name="fields[0][default]" placeholder="Default value"></td>
                                     <td><input type="text" class="form-control" name="fields[0][comment]" placeholder="Comment"></td>
                                     <td>
-                                        <button type="button" class="btn btn-danger remove-field">Remove</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm remove-field" title="Remove Field">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </td>
+                                    
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <button type="button" class="btn btn-secondary" id="add-field">Add Field</button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-secondary" id="add-field">➕ Add Field</button>
+                    </div>
 
                     <!-- Table Layout for Relationships -->
-                    <div class="table-responsive mb-1">
-                        <h5>Model Relationships</h5>
-                        <table class="table table-bordered" id="relationships-table">
+                    <div class="table-responsive mb-3 p-4 border rounded shadow-sm bg-light">
+                        <h5 class="fw-bold mb-3">🔗 Model Relationships</h5>
+                        <table class="table table-bordered table-hover text-center align-middle" id="relationships-table" style="table-layout: fixed; width: 100%;">
                             <thead>
                                 <tr>
                                     <th>Relationship Type</th>
@@ -208,29 +232,35 @@ pre {
                             <tbody id="relationship-container">
                                 <tr class="relationship-row">
                                     <td>
-                                        <select name="relationships[0][type]" class="form-select" required>
+                                        <select name="relationships[0][type]" class="form-select form-select-sm" required>
                                             @foreach (['hasOne', 'hasMany', 'belongsTo', 'belongsToMany'] as $relation)
                                                 <option value="{{ $relation }}">{{ ucfirst($relation) }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td>
-                                        <select name="relationships[0][related_model]" class="form-select related-model" required>
+                                        <select name="relationships[0][related_model]" class="form-select form-select-sm related-model" required>
                                             @foreach ($modelNames as $modelName)
                                                 <option value="{{ $modelName }}">{{ $modelName }}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" class="form-control" name="relationships[0][foreign_key]" placeholder="Foreign Key" required></td>
                                     <td>
-                                        <button type="button" class="btn btn-danger remove-relationship">Remove</button>
+                                        <input type="text" class="form-control form-control-sm" name="relationships[0][foreign_key]" placeholder="Foreign Key" required>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger btn-sm remove-relationship" title="Remove Relationship">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <button type="button" class="btn btn-secondary" id="add-relationship">Add Relationship</button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-secondary" id="add-relationship">➕ Add Relationship</button>
+                    </div>
 
                     <div class="accordion mt-4 mb-3" id="accordionExample">
                         <div class="accordion-item border-0">
@@ -241,35 +271,44 @@ pre {
                             </h1>
                             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <div class="bg-light p-3 rounded mb-3">
-                                        <h6><strong>📝 Field Selection Guidelines</strong></h6>
-                                        <p>
-                                            Configure fields for:
-                                        </p>
-                                        <ul>
-                                            <li><strong>Create:</strong> 
-                                                <span class="text-muted">If selected, this field will appear in the form when creating a new record.</span>
-                                            </li>
-                                            <li><strong>Edit:</strong> 
-                                                <span class="text-muted">If selected, this field will be available when editing existing records.</span>
-                                            </li>
-                                            <li><strong>List:</strong> 
-                                                <span class="text-muted">If selected, this field will appear in the list view (table display) of the records.</span>
-                                            </li>
-                                        </ul>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="bg-light p-3 rounded mb-3">
+                                                <h6><strong>📝 Field Selection Guidelines</strong></h6>
+                                                <p>
+                                                    Configure fields for:
+                                                </p>
+                                                <ul>
+                                                    <li><strong>Create:</strong> 
+                                                        <span class="text-muted">If selected, this field will appear in the form when creating a new record.</span>
+                                                    </li>
+                                                    <li><strong>Edit:</strong> 
+                                                        <span class="text-muted">If selected, this field will be available when editing existing records.</span>
+                                                    </li>
+                                                    <li><strong>List:</strong> 
+                                                        <span class="text-muted">If selected, this field will appear in the list view (table display) of the records.</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="alert alert-warning">
+                                                    <h6><strong>⚠️ Important:</strong></h6>
+                                                    <p>Choose only necessary fields to avoid clutter.</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="alert alert-info">
+                                                    <h6><strong>🔍 Example:</strong></h6>
+                                                    <p>
+                                                        For a field like <code>name</code>, select options to include it in creation, editing, and listing.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                    
-                                    <div class="alert alert-info mt-3">
-                                        <h6><strong>🔍 Example:</strong></h6>
-                                        <p>
-                                            For a field like <code>name</code>, select options to include it in creation, editing, and listing.
-                                        </p>
-                                    </div>
-                    
-                                    <div class="alert alert-warning mt-3">
-                                        <h6><strong>⚠️ Important:</strong></h6>
-                                        <p>Choose only necessary fields to avoid clutter.</p>
-                                    </div>
+                                    
                     
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="field-selection-table">
@@ -297,7 +336,7 @@ pre {
 
                     <!-- Submit Button -->
                     <div class="form-group text-end">
-                        <button type="reset" class="btn text-white" style="background: #294a74">Reset</button> <!-- Reset Button -->
+                        <button type="reset" class="btn btn-danger text-white">Reset</button> <!-- Reset Button -->
                         <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </div>
@@ -336,8 +375,9 @@ pre {
     // Add new field row
     document.getElementById('add-field').addEventListener('click', function() {
         const container = document.getElementById('field-container');
-        const row = `
-            <tr class="field-row">
+        const row = document.createElement('tr');
+        row.classList.add('field-row');
+        row.innerHTML = `
                 <td>
                     <select name="fields[${fieldIndex}][type]" class="form-select" required>
                         @foreach ([ 'bigInteger' => 'bigInteger()',
@@ -382,11 +422,15 @@ pre {
                 <td><input type="text" class="form-control" name="fields[${fieldIndex}][default]" placeholder="Default value"></td>
                 <td><input type="text" class="form-control" name="fields[${fieldIndex}][comment]" placeholder="Comment"></td>
                 <td>
-                    <button type="button" class="btn btn-danger remove-field">Remove</button>
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-field" title="Remove Field">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </td>
-            </tr>
         `;
-        container.insertAdjacentHTML('beforeend', row);
+        container.appendChild(row);
+        row.querySelector('.remove-field').addEventListener('click', function() {
+            row.remove();
+        });
 
         const selectElement = container.lastElementChild.querySelector('select[name*="[type]"]');
         selectElement.addEventListener('change', function() {
@@ -619,44 +663,47 @@ pre {
     // Add new relationship row
     document.getElementById('add-relationship').addEventListener('click', function() {
         const container = document.getElementById('relationship-container');
-        const row = `
-            <tr class="relationship-row">
-                <td>
-                    <select name="relationships[${relationshipIndex}][type]" class="form-select" required>
-                        @foreach (['hasOne', 'hasMany', 'belongsTo', 'belongsToMany'] as $relation)
-                            <option value="{{ $relation }}">{{ ucfirst($relation) }}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td>
-                    <select name="relationships[${relationshipIndex}][related_model]" class="form-select related-model" required>
-                        @foreach ($modelNames as $modelName)
-                            <option value="{{ $modelName }}">{{ $modelName }}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td><input type="text" class="form-control" name="relationships[${relationshipIndex}][foreign_key]" placeholder="Foreign Key" required></td>
-                <td>
-                    <button type="button" class="btn btn-danger remove-relationship">Remove</button>
-                </td>
-            </tr>
+        const row = document.createElement('tr');
+        row.classList.add('relationship-row');
+        row.innerHTML = `
+            <td>
+                <select name="relationships[${relationshipIndex}][type]" class="form-select form-select-sm" required>
+                    @foreach (['hasOne', 'hasMany', 'belongsTo', 'belongsToMany'] as $relation)
+                        <option value="{{ $relation }}">{{ ucfirst($relation) }}</option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <select name="relationships[${relationshipIndex}][related_model]" class="form-select form-select-sm related-model" required>
+                    @foreach ($modelNames as $modelName)
+                        <option value="{{ $modelName }}">{{ $modelName }}</option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm" name="relationships[${relationshipIndex}][foreign_key]" placeholder="Foreign Key" required>
+            </td>
+            <td>
+                <button type="button" class="btn btn-outline-danger btn-sm remove-relationship" title="Remove Relationship">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
         `;
-        container.insertAdjacentHTML('beforeend', row);
+        row.querySelector('.remove-relationship').addEventListener('click', function() {
+            row.remove();
+        });
+        container.appendChild(row);
         relationshipIndex++;
     });
 
-    // Event delegation for removing field rows
-    document.getElementById('fields-table').addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-field')) {
-            e.target.closest('.field-row').remove();
-        }
+    // Event delegation for removing relationship rows
+    document.querySelector('.remove-relationship').addEventListener('click', function() {
+        this.closest('.relationship-row').remove();
     });
 
-    // Event delegation for removing relationship rows
-    document.getElementById('relationships-table').addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-relationship')) {
-            e.target.closest('.relationship-row').remove();
-        }
+    // Event delegation for removing field rows
+    document.querySelector('.remove-field').addEventListener('click', function(e) {
+        this.closest('.field-row').remove();
     });
 
     document.getElementById('preview-button').addEventListener('click', function () {
