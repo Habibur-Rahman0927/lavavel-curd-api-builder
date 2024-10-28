@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Console\Commands\Concerns\BaseCommand;
 
-class ControllerGenerate extends BaseCommand
+class RequestGenerate extends BaseCommand
 {
 
     /**
@@ -12,14 +12,14 @@ class ControllerGenerate extends BaseCommand
      *
      * @var string
      */
-    protected $signature = 'app:controller-gen {name : The name of the files}';
+    protected $signature = 'app:request-gen {name : The name of the files}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate a new controller files';
+    protected $description = 'Generate a new request files';
 
     /**
      * Execute the console command.
@@ -36,9 +36,12 @@ class ControllerGenerate extends BaseCommand
         }
 
         try {
-            if ($this->generateController($nameUcfirst))
+            if (
+                $this->generateRequest($nameUcfirst, 'Create') &&
+                $this->generateRequest($nameUcfirst, 'Update')
+                ) 
             {
-                $this->info("Controller files generated successfully: " . $nameUcfirst);
+                $this->info("Request files generated successfully: " . $nameUcfirst);
             } else {
                 $this->error('Some files were not generated. Please check the errors and try again.');
             } 

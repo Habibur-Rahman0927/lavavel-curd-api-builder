@@ -366,7 +366,7 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         foreach ($fields as $fieldName => $attributes) {
             // Only create the input if the "create" attribute is "on"
             if (isset($attributes['create']) && $attributes['create'] === 'on') {
-                $label = ucwords(str_replace('_', ' ', $fieldName));
+                $label = ucwords(str_replace('_', ' ', $attributes['name']));
                 $inputType = $attributes['input_type'] ?? 'text'; // Default to text
                 $errorClass = "@error('{$fieldName}') is-invalid @enderror";
                 $oldValue = "old('{$fieldName}')";
@@ -380,11 +380,17 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
                     case 'text':
                     case 'email':
                     case 'number':
+                    case 'password':
+                    case 'date':
                         $viewContent .= "\t\t\t\t\t\t        <input type=\"{$inputType}\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
                         break;
     
                     case 'textarea':
                         $viewContent .= "\t\t\t\t\t\t        <textarea name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" required>{{ {$oldValue} }}</textarea>\n";
+                        break;
+                        
+                    case 'checkbox':
+                        $viewContent .= "\t\t\t\t\t\t        <input type=\"checkbox\" name=\"{$fieldName}\" class=\"form-check-input {$errorClass}\" id=\"{$fieldName}\" " . (old($fieldName) ? 'checked' : '') . ">\n";
                         break;
 
                     default:
@@ -499,7 +505,7 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         foreach ($fields as $fieldName => $attributes) {
             // Only create the input if the "create" attribute is "on"
             if (isset($attributes['create']) && $attributes['create'] === 'on') {
-                $label = ucwords(str_replace('_', ' ', $fieldName));
+                $label = ucwords(str_replace('_', ' ', $attributes['name']));
                 $inputType = $attributes['input_type'] ?? 'text'; // Default to text
                 $errorClass = "@error('{$fieldName}') is-invalid @enderror";
                 $oldValue = "old('{$fieldName}', \$data->{$fieldName})";
@@ -513,6 +519,7 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
                     case 'text':
                     case 'email':
                     case 'number':
+                    case 'password':
                         $viewContent .= "\t\t\t\t\t\t        <input type=\"{$inputType}\" name=\"{$fieldName}\" class=\"form-control {$errorClass}\" id=\"{$fieldName}\" value=\"{{ {$oldValue} }}\" required>\n";
                         break;
     
@@ -628,7 +635,7 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
                                     <th>ID</th>\n";
                                     foreach($fields as $fieldName => $attributes) {
                                         if (isset($attributes['list']) && $attributes['list'] === 'on') {
-                                            $label = ucwords(str_replace('_', ' ', $fieldName));
+                                            $label = ucwords(str_replace('_', ' ', $attributes['name']));
                                             $viewContent .= "\t\t\t\t\t\t\t\t\t<th>{$label}</th>\n";
                                         }
                                     }
@@ -639,7 +646,7 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
                                     <th><input type=\"text\" placeholder=\"Search ID\" class=\"column-search form-control\" /></th>\n";
                                     foreach($fields as $fieldName => $attributes) {
                                         if (isset($attributes['list']) && $attributes['list'] === 'on') {
-                                            $label = ucwords(str_replace('_', ' ', $fieldName));
+                                            $label = ucwords(str_replace('_', ' ', $attributes['name']));
                                             $viewContent .= "\t\t\t\t\t\t\t\t\t<th><input type=\"text\" placeholder=\"Search {$label}\" class=\"column-search form-control\" /></th>\n";
                                         }
                                     }
@@ -877,6 +884,140 @@ $(function () {
             return ['success' => true];
         } catch (\Exception $e) {
             DB::rollBack();
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function generateCreateRequestFile($modelName, $validations)
+    {
+        $className = 'Create' . Str::studly($modelName) . 'Request';
+        $requestFilePath = app_path("Http/Requests/{$className}.php");
+
+        if (file_exists($requestFilePath)) {
+            return ['success' => false, 'error' => 'Request file already exists.'];
+        }
+
+        try {
+            $validationRules = '';
+            foreach ($validations as $fieldName => $rules) {
+                $rulesArray = [];
+                foreach ($rules as $ruleKey => $ruleValue) {
+                    if (strpos($ruleKey, ':') !== false) {
+                        $parts = explode(':', $ruleKey);
+                        $newRule = $parts[0];
+                        if (count($parts) > 1) {
+                            $values = explode(':', $ruleValue);
+                            $newRule .= ':' . array_pop($values);
+                        }
+                        $rulesArray[] = $newRule;
+                    } else {
+                        $rulesArray[] = $ruleKey;
+                    }
+                }
+                $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
+            }
+
+            $requestFileContent = <<<EOT
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class {$className} extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<string>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            {$validationRules}
+        ];
+    }
+}
+EOT;
+
+            File::put($requestFilePath, $requestFileContent);
+            return ['success' => true, 'message' => "{$className} created successfully!"];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function generateUpdateRequestFile($modelName, $validations)
+    {
+        $className = 'Update' . Str::studly($modelName) . 'Request';
+        $requestFilePath = app_path("Http/Requests/{$className}.php");
+
+        if (file_exists($requestFilePath)) {
+            return ['success' => false, 'error' => 'Request file already exists.'];
+        }
+
+        try {
+            $validationRules = '';
+            foreach ($validations as $fieldName => $rules) {
+                $rulesArray = [];
+                foreach ($rules as $ruleKey => $ruleValue) {
+                    if (strpos($ruleKey, ':') !== false) {
+                        $parts = explode(':', $ruleKey);
+                        $newRule = $parts[0];
+                        if (count($parts) > 1) {
+                            $values = explode(':', $ruleValue);
+                            $newRule .= ':' . array_pop($values);
+                        }
+                        $rulesArray[] = $newRule;
+                    } else {
+                        $rulesArray[] = $ruleKey;
+                    }
+                }
+                $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
+            }
+
+        $requestFileContent = <<<EOT
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class {$className} extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<string>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            {$validationRules}
+        ];
+    }
+}
+EOT;
+
+            File::put($requestFilePath, $requestFileContent);
+            return ['success' => true, 'message' => "{$className} created successfully!"];
+        } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

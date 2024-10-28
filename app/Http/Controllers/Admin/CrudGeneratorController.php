@@ -50,6 +50,7 @@ class CrudGeneratorController extends Controller
         $relationships = $request->input('relationships');
         $createRoute = $request->has('create_route');
         $fieldNames = $request->input('fieldNames');
+        $validations = $request->input('validations');
 
         $modelCreationResult = $this->curdGeneratorService->generateModel($modelName, $softDelete, $fields, $relationships);
         $migrationCreationResult = $this->curdGeneratorService->generateMigration($modelName, $fields, $softDelete);
@@ -61,7 +62,9 @@ class CrudGeneratorController extends Controller
             $this->curdGeneratorService->generateOrBindServiceAndRepository($modelName);
             if ($createRoute) {
                 $routeCreationResult = $this->curdGeneratorService->generateRoutes($modelName);
-                if ($routeCreationResult['success']) {
+                $createRequetFileGeneratorResult = $this->curdGeneratorService->generateCreateRequestFile($modelName, $validations);
+                $updateRequetFileGeneratorResult = $this->curdGeneratorService->generateUpdateRequestFile($modelName, $validations);
+                if ($routeCreationResult['success'] && $createRequetFileGeneratorResult['success'] && $updateRequetFileGeneratorResult['success']) {
                     $this->curdGeneratorService->generateCreateView($modelName, $fieldNames);
                     $this->curdGeneratorService->generateEditView($modelName, $fieldNames);
                     $indexView = $this->curdGeneratorService->generateIndexView($modelName, $fieldNames);
@@ -72,7 +75,7 @@ class CrudGeneratorController extends Controller
                     }
                     return redirect()->back()->with('success', 'Model, Migration, Routes and View created successfully!');
                 } else {
-                    return redirect()->back()->with('success', 'Model and Migration created, but failed to create routes: ' . $routeCreationResult['error']);
+                    return redirect()->back()->with('success', 'Model and Migration created, but failed to create routes and request: ' . $routeCreationResult['error'] ?? '' . $requetFileGeneratorResult['error'] ?? '');
                 }
             } else {
                 return redirect()->back()->with('success', 'Model, Migration, without Routes created successfully!');
