@@ -25,4 +25,8 @@ interface ICurdGeneratorService extends IBaseService
     public function addMenuItem($modelName);
 
     public function createPermission($modelName);
+
+    public function generateCreateRequestFile($modelName, $validations);
+
+    public function generateUpdateRequestFile($modelName, $validations);
 }

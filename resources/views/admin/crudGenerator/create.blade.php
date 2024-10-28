@@ -92,7 +92,7 @@ pre {
                     </div>
                 @endif
 
-                <form action="{{ route('crud.generator.store') }}" method="POST">
+                <form action="{{ route('crud.generator.store') }}" method="POST" id="curd-generator-form">
                     @csrf
                     
                     <!-- Table Layout for Model Configuration -->
@@ -288,6 +288,9 @@ pre {
                                                     <li><strong>List:</strong> 
                                                         <span class="text-muted">If selected, this field will appear in the list view (table display) of the records.</span>
                                                     </li>
+                                                    <li><strong>Field:</strong> 
+                                                        <span class="text-muted">Your field is <code>first_name</code> but it will appear in the form as <strong>First Name</strong>.</span>
+                                                    </li>                                                    
                                                 </ul>
                                             </div>
                                         </div>
@@ -332,7 +335,6 @@ pre {
                             </div>
                         </div>
                     </div>
-                    
 
                     <!-- Submit Button -->
                     <div class="form-group text-end">
@@ -842,9 +844,32 @@ pre {
 
             if (fieldName) {
                 const tr = document.createElement('tr');
+                
                 const tdFieldName = document.createElement('td');
-                tdFieldName.textContent = fieldName;
+                const fieldContainer = document.createElement('div');
+                fieldContainer.style.display = 'flex';
+                fieldContainer.style.alignItems = 'center';
+                fieldContainer.style.gap = '8px';
+
+                const editCheckbox = document.createElement('input');
+                editCheckbox.type = 'checkbox';
+                editCheckbox.addEventListener('change', function() {
+                    fieldNameInput.readOnly = !editCheckbox.checked;
+                });
+                fieldContainer.appendChild(editCheckbox);
+
+                const fieldNameInput = document.createElement('input');
+                fieldNameInput.type = 'text';
+                fieldNameInput.value = fieldName;
+                fieldNameInput.name = `fieldNames[${fieldName}][name]`;
+                fieldNameInput.classList.add('form-control');
+                fieldNameInput.readOnly = true;
+                fieldNameInput.classList.add('field-name-input');
+                fieldContainer.appendChild(fieldNameInput);
+
+                tdFieldName.appendChild(fieldContainer);
                 tr.appendChild(tdFieldName);
+
 
                 // Create the "Select All" checkbox
                 const tdSelectAll = document.createElement('td');
@@ -853,7 +878,8 @@ pre {
                 selectAllCheckbox.addEventListener('change', function() {
                     const checkboxes = tr.querySelectorAll('input[type="checkbox"].action-checkbox');
                     checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
-                    manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation); // Manage input type and validation selection state
+                    manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation);
+                    checkboxValidation.dispatchEvent(new Event('change'));
                 });
                 tdSelectAll.appendChild(selectAllCheckbox);
                 tr.appendChild(tdSelectAll);
@@ -872,6 +898,7 @@ pre {
                     checkbox.addEventListener('change', function() {
                         const checkboxes = tr.querySelectorAll('input[type="checkbox"].action-checkbox');
                         manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation);
+                        checkboxValidation.dispatchEvent(new Event('change'));
                     });
                 });
 
@@ -895,34 +922,52 @@ pre {
                 tdInputType.appendChild(inputTypeSelect);
                 tr.appendChild(tdInputType);
 
-                // Create the Validation checkbox
+                // Validation container setup
                 const tdValidation = document.createElement('td');
+                const validationContainer = document.createElement('div');
+                validationContainer.style.display = 'flex';
+                validationContainer.style.alignItems = 'center';
+                validationContainer.style.gap = '8px';
+
+                // Create the Validation checkbox
                 const checkboxValidation = document.createElement('input');
                 checkboxValidation.type = 'checkbox';
                 checkboxValidation.name = `fieldNames[${fieldName}][validation]`;
                 checkboxValidation.classList.add('action-checkbox');
                 checkboxValidation.disabled = true;
-                tdValidation.appendChild(checkboxValidation);
-                tr.appendChild(tdValidation);
+                validationContainer.appendChild(checkboxValidation);
 
-                // const tdValidationIcon = document.createElement('td');
-                // const validationIcon = document.createElement('span');
-                // validationIcon.classList.add('validation-icon');
-                // validationIcon.innerHTML = '⚙️'; // Use an appropriate icon or emoji
-                // tdValidationIcon.appendChild(validationIcon);
-                // tr.appendChild(tdValidationIcon);
+                // Create the Validation icon with tooltip
+                const validationIcon = document.createElement('span');
+                validationIcon.classList.add('validation-icon');
+                validationIcon.style.cursor = 'pointer';
+                validationIcon.style.opacity = '0.5';
+                validationIcon.innerHTML = '⚙️';
+                validationIcon.title = 'Configure validation rules'; // Tooltip
+
+                validationIcon.style.pointerEvents = 'none'; // Disable clicking
+                checkboxValidation.addEventListener('change', function() {
+                    validationIcon.style.opacity = checkboxValidation.checked ? '1' : '0.5';
+                    validationIcon.style.pointerEvents = checkboxValidation.checked ? 'auto' : 'none';
+                });
+
+                validationIcon.addEventListener('click', function(event) {
+                    if (!validationIcon.style.pointerEvents) return;
+                    showValidationModal(event, fieldName);
+                });
+                validationContainer.appendChild(validationIcon);
+                tdValidation.appendChild(validationContainer);
+                tr.appendChild(tdValidation);
 
                 tableBody.appendChild(tr);
             }
         });
     }
 
-    // Manage input type and validation state based on checkbox selection
     function manageInputTypeState(checkboxes, inputTypeSelect, checkboxValidation) {
-        const isCreateOrEditChecked = checkboxes[0].checked || checkboxes[1].checked; // Create or Edit checked
-        const isListChecked = checkboxes[2].checked; // List checked
+        const isCreateOrEditChecked = checkboxes[0].checked || checkboxes[1].checked;
+        const isListChecked = checkboxes[2].checked;
 
-        // Enable input type and validation only if Create or Edit is checked, otherwise disable
         if (isCreateOrEditChecked) {
             inputTypeSelect.disabled = false;
             checkboxValidation.disabled = false;
@@ -931,11 +976,193 @@ pre {
             checkboxValidation.disabled = true;
         }
 
-        // If only List is checked, disable input type and validation
         if (isListChecked && !isCreateOrEditChecked) {
             inputTypeSelect.disabled = true;
             checkboxValidation.disabled = true;
         }
     }
+
+    const fieldValidations = {};
+    function showValidationModal(event, fieldName) {
+        event.preventDefault();
+        const modal = document.createElement('div');
+        modal.classList.add('modal', 'fade');
+        modal.id = 'validationModal';
+        modal.tabIndex = '-1';
+        modal.setAttribute('aria-labelledby', 'validationModalLabel');
+        modal.setAttribute('aria-hidden', 'true');
+
+        const modalDialog = document.createElement('div');
+        modalDialog.classList.add('modal-dialog', 'modal-lg');
+
+        const modalContent = document.createElement('div');
+        modalContent.classList.add('modal-content');
+
+        const modalHeader = document.createElement('div');
+        modalHeader.classList.add('modal-header');
+
+        const modalTitle = document.createElement('h5');
+        modalTitle.classList.add('modal-title');
+        modalTitle.id = 'validationModalLabel';
+        modalTitle.innerText = 'Field Validation Configuration';
+
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.classList.add('btn-close');
+        closeButton.setAttribute('data-bs-dismiss', 'modal');
+        closeButton.setAttribute('aria-label', 'Close');
+
+        modalHeader.appendChild(modalTitle);
+        modalHeader.appendChild(closeButton);
+
+        const modalBody = document.createElement('div');
+        modalBody.classList.add('modal-body');
+
+        const modalBodyHeader = document.createElement('h6');
+        modalBodyHeader.innerHTML = '<strong>⚙️ Validation Rules</strong>';
+
+        const tableContainer = document.createElement('div');
+        tableContainer.classList.add('table-responsive');
+        tableContainer.style.maxHeight = '660px';
+        tableContainer.style.overflowY = 'auto';
+
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-striped', 'table-bordered');
+        table.style.minWidth = '600px';
+
+        const tableHeader = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = '<th>Validation Rule</th><th>Description</th>';
+        tableHeader.appendChild(headerRow);
+
+        const tableBody = document.createElement('tbody');
+
+        // Populate table with validation rules
+        const validationRules = [
+            { rule: "required", description: "This field is required." },
+            { rule: "string", description: "This field must be a string." },
+            { rule: "min:value", description: "This field must have a minimum length or value." },
+            { rule: "max:value", description: "This field must have a maximum length or value." },
+            { rule: "between:min,max", description: "This field must be between a minimum and maximum value." },
+            { rule: "numeric", description: "This field must be a numeric value." },
+            { rule: "integer", description: "This field must be an integer." },
+            { rule: "digits:value", description: "This field must have exactly the specified number of digits." },
+            { rule: "digits_between:min,max", description: "This field must have a digit count between the specified range." },
+            { rule: "date", description: "This field must be a valid date." }
+        ];
+
+        validationRules.forEach(({ rule, description }) => {
+        const row = document.createElement('tr');
+
+        const hasValue = rule.includes(':');
+
+        let isChecked = false;
+        let fieldValue = '';
+        if (fieldValidations[fieldName]) {
+            fieldValidations[fieldName].forEach(existingRule => {
+                const [ruleName, ruleValue, actualValue] = existingRule.split(':');
+
+                if (ruleName === rule.split(':')[0]) {
+                    isChecked = true;
+                    fieldValue = actualValue || '';
+                }
+            });
+        }
+
+        row.innerHTML = `
+            <td>
+                <div class="form-check">
+                    <input type="checkbox" name="validations[${fieldName}][${rule}]" value="${rule}" id="validation-${rule.replace(/:/g, '-')}" ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label" for="validation-${rule.replace(/:/g, '-')}" class="form-check-label">${rule}</label>
+                </div>
+                ${hasValue ? `<input type="text" class="form-control form-control-sm mt-2" placeholder="${rule.split(':')[1]}" id="value-${rule.replace(/:/g, '-')}" style="width: 100px;" value="${fieldValue}" ${isChecked ? '' : 'disabled'} />` : ''}
+            </td>
+            <td>${description}</td>
+        `;
+
+        const checkbox = row.querySelector(`input[type="checkbox"]`);
+        const valueInput = row.querySelector(`input[type="text"]`);
+
+        if (checkbox && valueInput) {
+            checkbox.addEventListener('change', () => {
+                valueInput.disabled = !checkbox.checked;
+                if (!checkbox.checked) {
+                    valueInput.value = '';
+                }
+            });
+        }
+
+        tableBody.appendChild(row);
+    });
+
+
+        table.appendChild(tableHeader);
+        table.appendChild(tableBody);
+        tableContainer.appendChild(table);
+        modalBody.appendChild(modalBodyHeader);
+        modalBody.appendChild(tableContainer);
+
+        const modalFooter = document.createElement('div');
+        modalFooter.classList.add('modal-footer');
+
+        const footerCloseButton = document.createElement('button');
+        footerCloseButton.type = 'button';
+        footerCloseButton.classList.add('btn', 'btn-secondary');
+        footerCloseButton.setAttribute('data-bs-dismiss', 'modal');
+        footerCloseButton.innerText = 'Close';
+
+        const saveButton = document.createElement('button');
+        saveButton.type = 'button';
+        saveButton.classList.add('btn', 'btn-primary');
+        saveButton.id = 'save-validation';
+        saveButton.innerText = 'Save changes';
+
+        modalFooter.appendChild(footerCloseButton);
+        modalFooter.appendChild(saveButton);
+
+        modalContent.appendChild(modalHeader);
+        modalContent.appendChild(modalBody);
+        modalContent.appendChild(modalFooter);
+        modalDialog.appendChild(modalContent);
+        modal.appendChild(modalDialog);
+
+        const curdGeneratorForm = document.getElementById('curd-generator-form');
+        curdGeneratorForm.appendChild(modal);
+
+        saveButton.addEventListener('click', function() {
+            const selectedRules = [];
+            validationRules.forEach(({ rule }) => {
+                const checkbox = document.getElementById(`validation-${rule.replace(/:/g, '-')}`);
+                if (checkbox.checked) {
+                    const valueInput = document.getElementById(`value-${rule.replace(/:/g, '-')}`);
+                    const value = valueInput ? valueInput.value : undefined;
+                    selectedRules.push(value ? `${rule}:${value}` : rule);
+
+
+                    const inputId = `validation-input-${fieldName}-${rule.replace(/:/g, '-')}`;
+                    let hiddenInput = document.getElementById(inputId);
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.id = inputId;
+                        hiddenInput.name = `validations[${fieldName}][${rule}]`;
+                        curdGeneratorForm.appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = value ? `${rule}:${value}` : rule;
+                }
+            });
+            fieldValidations[fieldName] = selectedRules; 
+            console.log(validationRules)
+            console.log(fieldValidations)
+            bootstrapModal.hide();
+        });
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+
+        modal.addEventListener('hidden.bs.modal', () => {
+            curdGeneratorForm.removeChild(modal);
+        });
+    }
+
 </script>
 @endpush
