@@ -4,6 +4,50 @@
 
 @section('page-style')
     @vite([])
+    <style>
+        modal-content {
+            background-color: #1e1e1e;
+            color: #f8f8f2;
+        }
+    
+        pre {
+            background-color: #282a36;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow: auto;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    
+        .accordion-button {
+            font-weight: bold;
+        }
+    
+        .accordion-body {
+            background-color: #f8f9fa;
+        }
+    
+        .bg-light {
+            background-color: #f0f8ff;
+        }
+        .accordion-background{
+            background: #3991de !important;
+        }
+    
+        .alert {
+            border-radius: 5px;
+        }
+    
+        .table-responsive {
+            overflow-y: auto; 
+        }
+    
+        .table {
+            min-width: 800px;
+        }
+    
+    </style>
 @endsection
 
 @section('page-script')
@@ -11,51 +55,6 @@
 @endsection
 
 @section('content')
-<style>
-    /* Styles for the modal background and code preview */
-modal-content {
-    background-color: #1e1e1e; /* Dark background color */
-    color: #f8f8f2; /* Light text color */
-}
-
-pre {
-    background-color: #282a36; /* Background for the code */
-    color: #f8f8f2; /* Text color for code */
-    padding: 20px; /* Padding inside the pre element */
-    border-radius: 5px; /* Rounded corners */
-    overflow: auto; /* Allows scrolling for long code */
-    white-space: pre-wrap; /* Preserve whitespace */
-    font-family: 'Courier New', Courier, monospace; /* Monospace font for code */
-}
-
-.accordion-button {
-    font-weight: bold;
-}
-
-.accordion-body {
-    background-color: #f8f9fa; /* Light background for the accordion body */
-}
-
-.bg-light {
-    background-color: #f0f8ff; /* Light background for instructions */
-}
-.accordion-background{
-    background: #3991de !important;
-}
-
-.alert {
-    border-radius: 5px; /* Rounded corners for alerts */
-}
-
-.table-responsive {
-    overflow-y: auto;  /* Enable vertical scrolling */
-}
-
-.table {
-    min-width: 800px;  Set a minimum width for better visibility on larger screens
-}
-
-</style>
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Generate CURD</h1>
@@ -370,6 +369,16 @@ pre {
 <script>
     let fieldIndex = 1;
     let relationshipIndex = 1;
+
+    document.getElementById('model-name').addEventListener('input', function(event) {
+        let input = event.target;
+        input.value = input.value
+            .replace(/\s+/g, '')
+            .replace(/(^\w|[A-Z]|\b\w)/g, (match, index) => 
+                index === 0 ? match.toLowerCase() : match.toUpperCase()
+            )
+            .replace(/[^a-zA-Z0-9]/g, '');
+    });
 
     // Model names available for relationships
     const modelNames = @json($modelNames); // Use Laravel's json helper to pass PHP data to JS
