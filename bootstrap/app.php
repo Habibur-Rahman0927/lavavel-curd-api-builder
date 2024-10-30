@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware(['web', 'auth', 'check-permissions'])
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
+
+            Route::middleware('auth:sanctum')
+                ->prefix('api/admin')
+                ->group(base_path('routes/admin_api.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {

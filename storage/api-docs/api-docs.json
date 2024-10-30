@@ -147,6 +147,424 @@
                     }
                 ]
             }
+        },
+        "/api/admin/comment": {
+            "get": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Get all comment",
+                "operationId": "456975420049b0b4888fa562b6a4c902",
+                "responses": {
+                    "200": {
+                        "description": "A list of comment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Create a new comment",
+                "operationId": "3e711800e03c1b6cfff1f05f29bbe4c1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "The name of the comment",
+                                        "type": "string",
+                                        "example": "Sample name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Comment created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/comment/{id}": {
+            "get": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Retrieve a single comment by ID",
+                "operationId": "8c1f3fd21765fb4d686c3dd64c66e4b6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the comment to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "The unique identifier of the comment",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "description": "The name of the comment",
+                                            "type": "string",
+                                            "example": "Sample Name"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Comment not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Update an existing comment",
+                "operationId": "dc79da0ac0b5114de8d4627ec7f2add2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the comment to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "The updated name of the comment",
+                                        "type": "string",
+                                        "example": "Updated name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "The unique identifier of the updated comment",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "description": "The updated name of the comment",
+                                            "type": "string",
+                                            "example": "Updated name"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Comment not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Delete an existing comment",
+                "operationId": "986f105d2788e7469447af37e4270e47",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the comment to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Comment Deleted successfully"
+                    },
+                    "404": {
+                        "description": "Comment not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get all posts",
+                "operationId": "3c5ff02b2fccb55136f33aaeaa8a0f36",
+                "responses": {
+                    "200": {
+                        "description": "A list of posts"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "operationId": "145a86ddf12e8160890c5abc0ba8c029",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "The name of the post",
+                                        "type": "string",
+                                        "example": "Sample name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/posts/{id}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Retrieve a single post by ID",
+                "operationId": "8f3e571071a2765890ef18567c0ccd8a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the post to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Post retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "The unique identifier of the post",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "description": "The name of the post",
+                                            "type": "string",
+                                            "example": "Sample Name"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update an existing post",
+                "operationId": "a2a9261c02a7fc7e16275c5fa37f7b7b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the post to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "The updated name of the post",
+                                        "type": "string",
+                                        "example": "Updated name"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "The unique identifier of the updated post",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "description": "The updated name of the post",
+                                            "type": "string",
+                                            "example": "Updated name"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete an existing post",
+                "operationId": "ede6250de814e6c847900520df40b7de",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the post to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Post Deleted successfully"
+                    },
+                    "404": {
+                        "description": "Post not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -159,6 +577,14 @@
         }
     },
     "tags": [
+        {
+            "name": "Comment",
+            "description": "Comment management operations"
+        },
+        {
+            "name": "Posts",
+            "description": "Post management operations"
+        },
         {
             "name": "Authentication",
             "description": "Authentication"

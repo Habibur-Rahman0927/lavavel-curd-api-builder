@@ -34,6 +34,32 @@ abstract class BaseCommand extends Command
     }
 
     /**
+     * Generate a controller file.
+     *
+     * @param string $name
+     * @return bool
+     */
+    protected function generateControllerApi(string $name): bool
+    {
+        $filePath = app_path("Http/Controllers/Api/{$name}Controller.php");
+
+        try {
+            if ($this->fileExists($filePath)) {
+                return false;
+            }
+            $bearerAuth = '{{ "bearerAuth":{} }}';
+            $content = view('templates.controller.controller_api', compact('name', 'bearerAuth'))->render();
+            File::put($filePath, "<?php \n\n\n" . $content);
+            $this->info("Controller Api file created: {$filePath}");
+
+            return true;
+        } catch (\Exception $e) {
+            $this->error('Failed to create controller api file: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Generate a request file.
      *
      * @param string $name
