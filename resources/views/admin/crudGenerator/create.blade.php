@@ -121,19 +121,6 @@
                                 </tr>
                                 <tr>
                                     <td class="align-middle">
-                                        <label for="create-route-checkbox" class="form-label">Auto-generate Routes</label>
-                                    </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input type="checkbox" id="create-route-checkbox" name="create_route" value="1" checked>
-                                            <label class="form-check-label" for="create-route-checkbox">
-                                                Enable automatic route generation for this model. This will automatically create routes for the model and make it accessible via the navigation menu.
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="align-middle">
                                         <label for="softdelete-checkbox" class="form-label">Soft Deletes</label>
                                     </td>
                                     <td>

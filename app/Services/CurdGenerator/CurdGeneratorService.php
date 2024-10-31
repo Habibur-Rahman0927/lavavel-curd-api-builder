@@ -862,24 +862,26 @@ $(function () {
 
         try {
             $validationRules = '';
-            foreach ($validations as $fieldName => $rules) {
-                $rulesArray = [];
-                foreach ($rules as $ruleKey => $ruleValue) {
-                    if (strpos($ruleKey, ':') !== false) {
-                        $parts = explode(':', $ruleKey);
-                        $newRule = $parts[0];
-                        if (count($parts) > 1) {
-                            $values = explode(':', $ruleValue);
-                            $newRule .= ':' . array_pop($values);
+            if ($validations) {
+                foreach ($validations as $fieldName => $rules) {
+                    $rulesArray = [];
+                    foreach ($rules as $ruleKey => $ruleValue) {
+                        if (strpos($ruleKey, ':') !== false) {
+                            $parts = explode(':', $ruleKey);
+                            $newRule = $parts[0];
+                            if (count($parts) > 1) {
+                                $values = explode(':', $ruleValue);
+                                $newRule .= ':' . array_pop($values);
+                            }
+                            $rulesArray[] = $newRule;
+                        } else {
+                            $rulesArray[] = $ruleKey;
                         }
-                        $rulesArray[] = $newRule;
-                    } else {
-                        $rulesArray[] = $ruleKey;
                     }
+                    $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
                 }
-                $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
             }
-
+            
             $requestFileContent = <<<EOT
 <?php
 
@@ -929,23 +931,26 @@ EOT;
 
         try {
             $validationRules = '';
-            foreach ($validations as $fieldName => $rules) {
-                $rulesArray = [];
-                foreach ($rules as $ruleKey => $ruleValue) {
-                    if (strpos($ruleKey, ':') !== false) {
-                        $parts = explode(':', $ruleKey);
-                        $newRule = $parts[0];
-                        if (count($parts) > 1) {
-                            $values = explode(':', $ruleValue);
-                            $newRule .= ':' . array_pop($values);
+            if ($validations) {
+                foreach ($validations as $fieldName => $rules) {
+                    $rulesArray = [];
+                    foreach ($rules as $ruleKey => $ruleValue) {
+                        if (strpos($ruleKey, ':') !== false) {
+                            $parts = explode(':', $ruleKey);
+                            $newRule = $parts[0];
+                            if (count($parts) > 1) {
+                                $values = explode(':', $ruleValue);
+                                $newRule .= ':' . array_pop($values);
+                            }
+                            $rulesArray[] = $newRule;
+                        } else {
+                            $rulesArray[] = $ruleKey;
                         }
-                        $rulesArray[] = $newRule;
-                    } else {
-                        $rulesArray[] = $ruleKey;
                     }
+                    $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
                 }
-                $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
             }
+            
 
         $requestFileContent = <<<EOT
 <?php
@@ -984,6 +989,76 @@ EOT;
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
+
+    public function generateRequestFile($modelName, $validations, $type = 'Create')
+    {
+        $className = $type . Str::studly($modelName) . 'Request';
+        $requestFilePath = app_path("Http/Requests/{$className}.php");
+
+        if (file_exists($requestFilePath)) {
+            return ['success' => false, 'error' => 'Request file already exists.'];
+        }
+
+        try {
+            $validationRules = '';
+            if ($validations) {
+                foreach ($validations as $fieldName => $rules) {
+                    $rulesArray = [];
+                    foreach ($rules as $ruleKey => $ruleValue) {
+                        if (strpos($ruleKey, ':') !== false) {
+                            $parts = explode(':', $ruleKey);
+                            $newRule = $parts[0];
+                            if (count($parts) > 1) {
+                                $values = explode(':', $ruleValue);
+                                $newRule .= ':' . array_pop($values);
+                            }
+                            $rulesArray[] = $newRule;
+                        } else {
+                            $rulesArray[] = $ruleKey;
+                        }
+                    }
+                    $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
+                }
+            }
+
+            $requestFileContent = <<<EOT
+    <?php
+
+    namespace App\Http\Requests;
+
+    use Illuminate\Foundation\Http\FormRequest;
+
+    class {$className} extends FormRequest
+    {
+        /**
+         * Determine if the user is authorized to make this request.
+         */
+        public function authorize(): bool
+        {
+            return true;
+        }
+
+        /**
+         * Get the validation rules that apply to the request.
+         *
+         * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<string>|string>
+         */
+        public function rules(): array
+        {
+            return [
+                {$validationRules}
+            ];
+        }
+    }
+    EOT;
+
+            File::put($requestFilePath, $requestFileContent);
+            return ['success' => true, 'message' => "{$className} created successfully!"];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
 
     public function generateApiController($modelName, $fields)
     {
@@ -1054,7 +1129,7 @@ EOT;
             // Index method
             $controllerContent .= "    /**\n";
             $controllerContent .= "     * @OA\Get(\n";
-            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}\",\n";
+            $controllerContent .= "     *     path=\"/api/admin/api-{$lowerCaseModelName}\",\n";
             $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
             $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
             $controllerContent .= "     *     summary=\"Get all {$lowerCaseModelName}s\",\n";
@@ -1077,7 +1152,7 @@ EOT;
             // Store method
             $controllerContent .= "    /**\n";
             $controllerContent .= "     * @OA\Post(\n";
-            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}\",\n";
+            $controllerContent .= "     *     path=\"/api/admin/api-{$lowerCaseModelName}\",\n";
             $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
             $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
             $controllerContent .= "     *     summary=\"Create a new {$lowerCaseModelName}\",\n";
@@ -1114,7 +1189,7 @@ EOT;
             // Show method
             $controllerContent .= "    /**\n";
             $controllerContent .= "     * @OA\Get(\n";
-            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}/{id}\",\n";
+            $controllerContent .= "     *     path=\"/api/admin/api-{$lowerCaseModelName}/{id}\",\n";
             $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
             $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
             $controllerContent .= "     *     summary=\"Get a {$lowerCaseModelName} by ID\",\n";
@@ -1150,7 +1225,7 @@ EOT;
             // Update method
             $controllerContent .= "    /**\n";
             $controllerContent .= "     * @OA\Put(\n";
-            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}/{id}\",\n";
+            $controllerContent .= "     *     path=\"/api/admin/api-{$lowerCaseModelName}/{id}\",\n";
             $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
             $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
             $controllerContent .= "     *     summary=\"Update an existing {$lowerCaseModelName}\",\n";
@@ -1193,7 +1268,7 @@ EOT;
             // Destroy method
             $controllerContent .= "    /**\n";
             $controllerContent .= "     * @OA\Delete(\n";
-            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}/{id}\",\n";
+            $controllerContent .= "     *     path=\"/api/admin/api-{$lowerCaseModelName}/{id}\",\n";
             $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
             $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
             $controllerContent .= "     *     summary=\"Delete a {$lowerCaseModelName} by ID\",\n";
@@ -1249,7 +1324,7 @@ EOT;
             $controllerImport = "use " . $controllerNamespace . $modelName . "Controller;";
 
             $routeContent = $isApi
-                ? "\n\nRoute::apiResource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);"
+                ? "\n\nRoute::apiResource('api-" . strtolower($modelName) . "', " . $modelName . "Controller::class);"
                 : "\n\nRoute::resource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);"
                     . "\nRoute::get('" . strtolower($modelName) . "-list', [" . $modelName . "Controller::class, 'getDatatables'])->name('" . strtolower($modelName) . "-list');";
 

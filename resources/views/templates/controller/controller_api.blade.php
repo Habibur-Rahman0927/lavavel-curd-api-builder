@@ -24,7 +24,7 @@ class {{ ucfirst($name) }}Controller extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/admin/{{ strtolower($name) }}",
+     *     path="/api/admin/api-{{ strtolower($name) }}",
      *     tags={"{{ ucfirst($name) }}"},
      *     security={!! $bearerAuth !!},
      *     summary="Get all {{ strtolower($name) }}",
@@ -46,7 +46,7 @@ class {{ ucfirst($name) }}Controller extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/admin/{{ strtolower($name) }}",
+     *     path="/api/admin/api-{{ strtolower($name) }}",
      *     tags={"{{ ucfirst($name) }}"},
      *     security={!! $bearerAuth !!},
      *     summary="Create a new {{ strtolower($name) }}",
@@ -87,7 +87,7 @@ class {{ ucfirst($name) }}Controller extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/admin/{{ strtolower($name) }}/{id}",
+     *     path="/api/admin/api-{{ strtolower($name) }}/{id}",
      *     tags={"{{ ucfirst($name) }}"},
      *     security={!! $bearerAuth !!},
      *     summary="Retrieve a single {{ strtolower($name) }} by ID",
@@ -142,7 +142,7 @@ class {{ ucfirst($name) }}Controller extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/admin/{{ strtolower($name) }}/{id}",
+     *     path="/api/admin/api-{{ strtolower($name) }}/{id}",
      *     tags={"{{ ucfirst($name) }}"},
      *     security={!! $bearerAuth !!},
      *     summary="Update an existing {{ strtolower($name) }}",
@@ -218,7 +218,7 @@ class {{ ucfirst($name) }}Controller extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/admin/{{ strtolower($name) }}/{id}",
+     *     path="/api/admin/api-{{ strtolower($name) }}/{id}",
      *     tags={"{{ ucfirst($name) }}"},
      *     security={!! $bearerAuth !!},
      *     summary="Delete an existing {{ strtolower($name) }}",

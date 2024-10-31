@@ -8,11 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
     /**
      * @OA\Info(
-     *     title="OCD API Documentation",
+     *     title="CRUD Builder API Documentation",
      *     version="1.0.0",
-     *     description="Your API Description",
+     *     description="API documentation for the CRUD Builder, designed to generate CRUD operations dynamically for various models and configurations.",
      *     @OA\Contact(
-     *         email="contact@example.com"
+     *         email="support@yourcrudbuilder.com"
      *     ),
      *     @OA\License(
      *         name="Apache 2.0",
@@ -26,6 +26,7 @@ use Illuminate\Http\Response;
      *     bearerFormat="JWT"
      * )
      */
+
 abstract class Controller
 {
     use AuthorizesRequests, ValidatesRequests;
