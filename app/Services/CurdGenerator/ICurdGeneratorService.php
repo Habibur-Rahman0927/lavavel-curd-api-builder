@@ -12,8 +12,6 @@ interface ICurdGeneratorService extends IBaseService
 
     public function generateOrBindServiceAndRepository($modelName);
 
-    public function generateRoutes($modelName);
-
     public function generateCreateView($modelName, $fields);
 
     public function generateEditView($modelName, $fields);
@@ -29,4 +27,8 @@ interface ICurdGeneratorService extends IBaseService
     public function generateCreateRequestFile($modelName, $validations);
 
     public function generateUpdateRequestFile($modelName, $validations);
+
+    public function generateApiController($modelName, $fields);
+
+    public function generateRoutes($modelName, $isApi = false);
 }
