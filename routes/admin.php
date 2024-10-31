@@ -17,8 +17,8 @@ Route::get('user-list', [UserController::class, 'getDatatables'])->name('user-li
 Route::resource('role', RoleController::class);
 Route::get('role-list', [RoleController::class, 'getDatatables'])->name('role-list');
 
-Route::get('/crud-generator', [CrudGeneratorController::class, 'showCurdGeneratorForm'])->name('crud.generator.create');
-Route::post('/crud-generator', [CrudGeneratorController::class, 'generateCurd'])->name('crud.generator.store');
+Route::get('/crud-generator', [CrudGeneratorController::class, 'showCurdAndAPIGeneratorForm'])->name('crud.generator.create');
+Route::post('/crud-generator', [CrudGeneratorController::class, 'generateCurdAndAPI'])->name('crud.generator.store');
 
 Route::resource('permission', PermissionController::class);
 Route::get('permission-list', [PermissionController::class, 'getDatatables'])->name('permission-list');

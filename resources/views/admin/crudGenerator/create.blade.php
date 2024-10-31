@@ -109,11 +109,23 @@
                                 </tr>
                                 <tr>
                                     <td class="align-middle">
+                                        <label for="model-name" class="form-label">CURD And API</label>
+                                    </td>
+                                    <td>
+                                        <select name="use_case_type" id="use_case_type" class="form-control">
+                                            <option value="api_curd">API And CURD Generator</option>
+                                            <option value="curd">CURD Generator</option>
+                                            <option value="api">API Generator</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle">
                                         <label for="create-route-checkbox" class="form-label">Auto-generate Routes</label>
                                     </td>
                                     <td>
                                         <div class="form-check">
-                                            <input type="checkbox" id="create-route-checkbox" name="create_route" value="1">
+                                            <input type="checkbox" id="create-route-checkbox" name="create_route" value="1" checked>
                                             <label class="form-check-label" for="create-route-checkbox">
                                                 Enable automatic route generation for this model. This will automatically create routes for the model and make it accessible via the navigation menu.
                                             </label>
@@ -261,14 +273,14 @@
                         <button type="button" class="btn btn-secondary" id="add-relationship">➕ Add Relationship</button>
                     </div>
 
-                    <div class="accordion mt-4 mb-3" id="accordionExample">
+                    <div class="accordion mt-4 mb-3" id="accordionCrudSection">
                         <div class="accordion-item border-0">
                             <h1 class="accordion-header" id="headingOne">
                                 <button class="accordion-button bg-primary text-white accordion-background" type="button" id="guideline-modal-button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     View Configuration
                                 </button>
                             </h1>
-                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionCrudSection">
                                 <div class="accordion-body">
                                     <div class="row mt-3">
                                         <div class="col-md-6">
@@ -327,6 +339,33 @@
                                             </thead>
                                             <tbody>
                                                 <!-- Rows will be added here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion mt-4 mb-3 d-none" id="accordionApiSection">
+                        <div class="accordion-item border-0">
+                            <h1 class="accordion-header" id="headingApi">
+                                <button class="accordion-button bg-primary text-white accordion-background" type="button" id="guideline-modal-button-api" data-bs-toggle="collapse" data-bs-target="#collapseApi" aria-expanded="true" aria-controls="collapseApi">
+                                    API Validation Configuration
+                                </button>
+                            </h1>
+                            <div id="collapseApi" class="accordion-collapse collapse" aria-labelledby="headingApi" data-bs-parent="#accordionApiSection">
+                                <div class="accordion-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="field-selection-api-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Field Name</th>
+                                                    <th>Validation</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -446,18 +485,21 @@
         const selectElement = container.lastElementChild.querySelector('select[name*="[type]"]');
         selectElement.addEventListener('change', function() {
             toggleDataTypes(selectElement);
-            viewFrom();
+            curdViewForm();
+            apiValidation();
         });
 
         container.lastElementChild.querySelectorAll('select[name*="[type]"]').forEach(selectElement => {
             toggleDataTypes(selectElement);
-            viewFrom();
+            curdViewForm();
+            apiValidation();
         });
         
         const newFieldNameInput = container.lastElementChild.querySelector('.field-name-input');
         newFieldNameInput.addEventListener('input', function() {
             this.value = this.value.toLowerCase().replace(/\s+/g, '_');
-            viewFrom();
+            curdViewForm();
+            apiValidation();
         });
         fieldIndex++;
     });
@@ -665,10 +707,12 @@
     document.querySelectorAll('select[name*="[type]"]').forEach(selectElement => {
         selectElement.addEventListener('change', function() {
             toggleDataTypes(selectElement);
-            viewFrom();
+            curdViewForm();
+            apiValidation();
         });
         toggleDataTypes(selectElement);
-        viewFrom();
+        curdViewForm();
+        apiValidation();
     });
 
     // Add new relationship row
@@ -839,10 +883,10 @@
     });
 
     document.getElementById('guideline-modal-button').addEventListener('click', function () {
-        viewFrom();
+        curdViewForm();
     });
 
-    function viewFrom() {
+    function curdViewForm() {
         const fieldContainer = document.querySelectorAll('#field-container .field-row');
         const tableBody = document.querySelector('#field-selection-table tbody');
 
@@ -1172,6 +1216,80 @@
             curdGeneratorForm.removeChild(modal);
         });
     }
+
+    document.getElementById('use_case_type').addEventListener('change', function () {
+        const accordionCrud = document.getElementById('accordionCrudSection');
+        const accordionApi = document.getElementById('accordionApiSection');
+
+        if (this.value === 'api') {
+            accordionCrud.classList.add('d-none');
+            accordionApi.classList.remove('d-none');
+        } else {
+            accordionCrud.classList.remove('d-none');
+            accordionApi.classList.add('d-none');
+        }
+    });
+
+    function apiValidation() {
+        const fieldContainer = document.querySelectorAll('#field-container .field-row');
+        const tableBody = document.querySelector('#field-selection-api-table tbody');
+
+        tableBody.innerHTML = '';
+
+        fieldContainer.forEach(function (row) {
+            const fieldName = row.querySelector('input[name^="fields"][name$="[name]"]').value;
+
+            if (fieldName) {
+                const tr = document.createElement('tr');
+                
+                const tdFieldName = document.createElement('td');
+                tdFieldName.textContent = fieldName
+                tr.appendChild(tdFieldName);
+
+                // Validation container setup
+                const tdValidation = document.createElement('td');
+                const validationContainer = document.createElement('div');
+                validationContainer.style.display = 'flex';
+                validationContainer.style.alignItems = 'center';
+                validationContainer.style.gap = '8px';
+
+                // Create the Validation checkbox
+                const checkboxValidation = document.createElement('input');
+                checkboxValidation.type = 'checkbox';
+                checkboxValidation.name = `fieldNames[${fieldName}][validation]`;
+                checkboxValidation.classList.add('action-checkbox');
+                validationContainer.appendChild(checkboxValidation);
+
+                // Create the Validation icon with tooltip
+                const validationIcon = document.createElement('span');
+                validationIcon.classList.add('validation-icon');
+                validationIcon.style.cursor = 'pointer';
+                validationIcon.style.opacity = '0.5';
+                validationIcon.innerHTML = '⚙️';
+                validationIcon.title = 'Configure validation rules'; // Tooltip
+
+                validationIcon.style.pointerEvents = 'none'; // Disable clicking
+                checkboxValidation.addEventListener('change', function() {
+                    validationIcon.style.opacity = checkboxValidation.checked ? '1' : '0.5';
+                    validationIcon.style.pointerEvents = checkboxValidation.checked ? 'auto' : 'none';
+                });
+
+                validationIcon.addEventListener('click', function(event) {
+                    if (!validationIcon.style.pointerEvents) return;
+                    showValidationModal(event, fieldName);
+                });
+                validationContainer.appendChild(validationIcon);
+                tdValidation.appendChild(validationContainer);
+                tr.appendChild(tdValidation);
+
+                tableBody.appendChild(tr);
+            }
+        });
+    }
+
+    document.getElementById('guideline-modal-button-api').addEventListener('click', function () {
+        apiValidation();
+    });
 
 </script>
 @endpush

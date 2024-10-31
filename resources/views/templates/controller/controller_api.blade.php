@@ -257,7 +257,7 @@ class {{ ucfirst($name) }}Controller extends Controller
             return $this->success([], '{{ ucfirst($name) }} deleted successfully!', ResponseAlias::HTTP_NO_CONTENT);
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->error('Could not delete strtolower($name).', [], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error('Could not delete {{ strtolower($name) }}.', [], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

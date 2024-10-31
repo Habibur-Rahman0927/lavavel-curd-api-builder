@@ -255,43 +255,6 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-    public function generateRoutes($modelName)
-    {
-        try {
-            $controllerImport = "use App\Http\Controllers\Admin\\" . $modelName . "Controller;";
-            $routeContent = "\n\nRoute::resource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);";
-            $routeContent .= "\nRoute::get('" . strtolower($modelName) . "-list', [" . $modelName . "Controller::class, 'getDatatables'])->name('" . strtolower($modelName) . "-list');";
-
-            $routeFilePath = base_path('routes/admin.php');
-            $currentRouteFileContent = file_get_contents($routeFilePath);
-
-            if (strpos($currentRouteFileContent, $controllerImport) === false) {
-                $lines = explode("\n", $currentRouteFileContent);
-                $importIndex = null;
-
-                foreach ($lines as $index => $line) {
-                    if (trim($line) === 'use Illuminate\Support\Facades\Route;') {
-                        $importIndex = $index;
-                        break;
-                    }
-                }
-                if ($importIndex !== null) {
-                    array_splice($lines, $importIndex, 0, $controllerImport);
-                    $updatedContent = implode("\n", $lines);
-                    file_put_contents($routeFilePath, $updatedContent);
-                } else {
-                    $currentRouteFileContent = $currentRouteFileContent .  "\n" . $controllerImport;
-                    file_put_contents($routeFilePath, $currentRouteFileContent);
-                }
-            }
-            file_put_contents($routeFilePath, $routeContent, FILE_APPEND);
-            return ['success' => true];
-        } catch (Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
-    }
-
-
     public function generateCreateView($modelName, $fields)
     {  
         $lowerCaseModelName = strtolower($modelName);
@@ -1021,5 +984,308 @@ EOT;
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
+
+    public function generateApiController($modelName, $fields)
+    {
+        try {
+            $lowerCaseModelName = strtolower($modelName);
+            $controllerPath = app_path("Http/Controllers/Api/{$modelName}Controller.php");
+
+            // Check if the controller already exists
+            if (file_exists($controllerPath)) {
+                return ['success' => false, 'error' => 'Controller file already exists'];
+            }
+
+            // Generate Swagger properties from the fields
+            $integerTypes = [
+                'bigInteger', 'mediumInteger', 'smallInteger', 'tinyInteger', 
+                'unsignedBigInteger', 'unsignedInteger', 'unsignedMediumInteger', 
+                'unsignedSmallInteger', 'unsignedTinyInteger', 'integer'
+            ];
+            
+            $stringTypes = [
+                'binary', 'boolean', 'char', 'dateTime', 'date', 'decimal', 'double', 
+                'float', 'ipAddress', 'json', 'longText', 'macAddress', 'mediumText', 
+                'string', 'text', 'time', 'tinyText', 'uuid', 'year'
+            ];
+            
+            $fieldsList = '';
+            foreach ($fields as $field) {
+                $fieldName = $field['name'];
+                $inputType = $field['type'];
+            
+                if (in_array($inputType, $integerTypes)) {
+                    $swaggerType = 'integer';
+                } elseif (in_array($inputType, $stringTypes)) {
+                    $swaggerType = 'string';
+                } else {
+                    $swaggerType = 'string';
+                }
+                $fieldsList .= "\t *             @OA\Property(property=\"{$fieldName}\", type=\"{$swaggerType}\", example=\"example_value\"),\n";
+            }
+
+            // Start building the controller content
+            $controllerContent = "<?php\n\n";
+            $controllerContent .= "namespace App\Http\Controllers\Api;\n\n";
+            $controllerContent .= "use App\Http\Controllers\Controller;\n";
+            $controllerContent .= "use App\Services\\{$modelName}\\{$modelName}Service;\n";
+            $controllerContent .= "use App\Http\Requests\\Create{$modelName}Request;\n";
+            $controllerContent .= "use App\Http\Requests\\Update{$modelName}Request;\n";
+            $controllerContent .= "use Symfony\Component\HttpFoundation\Response as ResponseAlias;\n";
+            $controllerContent .= "use Illuminate\Http\JsonResponse;\n";
+            $controllerContent .= "use Exception;\n";
+            $controllerContent .= "use Illuminate\Support\Facades\DB;\n\n";
+
+            // Add Swagger Tag
+            $controllerContent .= "/**\n";
+            $controllerContent .= " * @OA\Tag(\n";
+            $controllerContent .= " *     name=\"{$modelName}\",\n";
+            $controllerContent .= " *     description=\"{$modelName} management operations\"\n";
+            $controllerContent .= " * )\n";
+            $controllerContent .= " */\n";
+            
+            // Define the Controller class
+            $controllerContent .= "class {$modelName}Controller extends Controller\n";
+            $controllerContent .= "{\n";
+            $controllerContent .= "    public function __construct(private {$modelName}Service \${$lowerCaseModelName}Service)\n";
+            $controllerContent .= "    {\n";
+            $controllerContent .= "    }\n\n";
+            
+            // Index method
+            $controllerContent .= "    /**\n";
+            $controllerContent .= "     * @OA\Get(\n";
+            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}\",\n";
+            $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
+            $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
+            $controllerContent .= "     *     summary=\"Get all {$lowerCaseModelName}s\",\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=200,\n";
+            $controllerContent .= "     *         description=\"A list of {$lowerCaseModelName}s\",\n";
+            $controllerContent .= "     *     )\n";
+            $controllerContent .= "     * )\n";
+            $controllerContent .= "     */\n";
+            $controllerContent .= "    public function index(): JsonResponse\n";
+            $controllerContent .= "    {\n";
+            $controllerContent .= "        try {\n";
+            $controllerContent .= "            \$data = \$this->{$lowerCaseModelName}Service->findAllWithPagination([], ['*'], 10);\n";
+            $controllerContent .= "            return \$this->success(\$data, 'Data retrieved successfully');\n";
+            $controllerContent .= "        } catch (Exception \$e) {\n";
+            $controllerContent .= "            return \$this->error('Could not retrieve {$lowerCaseModelName}s.', [], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);\n";
+            $controllerContent .= "        }\n";
+            $controllerContent .= "    }\n\n";
+
+            // Store method
+            $controllerContent .= "    /**\n";
+            $controllerContent .= "     * @OA\Post(\n";
+            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}\",\n";
+            $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
+            $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
+            $controllerContent .= "     *     summary=\"Create a new {$lowerCaseModelName}\",\n";
+            $controllerContent .= "     *     @OA\RequestBody(\n";
+            $controllerContent .= "     *         required=true,\n";
+            $controllerContent .= "     *         @OA\JsonContent(\n";
+            $controllerContent .= "     *             type=\"object\",\n";
+            $controllerContent .= $fieldsList;
+            $controllerContent .= "     *         )\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=201,\n";
+            $controllerContent .= "     *         description=\"{$modelName} created successfully\",\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=400,\n";
+            $controllerContent .= "     *         description=\"Invalid input\"\n";
+            $controllerContent .= "     *     )\n";
+            $controllerContent .= "     * )\n";
+            $controllerContent .= "     */\n";
+            $controllerContent .= "    public function store(Create{$modelName}Request \$request): JsonResponse\n";
+            $controllerContent .= "    {\n";
+            $controllerContent .= "        DB::beginTransaction();\n";
+            $controllerContent .= "        try {\n";
+            $controllerContent .= "            \$data = \$this->{$lowerCaseModelName}Service->create(\$request->all());\n";
+            $controllerContent .= "            DB::commit();\n";
+            $controllerContent .= "            return response()->json(['success' => true, 'data' => \$data], ResponseAlias::HTTP_CREATED);\n";
+            $controllerContent .= "        } catch (Exception \$e) {\n";
+            $controllerContent .= "            DB::rollBack();\n";
+            $controllerContent .= "            return response()->json(['success' => false, 'message' => 'Could not create {$lowerCaseModelName}.'], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);\n";
+            $controllerContent .= "        }\n";
+            $controllerContent .= "    }\n\n";
+
+            // Show method
+            $controllerContent .= "    /**\n";
+            $controllerContent .= "     * @OA\Get(\n";
+            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}/{id}\",\n";
+            $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
+            $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
+            $controllerContent .= "     *     summary=\"Get a {$lowerCaseModelName} by ID\",\n";
+            $controllerContent .= "     *     @OA\Parameter(\n";
+            $controllerContent .= "     *         name=\"id\",\n";
+            $controllerContent .= "     *         in=\"path\",\n";
+            $controllerContent .= "     *         required=true,\n";
+            $controllerContent .= "     *         @OA\Schema(type=\"integer\")\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=200,\n";
+            $controllerContent .= "     *         description=\"A single {$lowerCaseModelName} object\",\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=404,\n";
+            $controllerContent .= "     *         description=\"{$modelName} not found\"\n";
+            $controllerContent .= "     *     )\n";
+            $controllerContent .= "     * )\n";
+            $controllerContent .= "     */\n";
+            $controllerContent .= "    public function show(int \$id): JsonResponse\n";
+            $controllerContent .= "    {\n";
+            $controllerContent .= "        try {\n";
+            $controllerContent .= "            \$data = \$this->{$lowerCaseModelName}Service->findById(\$id);\n";
+            $controllerContent .= "            if (!\$data) {\n";
+            $controllerContent .= "                return response()->json(['success' => false, 'message' => '{$modelName} not found'], ResponseAlias::HTTP_NOT_FOUND);\n";
+            $controllerContent .= "            }\n";
+            $controllerContent .= "            return response()->json(['success' => true, 'data' => \$data], ResponseAlias::HTTP_OK);\n";
+            $controllerContent .= "        } catch (Exception \$e) {\n";
+            $controllerContent .= "            return response()->json(['success' => false, 'message' => 'Could not retrieve {$lowerCaseModelName}.'], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);\n";
+            $controllerContent .= "        }\n";
+            $controllerContent .= "    }\n\n";
+
+            // Update method
+            $controllerContent .= "    /**\n";
+            $controllerContent .= "     * @OA\Put(\n";
+            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}/{id}\",\n";
+            $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
+            $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
+            $controllerContent .= "     *     summary=\"Update an existing {$lowerCaseModelName}\",\n";
+            $controllerContent .= "     *     @OA\Parameter(\n";
+            $controllerContent .= "     *         name=\"id\",\n";
+            $controllerContent .= "     *         in=\"path\",\n";
+            $controllerContent .= "     *         required=true,\n";
+            $controllerContent .= "     *         @OA\Schema(type=\"integer\")\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\RequestBody(\n";
+            $controllerContent .= "     *         required=true,\n";
+            $controllerContent .= "     *         @OA\JsonContent(\n";
+            $controllerContent .= "     *             type=\"object\",\n";
+            $controllerContent .= $fieldsList;
+            $controllerContent .= "     *         )\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=200,\n";
+            $controllerContent .= "     *         description=\"{$modelName} updated successfully\",\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=404,\n";
+            $controllerContent .= "     *         description=\"{$modelName} not found\"\n";
+            $controllerContent .= "     *     )\n";
+            $controllerContent .= "     * )\n";
+            $controllerContent .= "     */\n";
+            $controllerContent .= "    public function update(Update{$modelName}Request \$request, int \$id): JsonResponse\n";
+            $controllerContent .= "    {\n";
+            $controllerContent .= "        DB::beginTransaction();\n";
+            $controllerContent .= "        try {\n";
+            $controllerContent .= "            \$data = \$this->{$lowerCaseModelName}Service->update(['id' => \$id], \$request->all());\n";
+            $controllerContent .= "            DB::commit();\n";
+            $controllerContent .= "            return response()->json(['success' => true, 'data' => \$data], ResponseAlias::HTTP_OK);\n";
+            $controllerContent .= "        } catch (Exception \$e) {\n";
+            $controllerContent .= "            DB::rollBack();\n";
+            $controllerContent .= "            return response()->json(['success' => false, 'message' => 'Could not update {$lowerCaseModelName}.'], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);\n";
+            $controllerContent .= "        }\n";
+            $controllerContent .= "    }\n\n";
+
+            // Destroy method
+            $controllerContent .= "    /**\n";
+            $controllerContent .= "     * @OA\Delete(\n";
+            $controllerContent .= "     *     path=\"/api/admin/{$lowerCaseModelName}/{id}\",\n";
+            $controllerContent .= "     *     tags={\"{$modelName}\"},\n";
+            $controllerContent .= "     *     security={{ \"bearerAuth\":{} }},\n";
+            $controllerContent .= "     *     summary=\"Delete a {$lowerCaseModelName} by ID\",\n";
+            $controllerContent .= "     *     @OA\Parameter(\n";
+            $controllerContent .= "     *         name=\"id\",\n";
+            $controllerContent .= "     *         in=\"path\",\n";
+            $controllerContent .= "     *         required=true,\n";
+            $controllerContent .= "     *         description=\"ID of the {$lowerCaseModelName} to delete\",\n";
+            $controllerContent .= "     *         @OA\Schema(type=\"integer\")\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=204,\n";
+            $controllerContent .= "     *         description=\"{$modelName} deleted successfully\",\n";
+            $controllerContent .= "     *     ),\n";
+            $controllerContent .= "     *     @OA\Response(\n";
+            $controllerContent .= "     *         response=404,\n";
+            $controllerContent .= "     *         description=\"{$modelName} not found\"\n";
+            $controllerContent .= "     *     )\n";
+            $controllerContent .= "     * )\n";
+            $controllerContent .= "     */\n";
+            $controllerContent .= "    public function destroy(int \$id): JsonResponse\n";
+            $controllerContent .= "    {\n";
+            $controllerContent .= "        DB::beginTransaction();\n";
+            $controllerContent .= "        try {\n";
+            $controllerContent .= "            \$data = \$this->{$lowerCaseModelName}Service->findById(\$id);\n\n";
+            $controllerContent .= "             if (!\$data) {\n";
+            $controllerContent .= "                 return \$this->error('Test not found.', [], ResponseAlias::HTTP_NOT_FOUND);\n";
+            $controllerContent .= "             }\n\n";
+            $controllerContent .= "            \$this->{$lowerCaseModelName}Service->deleteById(\$id);\n\n";
+            $controllerContent .= "            DB::commit();\n";
+            $controllerContent .= "            return \$this->success([], '{$modelName} deleted successfully!', ResponseAlias::HTTP_NO_CONTENT);\n";
+            $controllerContent .= "        } catch (Exception \$e) {\n";
+            $controllerContent .= "            DB::rollBack();\n";
+            $controllerContent .= "            return \$this->error([], 'Could not delete {$lowerCaseModelName}.', ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);\n";
+            $controllerContent .= "        }\n";
+            $controllerContent .= "    }\n";
+            $controllerContent .= "}\n";
+
+            // Save the controller content to a file
+            file_put_contents($controllerPath, $controllerContent);
+
+            return ['success' => true, 'message' => 'Controller created successfully'];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    public function generateRoutes($modelName, $isApi = false)
+    {
+        try {
+            $routeFilePath = $isApi ? base_path('routes/admin_api.php') : base_path('routes/admin.php');
+            $controllerNamespace = $isApi ? "App\Http\Controllers\Api\\" : "App\Http\Controllers\Admin\\";
+            $controllerImport = "use " . $controllerNamespace . $modelName . "Controller;";
+
+            $routeContent = $isApi
+                ? "\n\nRoute::apiResource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);"
+                : "\n\nRoute::resource('" . strtolower($modelName) . "', " . $modelName . "Controller::class);"
+                    . "\nRoute::get('" . strtolower($modelName) . "-list', [" . $modelName . "Controller::class, 'getDatatables'])->name('" . strtolower($modelName) . "-list');";
+
+            $currentRouteFileContent = file_get_contents($routeFilePath);
+
+            // Check if controller import exists
+            if (strpos($currentRouteFileContent, $controllerImport) === false) {
+                $lines = explode("\n", $currentRouteFileContent);
+                $importIndex = null;
+
+                foreach ($lines as $index => $line) {
+                    if (trim($line) === 'use Illuminate\Support\Facades\Route;') {
+                        $importIndex = $index;
+                        break;
+                    }
+                }
+
+                // Insert import statement after "use Route"
+                if ($importIndex !== null) {
+                    array_splice($lines, $importIndex + 1, 0, $controllerImport);
+                    $updatedContent = implode("\n", $lines);
+                    file_put_contents($routeFilePath, $updatedContent);
+                } else {
+                    // Append import if "use Route" not found
+                    file_put_contents($routeFilePath, "\n" . $controllerImport, FILE_APPEND);
+                }
+            }
+
+            // Append route content
+            file_put_contents($routeFilePath, $routeContent, FILE_APPEND);
+            
+            return ['success' => true];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
 
 }

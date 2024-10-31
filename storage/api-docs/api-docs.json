@@ -148,16 +148,16 @@
                 ]
             }
         },
-        "/api/admin/comment": {
+        "/api/admin/hello": {
             "get": {
                 "tags": [
-                    "Comment"
+                    "Hello"
                 ],
-                "summary": "Get all comment",
-                "operationId": "456975420049b0b4888fa562b6a4c902",
+                "summary": "Get all hellos",
+                "operationId": "6dfff1103a160dac9416f9b5277481c7",
                 "responses": {
                     "200": {
-                        "description": "A list of comment"
+                        "description": "A list of hellos"
                     }
                 },
                 "security": [
@@ -168,20 +168,23 @@
             },
             "post": {
                 "tags": [
-                    "Comment"
+                    "Hello"
                 ],
-                "summary": "Create a new comment",
-                "operationId": "3e711800e03c1b6cfff1f05f29bbe4c1",
+                "summary": "Create a new hello",
+                "operationId": "c8ea33ca0a386e7fac7dc2089f8e55e7",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "description": "The name of the comment",
+                                    "first_name": {
                                         "type": "string",
-                                        "example": "Sample name"
+                                        "example": "example_value"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "example_value"
                                     }
                                 },
                                 "type": "object"
@@ -191,7 +194,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Comment created successfully"
+                        "description": "Hello created successfully"
                     },
                     "400": {
                         "description": "Invalid input"
@@ -204,18 +207,17 @@
                 ]
             }
         },
-        "/api/admin/comment/{id}": {
+        "/api/admin/hello/{id}": {
             "get": {
                 "tags": [
-                    "Comment"
+                    "Hello"
                 ],
-                "summary": "Retrieve a single comment by ID",
-                "operationId": "8c1f3fd21765fb4d686c3dd64c66e4b6",
+                "summary": "Get a hello by ID",
+                "operationId": "401f07201982f5fe1a9471d85e5b3c7c",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the comment to retrieve",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -224,29 +226,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Comment retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "description": "The unique identifier of the comment",
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "description": "The name of the comment",
-                                            "type": "string",
-                                            "example": "Sample Name"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "A single hello object"
                     },
                     "404": {
-                        "description": "Comment not found"
+                        "description": "Hello not found"
                     }
                 },
                 "security": [
@@ -257,15 +240,14 @@
             },
             "put": {
                 "tags": [
-                    "Comment"
+                    "Hello"
                 ],
-                "summary": "Update an existing comment",
-                "operationId": "dc79da0ac0b5114de8d4627ec7f2add2",
+                "summary": "Update an existing hello",
+                "operationId": "5732901f73752b85eda5e64c4d6ea8a9",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the comment to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -278,10 +260,13 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "description": "The updated name of the comment",
+                                    "first_name": {
                                         "type": "string",
-                                        "example": "Updated name"
+                                        "example": "example_value"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "example_value"
                                     }
                                 },
                                 "type": "object"
@@ -291,32 +276,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Comment updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "description": "The unique identifier of the updated comment",
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "description": "The updated name of the comment",
-                                            "type": "string",
-                                            "example": "Updated name"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Hello updated successfully"
                     },
                     "404": {
-                        "description": "Comment not found"
-                    },
-                    "400": {
-                        "description": "Invalid input"
+                        "description": "Hello not found"
                     }
                 },
                 "security": [
@@ -327,15 +290,15 @@
             },
             "delete": {
                 "tags": [
-                    "Comment"
+                    "Hello"
                 ],
-                "summary": "Delete an existing comment",
-                "operationId": "986f105d2788e7469447af37e4270e47",
+                "summary": "Delete a hello by ID",
+                "operationId": "bff54ebf7807f5897ba704f76a11e69d",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the comment to delete",
+                        "description": "ID of the hello to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -344,10 +307,10 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "Comment Deleted successfully"
+                        "description": "Hello deleted successfully"
                     },
                     "404": {
-                        "description": "Comment not found"
+                        "description": "Hello not found"
                     }
                 },
                 "security": [
@@ -357,16 +320,16 @@
                 ]
             }
         },
-        "/api/admin/posts": {
+        "/api/admin/testhello": {
             "get": {
                 "tags": [
-                    "Posts"
+                    "TestHello"
                 ],
-                "summary": "Get all posts",
-                "operationId": "3c5ff02b2fccb55136f33aaeaa8a0f36",
+                "summary": "Get all testhellos",
+                "operationId": "8340c9b18573319a9869dbad1b9a069c",
                 "responses": {
                     "200": {
-                        "description": "A list of posts"
+                        "description": "A list of testhellos"
                     }
                 },
                 "security": [
@@ -377,20 +340,23 @@
             },
             "post": {
                 "tags": [
-                    "Posts"
+                    "TestHello"
                 ],
-                "summary": "Create a new post",
-                "operationId": "145a86ddf12e8160890c5abc0ba8c029",
+                "summary": "Create a new testhello",
+                "operationId": "990691c7418e594dc83bf9b0e0d0be5f",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "description": "The name of the post",
+                                    "first_name": {
                                         "type": "string",
-                                        "example": "Sample name"
+                                        "example": "example_value"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "example_value"
                                     }
                                 },
                                 "type": "object"
@@ -400,7 +366,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Post created successfully"
+                        "description": "TestHello created successfully"
                     },
                     "400": {
                         "description": "Invalid input"
@@ -413,18 +379,17 @@
                 ]
             }
         },
-        "/api/admin/posts/{id}": {
+        "/api/admin/testhello/{id}": {
             "get": {
                 "tags": [
-                    "Posts"
+                    "TestHello"
                 ],
-                "summary": "Retrieve a single post by ID",
-                "operationId": "8f3e571071a2765890ef18567c0ccd8a",
+                "summary": "Get a testhello by ID",
+                "operationId": "fd77a13f57adba6f7f6507d501a3d6a9",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the post to retrieve",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -433,29 +398,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Post retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "description": "The unique identifier of the post",
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "description": "The name of the post",
-                                            "type": "string",
-                                            "example": "Sample Name"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "A single testhello object"
                     },
                     "404": {
-                        "description": "Post not found"
+                        "description": "TestHello not found"
                     }
                 },
                 "security": [
@@ -466,15 +412,14 @@
             },
             "put": {
                 "tags": [
-                    "Posts"
+                    "TestHello"
                 ],
-                "summary": "Update an existing post",
-                "operationId": "a2a9261c02a7fc7e16275c5fa37f7b7b",
+                "summary": "Update an existing testhello",
+                "operationId": "97be61170a66e69e293dffcb9ca63734",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the post to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -487,10 +432,13 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "name": {
-                                        "description": "The updated name of the post",
+                                    "first_name": {
                                         "type": "string",
-                                        "example": "Updated name"
+                                        "example": "example_value"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "example_value"
                                     }
                                 },
                                 "type": "object"
@@ -500,32 +448,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Post updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "description": "The unique identifier of the updated post",
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "description": "The updated name of the post",
-                                            "type": "string",
-                                            "example": "Updated name"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "TestHello updated successfully"
                     },
                     "404": {
-                        "description": "Post not found"
-                    },
-                    "400": {
-                        "description": "Invalid input"
+                        "description": "TestHello not found"
                     }
                 },
                 "security": [
@@ -536,15 +462,15 @@
             },
             "delete": {
                 "tags": [
-                    "Posts"
+                    "TestHello"
                 ],
-                "summary": "Delete an existing post",
-                "operationId": "ede6250de814e6c847900520df40b7de",
+                "summary": "Delete a testhello by ID",
+                "operationId": "827e28e903872277b950fe6cee4ed87f",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the post to delete",
+                        "description": "ID of the testhello to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -553,10 +479,10 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "Post Deleted successfully"
+                        "description": "TestHello deleted successfully"
                     },
                     "404": {
-                        "description": "Post not found"
+                        "description": "TestHello not found"
                     }
                 },
                 "security": [
@@ -578,12 +504,12 @@
     },
     "tags": [
         {
-            "name": "Comment",
-            "description": "Comment management operations"
+            "name": "Hello",
+            "description": "Hello management operations"
         },
         {
-            "name": "Posts",
-            "description": "Post management operations"
+            "name": "TestHello",
+            "description": "TestHello management operations"
         },
         {
             "name": "Authentication",
