@@ -52,7 +52,7 @@
             ]
         },
         {
-            "name": "PermissionGroup",
+            "name": "Permission Group",
             "icon": "bi bi-menu-button-wide",
             "slug": "permissiongroup",
             "permission": [
@@ -94,7 +94,7 @@
             ]
         },
         {
-            "name": "RoleHasPermission",
+            "name": "Role Has Permission",
             "icon": "bi bi-menu-button-wide",
             "slug": "rolehaspermission",
             "permission": [
@@ -117,10 +117,16 @@
             ]
         },
         {
-            "nav-heading": "<li class='nav-heading'>Generated Module</li>",
+            "url": "crud.generator.create",
+            "icon": "bi bi-grid",
+            "name": "Generate CURD",
+            "slug": "crud.generator.create",
             "permission": [
-                "generated.module.heading"
+                "crud.generator.create"
             ]
+        },
+        {
+            "nav-heading": "<li class='nav-heading'>Generated Module</li>"
         }
     ]
 }

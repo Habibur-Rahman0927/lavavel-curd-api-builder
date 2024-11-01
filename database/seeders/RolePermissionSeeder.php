@@ -32,6 +32,10 @@ class RolePermissionSeeder extends Seeder
             ['name' => PermissionEnum::USER_EDIT->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::User->value, 'created_at' => now(), 'updated_at' => now()],
             ['name' => PermissionEnum::USER_UPDATE->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::User->value, 'created_at' => now(), 'updated_at' => now()],
             ['name' => PermissionEnum::USER_DESTROY->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::User->value, 'created_at' => now(), 'updated_at' => now()],
+
+            ['name' => PermissionEnum::PROFILE->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::PROFILE->value, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => PermissionEnum::PROFILE_UPDATE->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::PROFILE->value, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => PermissionEnum::PROFILE_PASSWORD_UPDATE->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::PROFILE->value, 'created_at' => now(), 'updated_at' => now()],
             
             // Curd permissions
             ['name' => PermissionEnum::CURD_GENERATOR_CREATE->value, 'guard_name' => 'web', 'group_name' => PermissionGroupEnum::CURD_GENERATOR->value, 'created_at' => now(), 'updated_at' => now()],

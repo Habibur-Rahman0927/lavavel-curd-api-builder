@@ -14,6 +14,10 @@ enum PermissionEnum: string
     case USER_UPDATE = 'user.update';
     case USER_DESTROY = 'user.destroy';
 
+    case PROFILE = 'profile';
+    case PROFILE_UPDATE = 'profile.update';
+    case PROFILE_PASSWORD_UPDATE = 'password.update';
+
     case CURD_GENERATOR_CREATE = 'crud.generator.create';
     case CURD_GENERATOR_STORE = 'crud.generator.store';
 
