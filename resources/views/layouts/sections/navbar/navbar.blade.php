@@ -1,6 +1,6 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center justify-content-between"> <a href="{{ route('admin-dashboard') }}"
-            class="logo d-flex align-items-center"> <span
+            class="logo d-flex align-items-center justify-content-center"> <span
                 class="d-none d-lg-block">CURD Builder</span> </a> <i class="bi bi-list toggle-sidebar-btn"></i></div>
     <div class="search-bar">
         <form class="search-form d-flex align-items-center"> <input type="text" name="query" placeholder="Search"

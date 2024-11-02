@@ -36,6 +36,18 @@
     margin-left: auto;
 }
 
+.btn-success {
+    color: #fff;
+    background: linear-gradient(135deg, #6eab23, #56ab2f);
+}
+
+
+.btn-danger {
+    color: #fff;
+    background: linear-gradient(135deg, #e15353, #c92a2a);
+    border-color: #dc3545;
+}
+
 @media (max-width: 767px) {
     .btn-group-wrapper {
         flex-direction: column;
@@ -108,12 +120,13 @@
 }
 
 .export-btn {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
     color: white;
 }
 
 .add-btn {
-    background-color: #28a745;
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    border: blue;
     color: white;
 }
 
@@ -121,6 +134,7 @@
 .add-btn:hover {
     background-color: #0056b3;
     color: white;
+    border-color: blue !important;
 }
 
 /* Dropdown Menu */
