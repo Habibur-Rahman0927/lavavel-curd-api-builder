@@ -53,7 +53,7 @@
         },
         {
             "name": "Permission Group",
-            "icon": "bi bi-menu-button-wide",
+            "icon": "bi bi-folder",
             "slug": "permissiongroup",
             "permission": [
                 "permissiongroup.index",
