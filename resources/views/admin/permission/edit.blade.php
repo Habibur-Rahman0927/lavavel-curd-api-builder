@@ -58,8 +58,8 @@
                                 <label class="form-label">Permission Group Name</label>
                                 <select class="form-select @error('group_name') is-invalid @enderror" name="group_name">
                                     <option value="" selected> -- Select Permission Group -- </option>
-                                    @foreach ($permissionGroups as $value => $text)
-                                        <option value="{{ $value }}" {{ $data->group_name == $value ? 'selected' : '' }}>{{ $text }}</option>
+                                    @foreach ($permissionGroups as $index => $value)
+                                        <option value="{{ $value->name }}" {{ $data->group_name == $value->name ? 'selected' : '' }}>{{ ucfirst($value->name) }}</option>
                                     @endforeach
                                 </select>
                                 @error('group_name')

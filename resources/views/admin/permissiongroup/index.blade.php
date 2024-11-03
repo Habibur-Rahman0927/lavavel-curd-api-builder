@@ -17,11 +17,11 @@
     <div id="routeData" data-url="{{ route('permissiongroup-list') }}"></div>
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>PermissionGroup List</h1>
+            <h1>Permission Group List</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active">PermissionGroup</li>
+                    <li class="breadcrumb-item active">Permission Group</li>
                 </ol>
             </nav>
         </div>
@@ -37,7 +37,6 @@
                                 <ul class="dropdown-menu">
                                     <li><button type="button" class="btn btn-secondary mb-1" id="csvExport">CSV</button></li>
                                     <li><button type="button" class="btn btn-secondary mb-1" id="excelExport">Excel</button></li>
-                                    <li><button type="button" class="btn btn-secondary mb-1" id="pdfExport">PDF</button></li>
                                     <li><button type="button" class="btn btn-secondary mb-1" id="printExport">Print</button></li>
                                 </ul>
                             </div>

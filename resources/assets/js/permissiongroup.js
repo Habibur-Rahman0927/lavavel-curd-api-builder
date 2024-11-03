@@ -22,7 +22,6 @@ $(function () {
         buttons: [
             { extend: 'csv', text: 'CSV', className: 'btn btn-secondary' },
             { extend: 'excel', text: 'Excel', className: 'btn btn-secondary' },
-            { extend: 'pdf', text: 'PDF', className: 'btn btn-secondary' },
             { extend: 'print', text: 'Print', className: 'btn btn-secondary' }
         ],
         initComplete: function () {
@@ -49,9 +48,6 @@ $(function () {
                 break;
             case 'excelExport':
                 table.button('.buttons-excel').trigger();
-                break;
-            case 'pdfExport':
-                table.button('.buttons-pdf').trigger();
                 break;
             case 'printExport':
                 table.button('.buttons-print').trigger();

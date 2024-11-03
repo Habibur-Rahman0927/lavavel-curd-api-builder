@@ -14,13 +14,17 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\CreatePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
+use App\Services\PermissionGroup\IPermissionGroupService;
 use Illuminate\Http\JsonResponse;
 use Exception;
 
 class PermissionController extends Controller
 {
 
-    public function __construct(private IPermissionService $permissionService)
+    public function __construct(
+                                private IPermissionService $permissionService,
+                                private readonly IPermissionGroupService $permissionGroupService
+    )
     {
 
     }
@@ -60,7 +64,7 @@ class PermissionController extends Controller
     public function create(): View
     {
         $permissions = Helpers::getCustomNameValueFromEnum(PermissionEnum::class);
-        $permissionGroups = Helpers::getCustomNameValueFromEnum(PermissionGroupEnum::class);
+        $permissionGroups = $this->permissionGroupService->findAll();
         return view('admin.permission.create')->with([
             'permissions' => $permissions,
             'permissionGroups' => $permissionGroups,
@@ -116,7 +120,7 @@ class PermissionController extends Controller
     {
         try {
             $permissions = Helpers::getCustomNameValueFromEnum(PermissionEnum::class);
-            $permissionGroups = Helpers::getCustomNameValueFromEnum(PermissionGroupEnum::class);
+            $permissionGroups = $this->permissionGroupService->findAll();
             $response = $this->permissionService->findById($id);
             return view('admin.permission.edit')->with([
                 'data' => $response,

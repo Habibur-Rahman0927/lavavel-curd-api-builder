@@ -37,7 +37,6 @@
                                 <ul class="dropdown-menu">
                                     <li><button type="button" class="btn btn-secondary mb-1" id="csvExport">CSV</button></li>
                                     <li><button type="button" class="btn btn-secondary mb-1" id="excelExport">Excel</button></li>
-                                    <li><button type="button" class="btn btn-secondary mb-1" id="pdfExport">PDF</button></li>
                                     <li><button type="button" class="btn btn-secondary mb-1" id="printExport">Print</button></li>
                                 </ul>
                             </div>

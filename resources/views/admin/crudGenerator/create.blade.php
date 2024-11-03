@@ -256,8 +256,9 @@
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div>
                         <button type="button" class="btn btn-secondary" id="add-relationship">➕ Add Relationship</button>
+                        <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
                     </div>
 
                     <div class="accordion mt-4 mb-3" id="accordionCrudSection">
@@ -363,8 +364,7 @@
 
                     <!-- Submit Button -->
                     <div class="form-group text-end">
-                        <button type="reset" class="btn btn-danger text-white">Reset</button> <!-- Reset Button -->
-                        <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
+                        <button type="reset" class="btn btn-danger text-white">Reset</button> 
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </div>
                 </form>

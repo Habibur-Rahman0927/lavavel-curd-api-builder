@@ -1,6 +1,6 @@
 @extends('layouts/layout')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'Create User')
 
 @section('page-style')
     @vite([])

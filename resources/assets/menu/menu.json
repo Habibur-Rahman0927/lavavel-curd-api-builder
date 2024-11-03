@@ -2,7 +2,7 @@
     "menu": [
         {
             "url": "admin-dashboard",
-            "icon": "bi bi-grid",
+            "icon": "bi bi-speedometer2",
             "name": "Dashboard",
             "slug": "admin-dashboard",
             "permission": [
@@ -11,7 +11,7 @@
         },
         {
             "name": "User",
-            "icon": "bi bi-menu-button-wide",
+            "icon": "bi bi-people",
             "slug": "user",
             "permission": [
                 "user.index",
@@ -32,7 +32,7 @@
         },
         {
             "name": "Role",
-            "icon": "bi bi-menu-button-wide",
+            "icon": "bi bi-shield-lock",
             "slug": "role",
             "permission": [
                 "role.index",
@@ -74,7 +74,7 @@
         },
         {
             "name": "Permission",
-            "icon": "bi bi-menu-button-wide",
+            "icon": "bi bi-key",
             "slug": "permission",
             "permission": [
                 "permission.index",
@@ -95,7 +95,7 @@
         },
         {
             "name": "Role Has Permission",
-            "icon": "bi bi-menu-button-wide",
+            "icon": "bi bi-gear",
             "slug": "rolehaspermission",
             "permission": [
                 "rolehaspermission.index",
@@ -118,7 +118,7 @@
         },
         {
             "url": "crud.generator.create",
-            "icon": "bi bi-grid",
+            "icon": "bi bi-file-earmark-code",
             "name": "Generate CURD",
             "slug": "crud.generator.create",
             "permission": [
