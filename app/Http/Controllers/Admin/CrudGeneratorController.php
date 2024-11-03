@@ -42,13 +42,12 @@ class CrudGeneratorController extends Controller
         ]);
     }
 
-    public function generateCurdAndAPI(Request $request)
+    public function generateCurdAndAPI(CrudGeneratorRequest $request)
     {
         $modelName = $request->input('model_name');
         $softDelete = $request->has('softdelete');
         $fields = $request->input('fields');
         $relationships = $request->input('relationships');
-        $createRoute = $request->has('create_route');
         $fieldNames = $request->input('fieldNames');
         $validations = $request->input('validations');
         $useCaseType = $request->input('use_case_type');
@@ -64,8 +63,8 @@ class CrudGeneratorController extends Controller
         Artisan::call('app:repository-gen', ['name' => $modelName]);
         $this->curdGeneratorService->generateOrBindServiceAndRepository($modelName);
 
-        $createRequestResult = $this->curdGeneratorService->generateCreateRequestFile($modelName, $validations);
-        $updateRequestResult = $this->curdGeneratorService->generateUpdateRequestFile($modelName, $validations);
+        $createRequestResult = $this->curdGeneratorService->generateRequestFile($modelName, $validations);
+        $updateRequestResult = $this->curdGeneratorService->generateRequestFile($modelName, $validations, 'Update');
 
         if (!$createRequestResult['success'] || !$updateRequestResult['success']) {
             return redirect()->back()->with('error', "Failed to create request files: " . ($createRequestResult['error'] ?? '') . ' ' . ($updateRequestResult['error'] ?? ''));
@@ -73,63 +72,54 @@ class CrudGeneratorController extends Controller
 
         if ($useCaseType === 'curd') {
             Artisan::call('app:controller-gen', ['name' => $modelName]);
-            return $this->handleCurd($modelName, $createRoute, $fieldNames);
+            return $this->handleCurd($modelName, $fieldNames);
         } elseif ($useCaseType === 'api') {
-            return $this->handleApi($modelName, $createRoute, $fields);
+            return $this->handleApi($modelName, $fields);
         } elseif ($useCaseType === 'api_curd') {
             Artisan::call('app:controller-gen', ['name' => $modelName]);
-            return $this->handleApiCurd($modelName, $createRoute, $fieldNames, $fields);
+            return $this->handleApiCurd($modelName, $fieldNames, $fields);
         }
     
         return redirect()->back()->with('error', 'Invalid Curd and api generator specified.');
 
     }
 
-    private function handleCurd($modelName, $createRoute, $fieldNames)
+    private function handleCurd($modelName, $fieldNames)
     {
-        if ($createRoute) {
-            $routeResult = $this->curdGeneratorService->generateRoutes($modelName);
-            if ($routeResult['success']) {
-                $this->generateViews($modelName, $fieldNames);
-                return redirect()->back()->with('success', 'CRUD resources created successfully with routes.');
-            }
-            return redirect()->back()->with('warning', 'CRUD resources created, but route generation failed.');
+        $routeResult = $this->curdGeneratorService->generateRoutes($modelName);
+        if ($routeResult['success']) {
+            $this->generateViews($modelName, $fieldNames);
+            return redirect()->back()->with('success', 'CRUD resources created successfully with routes.');
         }
-        return redirect()->back()->with('success', 'CRUD resources created without routes.');
+        return redirect()->back()->with('error', 'CRUD resources created, but route generation failed.');
     }
 
-    private function handleApi($modelName, $createRoute, $fields)
+    private function handleApi($modelName, $fields)
     {
-        if ($createRoute) {
-            $apiRouteResult = $this->curdGeneratorService->generateRoutes($modelName, true);
-            if ($apiRouteResult['success']) {
-                $apiControllerResult = $this->curdGeneratorService->generateApiController($modelName, $fields);
-                if ($apiControllerResult['success']) {
-                    return redirect()->back()->with('success', 'API resources created successfully with routes and controller.');
-                }
-                return redirect()->back()->with('warning', 'API resources created, but controller generation failed.');
+        $apiRouteResult = $this->curdGeneratorService->generateRoutes($modelName, true);
+        if ($apiRouteResult['success']) {
+            $apiControllerResult = $this->curdGeneratorService->generateApiController($modelName, $fields);
+            if ($apiControllerResult['success']) {
+                return redirect()->back()->with('success', 'API resources created successfully with routes and controller.');
             }
-            return redirect()->back()->with('warning', 'API resources created, but route generation failed.');
+            return redirect()->back()->with('error', 'API resources created, but controller generation failed.');
         }
-        return redirect()->back()->with('success', 'API resources created without routes.');
+        return redirect()->back()->with('error', 'API resources created, but route generation failed.');
     }
 
-    private function handleApiCurd($modelName, $createRoute, $fieldNames, $fields)
+    private function handleApiCurd($modelName, $fieldNames, $fields)
     {
-        if ($createRoute) {
-            $routeResult = $this->curdGeneratorService->generateRoutes($modelName);
-            $apiRouteResult = $this->curdGeneratorService->generateRoutes($modelName, true);
-            if ($routeResult['success'] && $apiRouteResult['success']) {
-                $this->generateViews($modelName, $fieldNames);
-                $apiControllerResult = $this->curdGeneratorService->generateApiController($modelName, $fields);
-                if ($apiControllerResult['success']) {
-                    return redirect()->back()->with('success', 'Full CRUD and API resources created successfully with routes.');
-                }
-                return redirect()->back()->with('warning', 'Full resources created, but API controller generation failed.');
+        $routeResult = $this->curdGeneratorService->generateRoutes($modelName);
+        $apiRouteResult = $this->curdGeneratorService->generateRoutes($modelName, true);
+        if ($routeResult['success'] && $apiRouteResult['success']) {
+            $this->generateViews($modelName, $fieldNames);
+            $apiControllerResult = $this->curdGeneratorService->generateApiController($modelName, $fields);
+            if ($apiControllerResult['success']) {
+                return redirect()->back()->with('success', 'Full CRUD and API resources created successfully with routes.');
             }
-            return redirect()->back()->with('warning', 'Full resources created, but route generation failed.');
+            return redirect()->back()->with('error', 'Full resources created, but API controller generation failed.');
         }
-        return redirect()->back()->with('success', 'Full CRUD and API resources created without routes.');
+        return redirect()->back()->with('error', 'Full resources created, but route generation failed.');
     }
 
     private function generateViews($modelName, $fieldNames)

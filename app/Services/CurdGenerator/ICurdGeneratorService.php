@@ -28,6 +28,8 @@ interface ICurdGeneratorService extends IBaseService
 
     public function generateUpdateRequestFile($modelName, $validations);
 
+    public function generateRequestFile($modelName, $validations, $type = 'Create');
+
     public function generateApiController($modelName, $fields);
 
     public function generateRoutes($modelName, $isApi = false);

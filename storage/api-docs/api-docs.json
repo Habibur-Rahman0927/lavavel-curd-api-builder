@@ -148,13 +148,185 @@
                 ]
             }
         },
-        "/api/admin/hello": {
+        "/api/admin/api-habib": {
+            "get": {
+                "tags": [
+                    "Habib"
+                ],
+                "summary": "Get all habibs",
+                "operationId": "f2e27fb1b15da4d1854fbb7954daca8f",
+                "responses": {
+                    "200": {
+                        "description": "A list of habibs"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Habib"
+                ],
+                "summary": "Create a new habib",
+                "operationId": "7152c2806f88ab39441f687b7cf35d8d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Habib created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/api-habib/{id}": {
+            "get": {
+                "tags": [
+                    "Habib"
+                ],
+                "summary": "Get a habib by ID",
+                "operationId": "2d3377f7fe49d56ca74b352f045607e8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single habib object"
+                    },
+                    "404": {
+                        "description": "Habib not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Habib"
+                ],
+                "summary": "Update an existing habib",
+                "operationId": "fb7a7442db9bde26f258cfe435dbd882",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Habib updated successfully"
+                    },
+                    "404": {
+                        "description": "Habib not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Habib"
+                ],
+                "summary": "Delete a habib by ID",
+                "operationId": "dc7e0545573d7e59c30e36b63a902a9d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the habib to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Habib deleted successfully"
+                    },
+                    "404": {
+                        "description": "Habib not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/api-hello": {
             "get": {
                 "tags": [
                     "Hello"
                 ],
                 "summary": "Get all hellos",
-                "operationId": "6dfff1103a160dac9416f9b5277481c7",
+                "operationId": "606876aa9ec7a30a9fd7dc70628161f7",
                 "responses": {
                     "200": {
                         "description": "A list of hellos"
@@ -171,7 +343,7 @@
                     "Hello"
                 ],
                 "summary": "Create a new hello",
-                "operationId": "c8ea33ca0a386e7fac7dc2089f8e55e7",
+                "operationId": "b6502dac6d84bcc8531c3db4fe03db50",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -179,11 +351,7 @@
                             "schema": {
                                 "properties": {
                                     "first_name": {
-                                        "type": "string",
-                                        "example": "example_value"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
+                                        "type": "integer",
                                         "example": "example_value"
                                     }
                                 },
@@ -207,13 +375,13 @@
                 ]
             }
         },
-        "/api/admin/hello/{id}": {
+        "/api/admin/api-hello/{id}": {
             "get": {
                 "tags": [
                     "Hello"
                 ],
                 "summary": "Get a hello by ID",
-                "operationId": "401f07201982f5fe1a9471d85e5b3c7c",
+                "operationId": "415655d3840cff679831e94bd0f707cc",
                 "parameters": [
                     {
                         "name": "id",
@@ -243,7 +411,7 @@
                     "Hello"
                 ],
                 "summary": "Update an existing hello",
-                "operationId": "5732901f73752b85eda5e64c4d6ea8a9",
+                "operationId": "5660a48b0e350a2f53c984659dbc76a3",
                 "parameters": [
                     {
                         "name": "id",
@@ -261,11 +429,7 @@
                             "schema": {
                                 "properties": {
                                     "first_name": {
-                                        "type": "string",
-                                        "example": "example_value"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
+                                        "type": "integer",
                                         "example": "example_value"
                                     }
                                 },
@@ -293,7 +457,7 @@
                     "Hello"
                 ],
                 "summary": "Delete a hello by ID",
-                "operationId": "bff54ebf7807f5897ba704f76a11e69d",
+                "operationId": "4233b95cd11ae38baf664e28ec5278bb",
                 "parameters": [
                     {
                         "name": "id",
@@ -320,16 +484,16 @@
                 ]
             }
         },
-        "/api/admin/testhello": {
+        "/api/admin/api-test100": {
             "get": {
                 "tags": [
-                    "TestHello"
+                    "Test100"
                 ],
-                "summary": "Get all testhellos",
-                "operationId": "8340c9b18573319a9869dbad1b9a069c",
+                "summary": "Get all test100s",
+                "operationId": "2015ac023602d4265d423681d7fca37f",
                 "responses": {
                     "200": {
-                        "description": "A list of testhellos"
+                        "description": "A list of test100s"
                     }
                 },
                 "security": [
@@ -340,10 +504,338 @@
             },
             "post": {
                 "tags": [
-                    "TestHello"
+                    "Test100"
                 ],
-                "summary": "Create a new testhello",
-                "operationId": "990691c7418e594dc83bf9b0e0d0be5f",
+                "summary": "Create a new test100",
+                "operationId": "cfc04b9285f6cdc0ad1ea79fce9aa1e8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Test100 created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/api-test100/{id}": {
+            "get": {
+                "tags": [
+                    "Test100"
+                ],
+                "summary": "Get a test100 by ID",
+                "operationId": "e296a5b6852216da6421551c7974628b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single test100 object"
+                    },
+                    "404": {
+                        "description": "Test100 not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Test100"
+                ],
+                "summary": "Update an existing test100",
+                "operationId": "afb235fff06718fce8b8f6d04955b642",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Test100 updated successfully"
+                    },
+                    "404": {
+                        "description": "Test100 not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Test100"
+                ],
+                "summary": "Delete a test100 by ID",
+                "operationId": "d9dd3233d7476f1557eb836f8775f3c6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the test100 to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Test100 deleted successfully"
+                    },
+                    "404": {
+                        "description": "Test100 not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/api-test101": {
+            "get": {
+                "tags": [
+                    "Test101"
+                ],
+                "summary": "Get all test101s",
+                "operationId": "15d6f4819fabdb72d58c70777c80e945",
+                "responses": {
+                    "200": {
+                        "description": "A list of test101s"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Test101"
+                ],
+                "summary": "Create a new test101",
+                "operationId": "53b50ad4e865cb6cc8205ec64a0fefe1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Test101 created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/api-test101/{id}": {
+            "get": {
+                "tags": [
+                    "Test101"
+                ],
+                "summary": "Get a test101 by ID",
+                "operationId": "8e0fad718e189281753353cbc79c0425",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A single test101 object"
+                    },
+                    "404": {
+                        "description": "Test101 not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Test101"
+                ],
+                "summary": "Update an existing test101",
+                "operationId": "9f29930639ec6d0b4800029313911b2c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Test101 updated successfully"
+                    },
+                    "404": {
+                        "description": "Test101 not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Test101"
+                ],
+                "summary": "Delete a test101 by ID",
+                "operationId": "15dfd11baef398841df9e7a1616d3a1d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the test101 to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Test101 deleted successfully"
+                    },
+                    "404": {
+                        "description": "Test101 not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/test": {
+            "get": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Get all tests",
+                "operationId": "bf9343f3ba93bb7df64e9d489b11714d",
+                "responses": {
+                    "200": {
+                        "description": "A list of tests"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Create a new test",
+                "operationId": "34d68e84ab47e23570bfd7bb924a5043",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -366,7 +858,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "TestHello created successfully"
+                        "description": "Test created successfully"
                     },
                     "400": {
                         "description": "Invalid input"
@@ -379,13 +871,13 @@
                 ]
             }
         },
-        "/api/admin/testhello/{id}": {
+        "/api/admin/test/{id}": {
             "get": {
                 "tags": [
-                    "TestHello"
+                    "Test"
                 ],
-                "summary": "Get a testhello by ID",
-                "operationId": "fd77a13f57adba6f7f6507d501a3d6a9",
+                "summary": "Get a test by ID",
+                "operationId": "59bdde9d42c86210d58d01e64135bc59",
                 "parameters": [
                     {
                         "name": "id",
@@ -398,10 +890,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A single testhello object"
+                        "description": "A single test object"
                     },
                     "404": {
-                        "description": "TestHello not found"
+                        "description": "Test not found"
                     }
                 },
                 "security": [
@@ -412,10 +904,10 @@
             },
             "put": {
                 "tags": [
-                    "TestHello"
+                    "Test"
                 ],
-                "summary": "Update an existing testhello",
-                "operationId": "97be61170a66e69e293dffcb9ca63734",
+                "summary": "Update an existing test",
+                "operationId": "5925d725e651e2152684633fdaea8d2f",
                 "parameters": [
                     {
                         "name": "id",
@@ -448,10 +940,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "TestHello updated successfully"
+                        "description": "Test updated successfully"
                     },
                     "404": {
-                        "description": "TestHello not found"
+                        "description": "Test not found"
                     }
                 },
                 "security": [
@@ -462,15 +954,15 @@
             },
             "delete": {
                 "tags": [
-                    "TestHello"
+                    "Test"
                 ],
-                "summary": "Delete a testhello by ID",
-                "operationId": "827e28e903872277b950fe6cee4ed87f",
+                "summary": "Delete a test by ID",
+                "operationId": "03d3e4c36d69240110a8caf32bed0e54",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the testhello to delete",
+                        "description": "ID of the test to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -479,10 +971,10 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "TestHello deleted successfully"
+                        "description": "Test deleted successfully"
                     },
                     "404": {
-                        "description": "TestHello not found"
+                        "description": "Test not found"
                     }
                 },
                 "security": [
@@ -504,12 +996,24 @@
     },
     "tags": [
         {
+            "name": "Habib",
+            "description": "Habib management operations"
+        },
+        {
             "name": "Hello",
             "description": "Hello management operations"
         },
         {
-            "name": "TestHello",
-            "description": "TestHello management operations"
+            "name": "Test100",
+            "description": "Test100 management operations"
+        },
+        {
+            "name": "Test101",
+            "description": "Test101 management operations"
+        },
+        {
+            "name": "Test",
+            "description": "Test management operations"
         },
         {
             "name": "Authentication",

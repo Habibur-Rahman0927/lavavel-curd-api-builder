@@ -23,6 +23,7 @@ class CrudGeneratorRequest extends FormRequest
     {
         return [
             'model_name' => 'required|string|max:255',
+            'use_case_type' => 'required',
             'softdelete' => 'nullable|boolean',
             'fields' => 'required|array',
             'fields.*.type' => 'required|string|in:bigInteger,binary,boolean,char,dateTime,date,decimal,double,float,integer,ipAddress,json,longText,macAddress,mediumInteger,mediumText,smallInteger,string,text,time,tinyInteger,tinyText,unsignedBigInteger,unsignedInteger,unsignedMediumInteger,unsignedSmallInteger,unsignedTinyInteger,uuid,year',
@@ -36,6 +37,27 @@ class CrudGeneratorRequest extends FormRequest
             'relationships.*.type' => 'required|string|in:hasOne,hasMany,belongsTo,belongsToMany',
             'relationships.*.related_model' => 'required|string|max:255',
             'relationships.*.foreign_key' => 'required|string|max:255',
+            'fieldNames' => [
+                'required_if:use_case_type,api_curd,curd',
+                'array',
+                function ($attribute, $value, $fail) {
+                    if (in_array($this->use_case_type, ['api_curd', 'curd'])) {
+                        $hasCreateEditList = false;
+            
+                        foreach ($value as $field) {
+                            if (!empty($field['create']) || !empty($field['edit']) || !empty($field['list'])) {
+                                $hasCreateEditList = true;
+                                break;
+                            }
+                        }
+            
+                        if (!$hasCreateEditList) {
+                            $fail('For standard CRUD, at least one field must be set to "create", "edit", or "list" to proceed.');
+                        }
+                    }
+                },
+            ],
+            
         ];
     }
 

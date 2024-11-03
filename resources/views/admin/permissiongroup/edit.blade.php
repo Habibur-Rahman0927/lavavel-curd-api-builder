@@ -14,11 +14,11 @@
 @section('content')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Edit PermissionGroup</h1>
+            <h1>Edit Permission Group</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active">PermissionGroup</li>
+                    <li class="breadcrumb-item active">Permission Group</li>
                 </ol>
             </nav>
         </div>

@@ -121,19 +121,6 @@
                                 </tr>
                                 <tr>
                                     <td class="align-middle">
-                                        <label for="create-route-checkbox" class="form-label">Auto-generate Routes</label>
-                                    </td>
-                                    <td>
-                                        <div class="form-check">
-                                            <input type="checkbox" id="create-route-checkbox" name="create_route" value="1" checked>
-                                            <label class="form-check-label" for="create-route-checkbox">
-                                                Enable automatic route generation for this model. This will automatically create routes for the model and make it accessible via the navigation menu.
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="align-middle">
                                         <label for="softdelete-checkbox" class="form-label">Soft Deletes</label>
                                     </td>
                                     <td>
@@ -269,8 +256,9 @@
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div>
                         <button type="button" class="btn btn-secondary" id="add-relationship">➕ Add Relationship</button>
+                        <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
                     </div>
 
                     <div class="accordion mt-4 mb-3" id="accordionCrudSection">
@@ -376,8 +364,7 @@
 
                     <!-- Submit Button -->
                     <div class="form-group text-end">
-                        <button type="reset" class="btn btn-danger text-white">Reset</button> <!-- Reset Button -->
-                        <button type="button" class="btn btn-warning" id="preview-button">Preview</button>
+                        <button type="reset" class="btn btn-danger text-white">Reset</button> 
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </div>
                 </form>
