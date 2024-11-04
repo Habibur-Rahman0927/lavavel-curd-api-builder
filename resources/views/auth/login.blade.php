@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/custom-login.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/custom-style-login-register.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -56,7 +56,7 @@
                     @if (Route::has('password.request'))
                         <a class="text-decoration-none" href="{{ route('password.request') }}">Forgot your password?</a>
                     @endif
-                    <a class="text-decoration-none" href="{{ route('register') }}">Do you have no account?</a>
+                    <a class="text-decoration-none" href="{{ route('register') }}">Don't have an account?</a>
                 </div>
             </form>
         </div>

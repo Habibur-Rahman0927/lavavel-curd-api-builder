@@ -20,7 +20,7 @@
             <div class="buttons">
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                        <a href="{{ route('admin-dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
                     @else
                         <a href="{{ route('login') }}" class="btn btn-primary">Log in</a>
                         @if (Route::has('register'))
