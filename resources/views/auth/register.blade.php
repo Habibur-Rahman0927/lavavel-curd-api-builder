@@ -13,91 +13,13 @@
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Correct link for Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ asset('assets/css/custom-register.css') }}" rel="stylesheet">
 
-    <style>
-        /* Full-screen gradient background */
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #0d6efd, #6c757d);
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .container {
-            max-width: 500px;
-        }
-        .logo {
-            color: white;
-            font-weight: bold;
-            font-size: 1.5rem;
-            text-align: center;
-            display: block;
-            margin-bottom: 1.5rem;
-        }
-        .logo:hover {
-            text-decoration: none;
-            color: #d1e9ff;
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-        }
-        .card-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-        }
-        /* Enhanced input fields */
-        .form-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        .form-control {
-            padding-left: 2.5rem;
-            border-radius: 10px;
-        }
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
-        }
-        /* Input icon positioning */
-        .input-icon {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-            color: #555;
-        }
-        /* Button styling */
-        .btn-primary {
-            background: linear-gradient(135deg, #0d6efd, #6610f2);
-            border: none;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            transition: background 0.3s ease;
-            width: 50%;
-            padding: 0.75rem;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #6610f2, #0d6efd);
-        }
-        /* SEO Optimization and Accessibility */
-        .back-to-top {
-            display: none;
-        }
-    </style>
 </head>
 
 <body>
     <div class="container">
-        <a href="index.html" class="logo">Laravel CRUD Builder</a>
+        <a href="#" class="logo">Laravel CRUD Builder</a>
         <div class="card">
             <h5 class="card-title">Create Your Account</h5>
             <p class="text-center small mb-4">Enter your details to register</p>

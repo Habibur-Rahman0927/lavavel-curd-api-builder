@@ -1,6 +1,6 @@
 @extends('layouts/layout')
 
-@section('title', 'role')
+@section('title', 'Role')
 
 @section('page-style')
     @vite([])
@@ -16,11 +16,11 @@
     <div id="routeData" data-url="{{ route('role-list') }}"></div>
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>role List</h1>
+            <h1>Role List</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active">role</li>
+                    <li class="breadcrumb-item active">Role</li>
                 </ol>
             </nav>
         </div>
