@@ -1,10 +1,10 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "OCD API Documentation",
-        "description": "Your API Description",
+        "title": "CRUD Builder API Documentation",
+        "description": "API documentation for the CRUD Builder, designed to generate CRUD operations dynamically for various models and configurations.",
         "contact": {
-            "email": "contact@example.com"
+            "email": "support@yourcrudbuilder.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -148,16 +148,16 @@
                 ]
             }
         },
-        "/api/admin/api-habib": {
+        "/api/admin/api-test1": {
             "get": {
                 "tags": [
-                    "Habib"
+                    "Test1"
                 ],
-                "summary": "Get all habibs",
-                "operationId": "f2e27fb1b15da4d1854fbb7954daca8f",
+                "summary": "Get all test1s",
+                "operationId": "16ca41eec7e641a940bdb1929eecc3d9",
                 "responses": {
                     "200": {
-                        "description": "A list of habibs"
+                        "description": "A list of test1s"
                     }
                 },
                 "security": [
@@ -168,22 +168,18 @@
             },
             "post": {
                 "tags": [
-                    "Habib"
+                    "Test1"
                 ],
-                "summary": "Create a new habib",
-                "operationId": "7152c2806f88ab39441f687b7cf35d8d",
+                "summary": "Create a new test1",
+                "operationId": "72d4e00b48c37b88571a88a3d4cfda6a",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "first_name": {
-                                        "type": "string",
-                                        "example": "example_value"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
+                                    "big_int": {
+                                        "type": "integer",
                                         "example": "example_value"
                                     }
                                 },
@@ -194,7 +190,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Habib created successfully"
+                        "description": "Test1 created successfully"
                     },
                     "400": {
                         "description": "Invalid input"
@@ -207,13 +203,13 @@
                 ]
             }
         },
-        "/api/admin/api-habib/{id}": {
+        "/api/admin/api-test1/{id}": {
             "get": {
                 "tags": [
-                    "Habib"
+                    "Test1"
                 ],
-                "summary": "Get a habib by ID",
-                "operationId": "2d3377f7fe49d56ca74b352f045607e8",
+                "summary": "Get a test1 by ID",
+                "operationId": "631ca27f91134c91e2a2956fce463877",
                 "parameters": [
                     {
                         "name": "id",
@@ -226,10 +222,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A single habib object"
+                        "description": "A single test1 object"
                     },
                     "404": {
-                        "description": "Habib not found"
+                        "description": "Test1 not found"
                     }
                 },
                 "security": [
@@ -240,10 +236,10 @@
             },
             "put": {
                 "tags": [
-                    "Habib"
+                    "Test1"
                 ],
-                "summary": "Update an existing habib",
-                "operationId": "fb7a7442db9bde26f258cfe435dbd882",
+                "summary": "Update an existing test1",
+                "operationId": "a58877963ca908db622be11c9ef7f7e3",
                 "parameters": [
                     {
                         "name": "id",
@@ -260,12 +256,8 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "first_name": {
-                                        "type": "string",
-                                        "example": "example_value"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
+                                    "big_int": {
+                                        "type": "integer",
                                         "example": "example_value"
                                     }
                                 },
@@ -276,10 +268,10 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Habib updated successfully"
+                        "description": "Test1 updated successfully"
                     },
                     "404": {
-                        "description": "Habib not found"
+                        "description": "Test1 not found"
                     }
                 },
                 "security": [
@@ -290,15 +282,15 @@
             },
             "delete": {
                 "tags": [
-                    "Habib"
+                    "Test1"
                 ],
-                "summary": "Delete a habib by ID",
-                "operationId": "dc7e0545573d7e59c30e36b63a902a9d",
+                "summary": "Delete a test1 by ID",
+                "operationId": "ab3f7d388665fc8ee4a04703eded5128",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the habib to delete",
+                        "description": "ID of the test1 to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -307,10 +299,10 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "Habib deleted successfully"
+                        "description": "Test1 deleted successfully"
                     },
                     "404": {
-                        "description": "Habib not found"
+                        "description": "Test1 not found"
                     }
                 },
                 "security": [
@@ -320,505 +312,13 @@
                 ]
             }
         },
-        "/api/admin/api-hello": {
-            "get": {
-                "tags": [
-                    "Hello"
-                ],
-                "summary": "Get all hellos",
-                "operationId": "606876aa9ec7a30a9fd7dc70628161f7",
-                "responses": {
-                    "200": {
-                        "description": "A list of hellos"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Hello"
-                ],
-                "summary": "Create a new hello",
-                "operationId": "b6502dac6d84bcc8531c3db4fe03db50",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "first_name": {
-                                        "type": "integer",
-                                        "example": "example_value"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Hello created successfully"
-                    },
-                    "400": {
-                        "description": "Invalid input"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/api-hello/{id}": {
-            "get": {
-                "tags": [
-                    "Hello"
-                ],
-                "summary": "Get a hello by ID",
-                "operationId": "415655d3840cff679831e94bd0f707cc",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single hello object"
-                    },
-                    "404": {
-                        "description": "Hello not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Hello"
-                ],
-                "summary": "Update an existing hello",
-                "operationId": "5660a48b0e350a2f53c984659dbc76a3",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "first_name": {
-                                        "type": "integer",
-                                        "example": "example_value"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Hello updated successfully"
-                    },
-                    "404": {
-                        "description": "Hello not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Hello"
-                ],
-                "summary": "Delete a hello by ID",
-                "operationId": "4233b95cd11ae38baf664e28ec5278bb",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the hello to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Hello deleted successfully"
-                    },
-                    "404": {
-                        "description": "Hello not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/api-test100": {
-            "get": {
-                "tags": [
-                    "Test100"
-                ],
-                "summary": "Get all test100s",
-                "operationId": "2015ac023602d4265d423681d7fca37f",
-                "responses": {
-                    "200": {
-                        "description": "A list of test100s"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Test100"
-                ],
-                "summary": "Create a new test100",
-                "operationId": "cfc04b9285f6cdc0ad1ea79fce9aa1e8",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "first_name": {
-                                        "type": "integer",
-                                        "example": "example_value"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Test100 created successfully"
-                    },
-                    "400": {
-                        "description": "Invalid input"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/api-test100/{id}": {
-            "get": {
-                "tags": [
-                    "Test100"
-                ],
-                "summary": "Get a test100 by ID",
-                "operationId": "e296a5b6852216da6421551c7974628b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single test100 object"
-                    },
-                    "404": {
-                        "description": "Test100 not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Test100"
-                ],
-                "summary": "Update an existing test100",
-                "operationId": "afb235fff06718fce8b8f6d04955b642",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "first_name": {
-                                        "type": "integer",
-                                        "example": "example_value"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Test100 updated successfully"
-                    },
-                    "404": {
-                        "description": "Test100 not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Test100"
-                ],
-                "summary": "Delete a test100 by ID",
-                "operationId": "d9dd3233d7476f1557eb836f8775f3c6",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the test100 to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Test100 deleted successfully"
-                    },
-                    "404": {
-                        "description": "Test100 not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/api-test101": {
-            "get": {
-                "tags": [
-                    "Test101"
-                ],
-                "summary": "Get all test101s",
-                "operationId": "15d6f4819fabdb72d58c70777c80e945",
-                "responses": {
-                    "200": {
-                        "description": "A list of test101s"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Test101"
-                ],
-                "summary": "Create a new test101",
-                "operationId": "53b50ad4e865cb6cc8205ec64a0fefe1",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "first_name": {
-                                        "type": "integer",
-                                        "example": "example_value"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Test101 created successfully"
-                    },
-                    "400": {
-                        "description": "Invalid input"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/api-test101/{id}": {
-            "get": {
-                "tags": [
-                    "Test101"
-                ],
-                "summary": "Get a test101 by ID",
-                "operationId": "8e0fad718e189281753353cbc79c0425",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single test101 object"
-                    },
-                    "404": {
-                        "description": "Test101 not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Test101"
-                ],
-                "summary": "Update an existing test101",
-                "operationId": "9f29930639ec6d0b4800029313911b2c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "first_name": {
-                                        "type": "integer",
-                                        "example": "example_value"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Test101 updated successfully"
-                    },
-                    "404": {
-                        "description": "Test101 not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Test101"
-                ],
-                "summary": "Delete a test101 by ID",
-                "operationId": "15dfd11baef398841df9e7a1616d3a1d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the test101 to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Test101 deleted successfully"
-                    },
-                    "404": {
-                        "description": "Test101 not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/test": {
+        "/api/admin/api-test": {
             "get": {
                 "tags": [
                     "Test"
                 ],
                 "summary": "Get all tests",
-                "operationId": "bf9343f3ba93bb7df64e9d489b11714d",
+                "operationId": "0188079ede30bb6a8e5c83d0be9df07e",
                 "responses": {
                     "200": {
                         "description": "A list of tests"
@@ -835,18 +335,122 @@
                     "Test"
                 ],
                 "summary": "Create a new test",
-                "operationId": "34d68e84ab47e23570bfd7bb924a5043",
+                "operationId": "d873c55aec8fc4761d70111e1b66f214",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "first_name": {
+                                    "big_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "boolean": {
                                         "type": "string",
                                         "example": "example_value"
                                     },
-                                    "last_name": {
+                                    "date_time": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "decimal": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "integer": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "json": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "long_text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "string": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "time": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "uuid": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "binary": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "char": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "bouble": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "float": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "ip": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "mac": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "m_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "m_text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "s_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "t_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "t_text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "u_big_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_m_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_s_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_t_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "year": {
                                         "type": "string",
                                         "example": "example_value"
                                     }
@@ -871,13 +475,13 @@
                 ]
             }
         },
-        "/api/admin/test/{id}": {
+        "/api/admin/api-test/{id}": {
             "get": {
                 "tags": [
                     "Test"
                 ],
                 "summary": "Get a test by ID",
-                "operationId": "59bdde9d42c86210d58d01e64135bc59",
+                "operationId": "143d07bf612df6328767141cca33451d",
                 "parameters": [
                     {
                         "name": "id",
@@ -907,7 +511,7 @@
                     "Test"
                 ],
                 "summary": "Update an existing test",
-                "operationId": "5925d725e651e2152684633fdaea8d2f",
+                "operationId": "ca8014abc4058ec5a1a8cdcce51b2bde",
                 "parameters": [
                     {
                         "name": "id",
@@ -924,11 +528,115 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "first_name": {
+                                    "big_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "boolean": {
                                         "type": "string",
                                         "example": "example_value"
                                     },
-                                    "last_name": {
+                                    "date_time": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "decimal": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "integer": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "json": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "long_text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "string": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "time": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "uuid": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "binary": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "char": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "bouble": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "float": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "ip": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "mac": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "m_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "m_text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "s_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "t_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "t_text": {
+                                        "type": "string",
+                                        "example": "example_value"
+                                    },
+                                    "u_big_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_m_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_s_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "u_t_int": {
+                                        "type": "integer",
+                                        "example": "example_value"
+                                    },
+                                    "year": {
                                         "type": "string",
                                         "example": "example_value"
                                     }
@@ -957,7 +665,7 @@
                     "Test"
                 ],
                 "summary": "Delete a test by ID",
-                "operationId": "03d3e4c36d69240110a8caf32bed0e54",
+                "operationId": "9bbb1b7f41df51dbe122e6fd857635e6",
                 "parameters": [
                     {
                         "name": "id",
@@ -996,20 +704,8 @@
     },
     "tags": [
         {
-            "name": "Habib",
-            "description": "Habib management operations"
-        },
-        {
-            "name": "Hello",
-            "description": "Hello management operations"
-        },
-        {
-            "name": "Test100",
-            "description": "Test100 management operations"
-        },
-        {
-            "name": "Test101",
-            "description": "Test101 management operations"
+            "name": "Test1",
+            "description": "Test1 management operations"
         },
         {
             "name": "Test",

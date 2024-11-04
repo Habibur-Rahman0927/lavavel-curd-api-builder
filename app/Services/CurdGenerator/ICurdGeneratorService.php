@@ -6,31 +6,112 @@ use App\Services\IBaseService;
 
 interface ICurdGeneratorService extends IBaseService
 {
-    public function generateModel($modelName, $softDelete, $fields, $relationships);
+    /**
+     * Generate a model with the specified name and options.
+     *
+     * @param string $modelName The name of the model.
+     * @param bool $softDelete Indicates whether the model should use soft deletes.
+     * @param array $fields An array of field definitions for the model.
+     * @param array $relationships An array of relationships to define for the model.
+     * @return array
+     */
+    public function generateModel(string $modelName, bool $softDelete, array $fields, array $relationships): array;
 
-    public function generateMigration($modelName, $fields, $softDelete);
+    /**
+     * Generate a migration file for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the migration.
+     * @param bool $softDelete Indicates whether to include soft delete columns.
+     * @return array
+     */
+    public function generateMigration(string $modelName, array $fields, bool $softDelete): array;
 
-    public function generateOrBindServiceAndRepository($modelName);
+    /**
+     * Generate or bind the service and repository for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @return array
+     */
+    public function generateOrBindServiceAndRepository(string $modelName): array;
 
-    public function generateCreateView($modelName, $fields);
+    /**
+     * Generate a create view for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the view.
+     * @return array
+     */
+    public function generateCreateView(string $modelName, array $fields): array;
 
-    public function generateEditView($modelName, $fields);
+    /**
+     * Generate an edit view for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the view.
+     * @return array
+     */
+    public function generateEditView(string $modelName, array $fields): array;
 
-    public function generateIndexView($modelName, $fields);
+    /**
+     * Generate an index view for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the view.
+     * @return array
+     */
+    public function generateIndexView(string $modelName, array $fields): array;
 
-    public function generateJavaScript($modelName, $fields);
+    /**
+     * Generate JavaScript for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the JavaScript.
+     * @return array
+     */
+    public function generateJavaScript(string $modelName, array $fields): array;
 
-    public function addMenuItem($modelName);
+    /**
+     * Add a menu item for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @return array
+     */
+    public function addMenuItem(string $modelName): array;
 
-    public function createPermission($modelName);
+    /**
+     * Create permissions for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @return array
+     */
+    public function createPermission(string $modelName): array;
 
-    public function generateCreateRequestFile($modelName, $validations);
+    /**
+     * Generate a request file for creating or updating a model instance.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $validations An array of validation rules.
+     * @param string $type The type of request ('Create' or 'Update').
+     * @return array
+     */
+    public function generateRequestFile(string $modelName, array $validations, string $type = 'Create'): array;
 
-    public function generateUpdateRequestFile($modelName, $validations);
+    /**
+     * Generate an API controller for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields for the API controller.
+     * @return array
+     */
+    public function generateApiController(string $modelName, array $fields): array;
 
-    public function generateRequestFile($modelName, $validations, $type = 'Create');
-
-    public function generateApiController($modelName, $fields);
-
-    public function generateRoutes($modelName, $isApi = false);
+    /**
+     * Generate routes for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param bool $isApi Indicates whether the routes are for an API.
+     * @return array
+     */
+    public function generateRoutes(string $modelName, bool $isApi = false): array;
 }

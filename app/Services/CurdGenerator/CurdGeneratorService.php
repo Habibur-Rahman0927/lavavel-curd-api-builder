@@ -22,7 +22,16 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         parent::__construct($permissionRepository);
     }
 
-    public function generateModel($modelName, $softDelete, $fields, $relationships)
+    /**
+     * Generate a model with the specified name and options.
+     *
+     * @param string $modelName The name of the model.
+     * @param bool $softDelete Indicates whether the model should use soft deletes.
+     * @param array $fields An array of field definitions for the model.
+     * @param array $relationships An array of relationships to define for the model.
+     * @return array
+     */
+    public function generateModel(string $modelName, bool $softDelete, array $fields, array $relationships): array
     {
         $modelPath = app_path("Models/{$modelName}.php");
 
@@ -99,7 +108,15 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-    public function generateMigration($modelName, $fields, $softDelete)
+    /**
+     * Generate a migration file for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the migration.
+     * @param bool $softDelete Indicates whether to include soft delete columns.
+     * @return array
+     */
+    public function generateMigration(string $modelName, array $fields, bool $softDelete): array
     {
         $tableName = strtolower(Str::plural(Str::snake($modelName)));
         $migrationName = "create_{$tableName}_table";
@@ -174,7 +191,13 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-    public function generateOrBindServiceAndRepository($modelName): array
+    /**
+     * Generate or bind the service and repository for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @return void
+     */
+    public function generateOrBindServiceAndRepository(string $modelName): array
     {
         try {
             $modelName = ucfirst($modelName);
@@ -255,7 +278,14 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-    public function generateCreateView($modelName, $fields)
+    /**
+     * Generate a create view for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the view.
+     * @return array
+     */
+    public function generateCreateView(string $modelName, array $fields): array
     {  
         $lowerCaseModelName = strtolower($modelName);
         $viewPath = resource_path("views/admin/{$lowerCaseModelName}");
@@ -392,8 +422,14 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-
-    public function generateEditView($modelName, $fields)
+    /**
+     * Generate an edit view for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the view.
+     * @return array
+     */
+    public function generateEditView(string $modelName, array $fields): array
     {
         $lowerCaseModelName = strtolower($modelName);
         $viewPath = resource_path("views/admin/{$lowerCaseModelName}");
@@ -526,8 +562,14 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-
-    public function generateIndexView($modelName, $fields)
+    /**
+     * Generate an index view for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the view.
+     * @return array
+     */
+    public function generateIndexView(string $modelName, array $fields): array
     {
         $lowerCaseModelName = strtolower($modelName);
         $viewPath = resource_path("views/admin/{$lowerCaseModelName}");
@@ -635,8 +677,14 @@ class CurdGeneratorService extends BaseService implements ICurdGeneratorService
         }
     }
 
-
-    public function generateJavaScript($modelName, $fields)
+    /**
+     * Generate JavaScript for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields to include in the JavaScript.
+     * @return array
+     */
+    public function generateJavaScript(string $modelName, array $fields): array
     {
         $lowerCaseModelName = strtolower($modelName);
         $jsPath = resource_path("assets/js");
@@ -767,8 +815,13 @@ $(function () {
         }
     }
 
-
-    public function addMenuItem($modelName)
+    /**
+     * Add a menu item for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @return array
+     */
+    public function addMenuItem(string $modelName): array
     {
         try {
             $menuFilePath = base_path('resources/assets/menu/menu.json');
@@ -813,7 +866,13 @@ $(function () {
         }
     }
 
-    public function createPermission($modelName)
+    /**
+     * Create permissions for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @return array
+     */
+    public function createPermission(string $modelName): array
     {
         try {
             $lowerCaseModelName = strtolower($modelName);
@@ -846,146 +905,15 @@ $(function () {
         }
     }
 
-    public function generateCreateRequestFile($modelName, $validations)
-    {
-        $className = 'Create' . Str::studly($modelName) . 'Request';
-        $requestFilePath = app_path("Http/Requests/{$className}.php");
-
-        if (file_exists($requestFilePath)) {
-            return ['success' => false, 'error' => 'Request file already exists.'];
-        }
-
-        try {
-            $validationRules = '';
-            if ($validations) {
-                foreach ($validations as $fieldName => $rules) {
-                    $rulesArray = [];
-                    foreach ($rules as $ruleKey => $ruleValue) {
-                        if (strpos($ruleKey, ':') !== false) {
-                            $parts = explode(':', $ruleKey);
-                            $newRule = $parts[0];
-                            if (count($parts) > 1) {
-                                $values = explode(':', $ruleValue);
-                                $newRule .= ':' . array_pop($values);
-                            }
-                            $rulesArray[] = $newRule;
-                        } else {
-                            $rulesArray[] = $ruleKey;
-                        }
-                    }
-                    $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
-                }
-            }
-            
-            $requestFileContent = <<<EOT
-<?php
-
-namespace App\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
-
-class {$className} extends FormRequest
-{
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
+     * Generate a request file for creating or updating a model instance.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<string>|string>
+     * @param string $modelName The name of the model.
+     * @param array $validations An array of validation rules.
+     * @param string $type The type of request ('Create' or 'Update').
+     * @return array
      */
-    public function rules(): array
-    {
-        return [
-            {$validationRules}
-        ];
-    }
-}
-EOT;
-
-            File::put($requestFilePath, $requestFileContent);
-            return ['success' => true, 'message' => "{$className} created successfully!"];
-        } catch (Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
-    }
-
-    public function generateUpdateRequestFile($modelName, $validations)
-    {
-        $className = 'Update' . Str::studly($modelName) . 'Request';
-        $requestFilePath = app_path("Http/Requests/{$className}.php");
-
-        if (file_exists($requestFilePath)) {
-            return ['success' => false, 'error' => 'Request file already exists.'];
-        }
-
-        try {
-            $validationRules = '';
-            if ($validations) {
-                foreach ($validations as $fieldName => $rules) {
-                    $rulesArray = [];
-                    foreach ($rules as $ruleKey => $ruleValue) {
-                        if (strpos($ruleKey, ':') !== false) {
-                            $parts = explode(':', $ruleKey);
-                            $newRule = $parts[0];
-                            if (count($parts) > 1) {
-                                $values = explode(':', $ruleValue);
-                                $newRule .= ':' . array_pop($values);
-                            }
-                            $rulesArray[] = $newRule;
-                        } else {
-                            $rulesArray[] = $ruleKey;
-                        }
-                    }
-                    $validationRules .= "'$fieldName' => '" . implode('|', $rulesArray) . "',\n\t\t\t";
-                }
-            }
-            
-
-        $requestFileContent = <<<EOT
-<?php
-
-namespace App\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
-
-class {$className} extends FormRequest
-{
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<string>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            {$validationRules}
-        ];
-    }
-}
-EOT;
-
-            File::put($requestFilePath, $requestFileContent);
-            return ['success' => true, 'message' => "{$className} created successfully!"];
-        } catch (Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
-    }
-
-    public function generateRequestFile($modelName, $validations, $type = 'Create')
+    public function generateRequestFile(string $modelName, array $validations, string $type = 'Create'): array
     {
         $className = $type . Str::studly($modelName) . 'Request';
         $requestFilePath = app_path("Http/Requests/{$className}.php");
@@ -1054,8 +982,14 @@ EOT;
         }
     }
 
-
-    public function generateApiController($modelName, $fields)
+    /**
+     * Generate an API controller for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param array $fields An array of fields for the API controller.
+     * @return array
+     */
+    public function generateApiController(string $modelName, array $fields): array
     {
         try {
             $lowerCaseModelName = strtolower($modelName);
@@ -1311,7 +1245,14 @@ EOT;
         }
     }
 
-    public function generateRoutes($modelName, $isApi = false)
+    /**
+     * Generate routes for the specified model.
+     *
+     * @param string $modelName The name of the model.
+     * @param bool $isApi Indicates whether the routes are for an API.
+     * @return array
+     */
+    public function generateRoutes(string $modelName, bool $isApi = false): array
     {
         try {
             $routeFilePath = $isApi ? base_path('routes/admin_api.php') : base_path('routes/admin.php');
