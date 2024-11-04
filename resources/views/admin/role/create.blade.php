@@ -1,6 +1,6 @@
 @extends('layouts/layout')
 
-@section('title', 'Create role')
+@section('title', 'Create Role')
 
 @section('page-style')
     @vite([])
@@ -13,11 +13,11 @@
 @section('content')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Create role</h1>
+            <h1>Create Role</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Home</a></li>
-                    <li class="breadcrumb-item active">role</li>
+                    <li class="breadcrumb-item active">Role</li>
                 </ol>
             </nav>
         </div>
@@ -56,25 +56,6 @@
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name" value="{{ old('name') }}">
                                     @error('name')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-        
-                            
-
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label class="form-label">Status</label>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input @error('status') is-invalid @enderror" type="checkbox" role="switch" id="statusToggle" name="status" value="1" {{ old('status') == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusToggle">
-                                            <span class="text-success">Active</span> / <span class="text-danger">Inactive</span>
-                                        </label>
-                                    </div>
-                                    @error('status')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
