@@ -13,7 +13,7 @@
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Correct link for Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ asset('assets/css/custom-register.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/custom-style-login-register.css') }}" rel="stylesheet">
 
 </head>
 
@@ -68,9 +68,9 @@
                 </div>
                 <input type="hidden" name="role_id" value="1">
 
-                <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Register</button>
+                <div class="d-flex justify-content-end">
                     <a class="text-decoration-none mt-2" href="{{ route('login') }}">Already registered?</a>
-                    <button type="submit" class="btn btn-primary">Register</button>
                 </div>
             </form>
         </div>
