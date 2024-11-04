@@ -1,6 +1,6 @@
 @extends('layouts/layout')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'CURD Generator')
 
 @section('page-style')
     @vite([])
@@ -160,25 +160,26 @@
                                     <td>
                                         <select name="fields[0][type]" class="form-select" required>
                                             @foreach ([ 'bigInteger' => 'bigInteger()',
-                                                        'binary' => 'binary()',
                                                         'boolean' => 'boolean()',
-                                                        'char' => 'char()',
                                                         'dateTime' => 'dateTime()',
                                                         'date' => 'date()',
                                                         'decimal' => 'decimal()',
-                                                        'double' => 'double()',
-                                                        'float' => 'float()',
                                                         'integer' => 'integer()',
-                                                        'ipAddress' => 'ipAddress()',
                                                         'json' => 'json()',
                                                         'longText' => 'longText()',
+                                                        'string' => 'string()',
+                                                        'text' => 'text()',
+                                                        'time' => 'time()',
+                                                        'uuid' => 'uuid()',
+                                                        'binary' => 'binary()',
+                                                        'char' => 'char()',
+                                                        'double' => 'double()',
+                                                        'float' => 'float()',
+                                                        'ipAddress' => 'ipAddress()',
                                                         'macAddress' => 'macAddress()',
                                                         'mediumInteger' => 'mediumInteger()',
                                                         'mediumText' => 'mediumText()',
                                                         'smallInteger' => 'smallInteger()',
-                                                        'string' => 'string()',
-                                                        'text' => 'text()',
-                                                        'time' => 'time()',
                                                         'tinyInteger' => 'tinyInteger()',
                                                         'tinyText' => 'tinyText()',
                                                         'unsignedBigInteger' => 'unsignedBigInteger()',
@@ -186,7 +187,6 @@
                                                         'unsignedMediumInteger' => 'unsignedMediumInteger()',
                                                         'unsignedSmallInteger' => 'unsignedSmallInteger()',
                                                         'unsignedTinyInteger' => 'unsignedTinyInteger()',
-                                                        'uuid' => 'uuid()',
                                                         'year' => 'year()' ] as $value => $label)
                                                 <option value="{{ $value }}">{{ $label }}</option>
                                             @endforeach
@@ -418,25 +418,26 @@
                 <td>
                     <select name="fields[${fieldIndex}][type]" class="form-select" required>
                         @foreach ([ 'bigInteger' => 'bigInteger()',
-                                    'binary' => 'binary()',
                                     'boolean' => 'boolean()',
-                                    'char' => 'char()',
                                     'dateTime' => 'dateTime()',
                                     'date' => 'date()',
                                     'decimal' => 'decimal()',
-                                    'double' => 'double()',
-                                    'float' => 'float()',
                                     'integer' => 'integer()',
-                                    'ipAddress' => 'ipAddress()',
                                     'json' => 'json()',
                                     'longText' => 'longText()',
+                                    'string' => 'string()',
+                                    'text' => 'text()',
+                                    'time' => 'time()',
+                                    'uuid' => 'uuid()',
+                                    'binary' => 'binary()',
+                                    'char' => 'char()',
+                                    'double' => 'double()',
+                                    'float' => 'float()',
+                                    'ipAddress' => 'ipAddress()',
                                     'macAddress' => 'macAddress()',
                                     'mediumInteger' => 'mediumInteger()',
                                     'mediumText' => 'mediumText()',
                                     'smallInteger' => 'smallInteger()',
-                                    'string' => 'string()',
-                                    'text' => 'text()',
-                                    'time' => 'time()',
                                     'tinyInteger' => 'tinyInteger()',
                                     'tinyText' => 'tinyText()',
                                     'unsignedBigInteger' => 'unsignedBigInteger()',
@@ -444,7 +445,6 @@
                                     'unsignedMediumInteger' => 'unsignedMediumInteger()',
                                     'unsignedSmallInteger' => 'unsignedSmallInteger()',
                                     'unsignedTinyInteger' => 'unsignedTinyInteger()',
-                                    'uuid' => 'uuid()',
                                     'year' => 'year()' ] as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
                         @endforeach
@@ -1079,16 +1079,18 @@
 
         // Populate table with validation rules
         const validationRules = [
+            { rule: 'nullable', description: "Allows the field to be empty"},
             { rule: "required", description: "This field is required." },
             { rule: "string", description: "This field must be a string." },
+            { rule: "integer", description: "This field must be an integer." },
+            { rule: "numeric", description: "This field must be a numeric value." },
+            { rule: "email", description: "This field must be a valid email address." },
+            { rule: "date", description: "This field must be a valid date." },
             { rule: "min:value", description: "This field must have a minimum length or value." },
             { rule: "max:value", description: "This field must have a maximum length or value." },
             { rule: "between:min,max", description: "This field must be between a minimum and maximum value." },
-            { rule: "numeric", description: "This field must be a numeric value." },
-            { rule: "integer", description: "This field must be an integer." },
             { rule: "digits:value", description: "This field must have exactly the specified number of digits." },
             { rule: "digits_between:min,max", description: "This field must have a digit count between the specified range." },
-            { rule: "date", description: "This field must be a valid date." }
         ];
 
         validationRules.forEach(({ rule, description }) => {

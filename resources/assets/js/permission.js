@@ -9,7 +9,16 @@ $(function () {
         columns: [
             {data: 'id', name: 'id'},
 			{data: 'group_name', name: 'group_name'},
-            {data: 'name', name: 'name'},
+            {
+                data: 'name', name: 'name',
+                render: function(data) {
+                    return data
+                        .replace(/[-.]/g, ' ')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                }
+            },
 
             {data: 'action', name: 'action', 
             render: function(data, type, row) {

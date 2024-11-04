@@ -71,7 +71,7 @@ class PermissionGroupController extends Controller
             $response = $this->permissionGroupService->create($request->all());
 
             if ($response) {
-                return redirect()->back()->with('success', 'PermissionGroup added successfully.');
+                return redirect()->back()->with('success', 'Permission Group added successfully.');
             }
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong. Please try again.');
@@ -123,7 +123,7 @@ class PermissionGroupController extends Controller
             $data = $request->except(['_token', '_method']);
             $this->permissionGroupService->update(['id' => $id], $data);
 
-            return redirect()->back()->with('success', 'PermissionGroup updated successfully.');
+            return redirect()->back()->with('success', 'Permission Group updated successfully.');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Something went wrong while updating.');
         }
@@ -142,14 +142,14 @@ class PermissionGroupController extends Controller
 
             if ($data) {
                 return response()->json([
-                    'message' => 'PermissionGroup deleted successfully',
+                    'message' => 'Permission Group deleted successfully',
                     'status_code' => ResponseAlias::HTTP_OK,
                     'data' => []
                 ], ResponseAlias::HTTP_OK);
             }
 
             return response()->json([
-                'message' => 'PermissionGroup is not deleted successfully',
+                'message' => 'Permission Group is not deleted successfully',
                 'status_code' => ResponseAlias::HTTP_BAD_REQUEST,
                 'data' => []
             ], ResponseAlias::HTTP_BAD_REQUEST);
