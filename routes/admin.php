@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin-dashboard');
 
+Route::get('/dashboard/test', function () {
+    dd('TEST');
+});
+
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::put('password', [PasswordController::class, 'update'])->name('password.update');
