@@ -126,7 +126,7 @@
             ]
         },
         {
-            "nav-heading": "<li class='nav-heading'>Generated Module</li>"
+            "nav-heading": "<li class='nav-heading'>Generated Module<\/li>"
         }
     ]
 }

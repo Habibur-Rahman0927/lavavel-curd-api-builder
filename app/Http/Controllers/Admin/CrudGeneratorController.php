@@ -61,6 +61,7 @@ class CrudGeneratorController extends Controller
 
         Artisan::call('app:service-gen', ['name' => $modelName]);
         Artisan::call('app:repository-gen', ['name' => $modelName]);
+        Artisan::call('migrate');
         $this->curdGeneratorService->generateOrBindServiceAndRepository($modelName);
 
         $createRequestResult = $this->curdGeneratorService->generateRequestFile($modelName, $validations);
@@ -89,6 +90,9 @@ class CrudGeneratorController extends Controller
         $routeResult = $this->curdGeneratorService->generateRoutes($modelName);
         if ($routeResult['success']) {
             $this->generateViews($modelName, $fieldNames);
+            if (app()->environment('production')) {
+                exec('npm run build');
+            }
             return redirect()->back()->with('success', 'CRUD resources created successfully with routes.');
         }
         return redirect()->back()->with('error', 'CRUD resources created, but route generation failed.');
@@ -100,6 +104,7 @@ class CrudGeneratorController extends Controller
         if ($apiRouteResult['success']) {
             $apiControllerResult = $this->curdGeneratorService->generateApiController($modelName, $fields);
             if ($apiControllerResult['success']) {
+                Artisan::call('l5-swagger:generate');
                 return redirect()->back()->with('success', 'API resources created successfully with routes and controller.');
             }
             return redirect()->back()->with('error', 'API resources created, but controller generation failed.');
@@ -115,6 +120,10 @@ class CrudGeneratorController extends Controller
             $this->generateViews($modelName, $fieldNames);
             $apiControllerResult = $this->curdGeneratorService->generateApiController($modelName, $fields);
             if ($apiControllerResult['success']) {
+                Artisan::call('l5-swagger:generate');
+                if (app()->environment('production')) {
+                    exec('npm run build');
+                }
                 return redirect()->back()->with('success', 'Full CRUD and API resources created successfully with routes.');
             }
             return redirect()->back()->with('error', 'Full resources created, but API controller generation failed.');
