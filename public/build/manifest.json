@@ -1,0 +1,43 @@
+{
+  "resources/assets/js/permission.js": {
+    "file": "assets/permission-BK3UcCOL.js",
+    "name": "permission",
+    "src": "resources/assets/js/permission.js",
+    "isEntry": true
+  },
+  "resources/assets/js/permissiongroup.js": {
+    "file": "assets/permissiongroup-DxtitSkG.js",
+    "name": "permissiongroup",
+    "src": "resources/assets/js/permissiongroup.js",
+    "isEntry": true
+  },
+  "resources/assets/js/role.js": {
+    "file": "assets/role-DSvHqIs9.js",
+    "name": "role",
+    "src": "resources/assets/js/role.js",
+    "isEntry": true
+  },
+  "resources/assets/js/rolehaspermission.js": {
+    "file": "assets/rolehaspermission-Ckrvl3aN.js",
+    "name": "rolehaspermission",
+    "src": "resources/assets/js/rolehaspermission.js",
+    "isEntry": true
+  },
+  "resources/assets/js/user.js": {
+    "file": "assets/user-FiZ2_4Fb.js",
+    "name": "user",
+    "src": "resources/assets/js/user.js",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-AMabWGn_.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DLXkxiZ3.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}
