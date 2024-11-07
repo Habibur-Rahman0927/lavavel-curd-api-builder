@@ -128,7 +128,7 @@ class CrudGeneratorController extends Controller
             }
             return redirect()->back()->with('error', 'Full resources created, but API controller generation failed.');
         }
-        return redirect()->back()->with('error', 'Full resources created, but route generation failed.');
+        return redirect()->back()->with('error', 'Full resources created, but route generation failed.' . $routeResult['error'] . $apiRouteResult['error']);
     }
 
     private function generateViews($modelName, $fieldNames)
