@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,4 +20,11 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('/logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 Route::get('/health', HealthCheckResultsController::class);
+
+Route::fallback(function () {
+    if (config('app.debug')) {
+        Log::error('Fallback route triggered', ['url' => request()->url()]);
+    }
+    return response()->view('errors.404', [], 404);
+});
 require __DIR__.'/auth.php';
