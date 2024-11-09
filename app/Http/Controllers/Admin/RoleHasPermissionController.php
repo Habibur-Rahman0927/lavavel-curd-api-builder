@@ -32,7 +32,7 @@ class RoleHasPermissionController extends Controller
      */
      public function index(): View
     {
-        return view('admin.roleHasPermission.index')->with([]);
+        return view('admin.rolehaspermission.index')->with([]);
     }
 
     /**
@@ -62,7 +62,7 @@ class RoleHasPermissionController extends Controller
         $roles = Role::all();
         $permissions = Permission::all();
         $permission_groups = User::getPermissionGroups();
-        return view('admin.roleHasPermission.create')->with([
+        return view('admin.rolehaspermission.create')->with([
             'roles' => $roles,
             'permissions' => $permissions,
             'permission_groups' => $permission_groups,
@@ -121,7 +121,7 @@ class RoleHasPermissionController extends Controller
             $permissions = Permission::all();
             $permission_groups = User::getPermissionGroups();
 
-            return view('admin.roleHasPermission.edit')->with([
+            return view('admin.rolehaspermission.edit')->with([
                 'data' => $role,
                 'roles' => $roles,
                 'permissions' => $permissions,

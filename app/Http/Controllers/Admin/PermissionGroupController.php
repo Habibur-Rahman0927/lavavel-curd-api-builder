@@ -29,7 +29,7 @@ class PermissionGroupController extends Controller
      */
      public function index(): View
     {
-        return view('admin.permissionGroup.index')->with([]);
+        return view('admin.permissiongroup.index')->with([]);
     }
 
     /**
@@ -56,7 +56,7 @@ class PermissionGroupController extends Controller
      */
     public function create(): View
     {
-        return view('admin.permissionGroup.create')->with([]);
+        return view('admin.permissiongroup.create')->with([]);
     }
 
     /**
@@ -102,7 +102,7 @@ class PermissionGroupController extends Controller
         try {
             $response = $this->permissionGroupService->findById($id);
 
-            return view('admin.permissionGroup.edit')->with([
+            return view('admin.permissiongroup.edit')->with([
                 'data' => $response,
             ]);
         } catch (Exception $e) {
