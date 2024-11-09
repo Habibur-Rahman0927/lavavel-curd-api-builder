@@ -46,4 +46,6 @@ To install and set up the CRUD Builder, follow these steps:
 4. **Database configuration**:
     ```
     php artisan migrate:fresh --seed
+    or 
+    php artisan migrate and php artisan db:seed
     ```
