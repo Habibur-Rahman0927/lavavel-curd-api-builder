@@ -91,7 +91,7 @@ class CrudGeneratorController extends Controller
         if ($routeResult['success']) {
             $this->generateViews($modelName, $fieldNames);
             if (app()->environment('production')) {
-                exec('npm run build');
+                exec('sudo npm run build');
             }
             return redirect()->back()->with('success', 'CRUD resources created successfully with routes.');
         }
@@ -122,7 +122,7 @@ class CrudGeneratorController extends Controller
             if ($apiControllerResult['success']) {
                 Artisan::call('l5-swagger:generate');
                 if (app()->environment('production')) {
-                    exec('npm run build');
+                    exec('sudo npm run build');
                 }
                 return redirect()->back()->with('success', 'Full CRUD and API resources created successfully with routes.');
             }
